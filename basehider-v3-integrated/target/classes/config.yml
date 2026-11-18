@@ -1,0 +1,220 @@
+# ---------------------------------------------------------------------------
+# BaseHider 3.7.0 - server-side anti-ESP visibility control
+#
+# Security model: FAIL-CLOSED.
+#   * A protected block/entity is hidden from a viewer unless the visibility
+#     policy explicitly proves it is allowed to be sent.
+#   * Unknown state, disabled module, missing packet gateway, timeout, error
+#     and queue pressure all keep data hidden - never the opposite.
+#
+# Packet gateway requirement:
+#   Block/container/chunk protection is only possible by rewriting outgoing
+#   packets. That requires the PacketEvents plugin to be installed. If it is
+#   absent, BaseHider disables block protection entirely (and says so in logs
+#   and /basehider status) instead of sending data first and patching later.
+#   Entity/item protection uses Paper's native per-player entity visibility
+#   API and works without PacketEvents (packet-level checks are added when the
+#   gateway is active).
+# ---------------------------------------------------------------------------
+
+security:
+  # Keep true in production. There is no "fast but unsafe" mode.
+  fail-closed: true
+  packet-gateway:
+    # Minimum PacketEvents version that is known to expose the APIs BaseHider
+    # uses (chunk column / block state rewriting, packet cancellation).
+    minimum-version: "2.14.0"
+  # Global per-tick time budget for BaseHider's main-thread security work.
+  # Work is sliced and deferred when the budget is exceeded; visibility
+  # decisions are never skipped, only delayed by at most a few ticks.
+  main-thread-budget-ms: 1.5
+  # Shared raycast budget per tick for block occlusion + entity occlusion.
+  # Raise for large storage bases if visible-blocks reveal feels slow; lower to
+  # reduce CPU. 0 = no raycasts (everything stays hidden - fail-closed).
+  raycast-budget-per-tick: 180
+
+worlds:
+  # Settings under "default" apply to every world that is not explicitly
+  # listed below. Add e.g. "world_nether:" with the same structure to override.
+  default:
+    enabled: true
+    bypass-permission: basehider.bypass
+
+    block-protection:
+      enabled: true
+      # These blocks are hidden at packet level. They are discovered from real
+      # block-entity data (natural structures included) and tracked on place/
+      # break/explosion/piston events plus a background reconciliation sweep.
+      # Only tile-entity backed materials are supported; unsupported entries
+      # are rejected with a console warning instead of being silently ignored.
+      hidden-blocks:
+        - CHEST
+        - TRAPPED_CHEST
+        - ENDER_CHEST
+        - BARREL
+        - SHULKER_BOX
+        - WHITE_SHULKER_BOX
+        - ORANGE_SHULKER_BOX
+        - MAGENTA_SHULKER_BOX
+        - LIGHT_BLUE_SHULKER_BOX
+        - YELLOW_SHULKER_BOX
+        - LIME_SHULKER_BOX
+        - PINK_SHULKER_BOX
+        - GRAY_SHULKER_BOX
+        - LIGHT_GRAY_SHULKER_BOX
+        - CYAN_SHULKER_BOX
+        - PURPLE_SHULKER_BOX
+        - BLUE_SHULKER_BOX
+        - BROWN_SHULKER_BOX
+        - GREEN_SHULKER_BOX
+        - RED_SHULKER_BOX
+        - BLACK_SHULKER_BOX
+        - HOPPER
+        - DROPPER
+        - DISPENSER
+        - FURNACE
+        - BLAST_FURNACE
+        - SMOKER
+        - BREWING_STAND
+        - SPAWNER
+        - TRIAL_SPAWNER
+        - VAULT
+        - CRAFTER
+        - DECORATED_POT
+        - CHISELED_BOOKSHELF
+        - LECTERN
+        - JUKEBOX
+        - NOTE_BLOCK
+      # CONTEXTUAL = mimic the surrounding blocks (grass/dirt/stone/wall material); STONE = fixed
+      replace-with: CONTEXTUAL
+
+      # Blocks become visible to a viewer only when they are close, inside the
+      # field of view and not occluded. Once seen, they stay visible while the
+      # viewer remains close (prevents flicker); they are hidden again when the
+      # viewer leaves, the chunk is resent, or the world changes.
+      reveal:
+        max-distance: 12.0
+        fov-degrees: 120.0
+        keep-distance-factor: 1.6
+        # Re-raycast revealed blocks when the viewer moved this far (blocks).
+        recheck-move-blocks: 4
+      # Background reconciliation sweep: catches blocks changed by plugins,
+      # commands or mechanics that do not fire a Bukkit block event.
+      reconcile:
+        enabled: true
+        chunks-per-second: 20
+        # Only chunks within this many chunks of a player are reconciled.
+        player-radius-chunks: 8
+
+    item-protection:
+      enabled: true
+      # Entity types hidden by default and only revealed through the same
+      # distance/FOV/occlusion policy. This is the anti-entity-ESP list.
+      # ITEM covers every dropped item (player, mob, block, natural, custom,
+      # enchanted, shulker contents...). Hostile monsters are included so a
+      # cheat client cannot render mob/player-base ESP through walls either.
+      # Passive animals, villagers and players are intentionally NOT hidden by
+      # default (farms/trading/PvP would be affected); add them here explicitly
+      # if your server wants stricter entity ESP protection.
+      hidden-entity-types:
+        - ITEM
+        - ITEM_FRAME
+        - GLOW_ITEM_FRAME
+        - ARMOR_STAND
+        - CHEST_MINECART
+        - HOPPER_MINECART
+        - FURNACE_MINECART
+        - TNT_MINECART
+        - ZOMBIE
+        - ZOMBIE_VILLAGER
+        - HUSK
+        - DROWNED
+        - SKELETON
+        - STRAY
+        - BOGGED
+        - WITHER_SKELETON
+        - CREEPER
+        - SPIDER
+        - CAVE_SPIDER
+        - ENDERMAN
+        - WITCH
+        - PILLAGER
+        - VINDICATOR
+        - EVOKER
+        - RAVAGER
+        - VEX
+        - ZOMBIFIED_PIGLIN
+        - PIGLIN
+        - PIGLIN_BRUTE
+        - HOGLIN
+        - ZOGLIN
+        - BLAZE
+        - GHAST
+        - MAGMA_CUBE
+        - SLIME
+        - PHANTOM
+        - SHULKER
+        - GUARDIAN
+        - ELDER_GUARDIAN
+        - WARDEN
+        - WITHER
+        - ENDER_DRAGON
+        - IRON_GOLEM
+      reveal:
+        max-distance: 16.0
+        fov-degrees: 130.0
+        # The thrower sees their own item only for the first 2 seconds or within 8 blocks
+        # (bounded on purpose: an unbounded owner exemption would keep own items in ESP).
+        owner-grace: true
+      # Re-evaluate item visibility every N ticks.
+      update-interval-ticks: 2
+
+    # Player-vs-player entity visibility (anti player-ESP). Close players, teammates and
+    # recent combat pairs are always visible; the 24-48 block band is hidden through walls
+    # unless the target is in the FOV with a clear line of sight. This never hides players
+    # within always-visible-distance (no invisible close fights).
+    player-protection:
+      enabled: false
+      hide-distance: 48.0
+      always-visible-distance: 24.0
+      fov-degrees: 120.0
+      require-line-of-sight: true
+      team-aware: true
+      combat-grace-seconds: 8
+      update-interval-ticks: 4
+    # Distance-only Y-level shield: while the viewer is above hide-below-y, chunks farther
+    # than real-chunk-radius are sent with every section below hide-below-y replaced by
+    # solid filler. This hides natural caves and deep bases from the surface / cheat ESP
+    # while keeping nearby chunks (and any cave the player actually enters) real.
+    y-shield:
+      enabled: false
+      hide-below-y: 40
+      real-chunk-radius: 4
+      filler: STONE
+    # Tunnel / dug-hole shield: remember mined blocks and send the original material to
+    # distant viewers instead of the new air, so cheat clients cannot see player-dug
+    # tunnels/holes. When a viewer comes within hide-radius, the real air is revealed.
+    tunnel-shield:
+      enabled: false
+      hide-radius: 28.0
+      max-tracked-breaks: 50000
+# Optional, non-enforcing analytics. They never alter visibility decisions and
+# never ban/kick automatically. Alerts go to players with basehider.admin.
+analytics:
+  mining:
+    enabled: false
+    xray-ore-rate-threshold-percent: 5.0
+    min-samples: 200
+    tunnel-streak-blocks: 24
+    alert-cooldown-seconds: 120
+  raid:
+    enabled: false
+    alert-cooldown-seconds: 300
+
+debug:
+  # Log one line per blocked packet category (rate limited). Keep false in prod.
+  log-blocked-packets: false
+  # Log a warning when the per-tick budget is exceeded (rate limited).
+  log-budget-overruns: true
+  # Dump stack traces for internal security errors. Always logged at SEVERE.
+  verbose-errors: false

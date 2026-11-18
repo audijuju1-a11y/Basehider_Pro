@@ -1,0 +1,46 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  plugin:
+    name: Plugin (Linux, JDK 21)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Test and build
+        working-directory: basehider-v3-integrated
+        run: mvn -B verify
+      - name: Upload shaded jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: BaseHider-jar
+          path: basehider-v3-integrated/target/BaseHider-*.jar
+          if-no-files-found: error
+
+  platform:
+    name: Platform (Node, vitest/workerd)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: platform/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test

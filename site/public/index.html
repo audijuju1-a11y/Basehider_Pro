@@ -1,0 +1,1289 @@
+<!doctype html>
+<html lang="th" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BaseHider 3.6.1 — ซ่อนหีบและไอเท็มก่อนคนอื่นจะเห็น</title>
+<meta name="description" content="ปลั๊กอินสำหรับเซิร์ฟเวอร์ Paper 1.21.4 ที่ซ่อนหีบ ไอเท็มตก และข้อมูลในกล่อง ก่อนส่งถึงเกมผู้เล่น พร้อมคำอธิบายภาษาไทย 38 ชั้น วิธีติดตั้ง และไฟล์ดาวน์โหลด">
+<meta name="theme-color" content="#06080b">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="BaseHider">
+<meta property="og:title" content="BaseHider 3.6.1 — ซ่อนหีบและไอเท็มก่อนคนอื่นจะเห็น">
+<meta property="og:description" content="ปลั๊กอิน Paper 1.21.4 ที่ซ่อนหีบและไอเท็มตั้งแต่ต้นทาง ไม่ส่งข้อมูลให้โปรแกรมโกงเห็น พร้อมคำอธิบายภาษาไทยครบทุกชั้น">
+<meta property="og:image" content="assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="BaseHider 3.6.1 — กลไก 38 ชั้นแบบแยกชิ้นส่วน">
+<meta property="og:locale" content="th_TH">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BaseHider 3.6.1 — ซ่อนหีบและไอเท็มก่อนคนอื่นจะเห็น">
+<meta name="twitter:description" content="ปลั๊กอิน Paper 1.21.4 ที่ซ่อนหีบและไอเท็มตั้งแต่ต้นทาง พร้อมหลักฐานการทดสอบจริง">
+<meta name="twitter:image" content="assets/img/og.jpg">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preload" href="assets/fonts/anuphan-var-thai.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/anuphan-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<script defer src="assets/js/layers.js"></script>
+<script defer src="assets/js/main.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">ข้ามไปยังเนื้อหา</a>
+
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11m0 0 4.2-4.2M12 14l-4.2-4.2"/><path d="M4 16.5v1.8A2.7 2.7 0 0 0 6.7 21h10.6a2.7 2.7 0 0 0 2.7-2.7v-1.8"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v15m0 0 6-6m-6 6-6-6"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m0 0-6-6m6 6-6 6"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8.5 4.7L12 12.4 3.5 7.7 12 3Z"/><path d="m4.4 12.2 7.6 4.2 7.6-4.2"/><path d="m4.4 16.4 7.6 4.2 7.6-4.2"/></symbol>
+  <symbol id="i-packet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="8" height="10" rx="1.6"/><path d="M15 12h6m0 0-2.4-2.4M21 12l-2.4 2.4"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 5.8v5.4c0 4 2.9 7.6 7 9.8 4.1-2.2 7-5.8 7-9.8V5.8L12 3Z"/><path d="m9 11.7 2 2 4-4.2"/></symbol>
+  <symbol id="i-chip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9.5 3v3M14.5 3v3M9.5 18v3M14.5 18v3M3 9.5h3M3 14.5h3M18 9.5h3M18 14.5h3"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.8 12S6 5.8 12 5.8 21.2 12 21.2 12 18 18.2 12 18.2 2.8 12 2.8 12Z"/><circle cx="12" cy="12" r="3.1"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.3A10.9 10.9 0 0 1 12 6.2c5 0 8.5 3.6 10 5.8-.6.9-1.6 2-2.9 3"/><path d="M6.4 7.6C4.8 8.8 3.6 10.3 2.9 11.4c1.4 2.2 5 5.8 9.1 5.8 1.3 0 2.5-.3 3.6-.8"/><path d="M9.9 9.8a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5 12 4l8 4.5v9L12 22l-8-4.5v-9Z"/><path d="M4 8.5 12 13l8-4.5M12 13v9"/><path d="M8 6.3 16 11"/></symbol>
+  <symbol id="i-wall" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1.4"/><path d="M3 9.7h18M3 14.4h18M9 5v4.7M15 9.7v4.7M9 14.4V19M15 14.4V19"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.8-3.4 3.6-5.2 7-5.2s6.2 1.8 7 5.2"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18a9 9 0 0 1 16 0"/><path d="m12 14 4-4"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.2"/><path d="m7 9 3 3-3 3"/><path d="M13 15h4"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5.8A1.8 1.8 0 0 0 13.2 4H6.8A2.8 2.8 0 0 0 4 6.8v6.4A1.8 1.8 0 0 0 5.8 15"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10" width="15" height="10" rx="2.4"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/><path d="M12 14v2.5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3 1.8"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.8 2.8M14.9 14.9l2.8 2.8M17.7 6.3l-2.8 2.8M9.1 14.9l-2.8 2.8"/></symbol>
+  <symbol id="i-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 3 20h18L12 4Z"/><path d="M12 10v4.5"/><path d="M12 17.6h.01"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15.5H6.5A2.5 2.5 0 0 0 4 21V5.5Z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"/><path d="M8 7h8M8 10.5h5"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></symbol>
+  <symbol id="i-ruler" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 15 6 6L21 9l-6-6L3 15Z"/><path d="m7 13 2 2M10 10l2 2M13 7l2 2"/></symbol>
+</svg>
+
+<header class="site-head" id="siteHead">
+  <div class="shell site-head__inner">
+    <a class="brand" href="#top" aria-label="BaseHider — กลับขึ้นด้านบน">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="17.4" stroke="url(#gBrand)" stroke-width="1.1"/>
+          <circle cx="20" cy="20" r="12.6" stroke="url(#gBrand)" stroke-width=".7" opacity=".55"/>
+          <circle cx="20" cy="20" r="7.2" stroke="url(#gBrand)" stroke-width="1.6"/>
+          <path d="M20 2.6v5.4M20 32v5.4M2.6 20h5.4M32 20h5.4" stroke="url(#gBrand)" stroke-width="1.1" stroke-linecap="round"/>
+          <circle cx="20" cy="20" r="2.1" fill="#e8c879"/>
+          <defs><linearGradient id="gBrand" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop stop-color="#f6e2ac"/><stop offset=".5" stop-color="#d3a84f"/><stop offset="1" stop-color="#8a5f1f"/></linearGradient></defs>
+        </svg>
+      </span>
+      <span class="brand__text">
+        <strong>BaseHider</strong>
+        <span class="brand__ver">3.6.1</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="primaryNav" aria-label="เมนูหลัก">
+      <a href="#anatomy">ดูกลไก</a>
+      <a href="#scenes">สถานการณ์จริง</a>
+      <a href="#why">ทำไมต้องใช้</a>
+      <a href="#install">ติดตั้ง</a>
+      <a href="#faq">คำถาม</a>
+      <a href="#download">ดาวน์โหลด</a>
+    </nav>
+
+    <div class="site-head__actions">
+      <span class="head-status" title="ต้องมี PacketEvents 2.14.0 ขึ้นไปสำหรับการซ่อนบล็อก">
+        <span class="dot" aria-hidden="true"></span>Paper 1.21.4
+      </span>
+      <a class="btn btn--primary btn--sm" href="download/BaseHider-3.6.1.jar" download>
+        <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+        ดาวน์โหลด
+      </a>
+      <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-label="เปิดเมนู">
+        <svg class="ico" aria-hidden="true"><use href="#i-menu"></use></svg>
+      </button>
+    </div>
+  </div>
+  <div class="scroll-progress" aria-hidden="true"><i id="scrollProgress"></i></div>
+</header>
+
+<main id="main">
+
+  <!-- ===================================================== HERO -->
+  <section class="hero" id="top">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="shell hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow"><span class="eyebrow__dot" aria-hidden="true"></span>ปลั๊กอิน Paper 1.21.4 · ผู้เล่นไม่ต้องติดตั้งอะไร</p>
+        <h1 class="hero__title">ซ่อนหีบและของตก<br><span class="grad">ก่อนคนอื่นจะเห็น</span></h1>
+        <p class="hero__lead">
+          BaseHider ทำงานอยู่บนเซิร์ฟเวอร์ของคุณ คอยเช็กว่าผู้เล่นคนไหน <strong>ควรเห็น</strong> หีบหรือไอเท็มชิ้นไหน
+          ถ้ายังไม่มั่นใจ มันจะซ่อนไว้ก่อน — ข้อมูลนั้นไม่ถูกส่งไปถึงเกมของผู้เล่นตั้งแต่แรก
+        </p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="download/BaseHider-3.6.1.jar" download>
+            <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+            <span>ดาวน์โหลด BaseHider 3.6.1<small>BaseHider-3.6.1.jar · 6.8 MB</small></span>
+          </a>
+          <a class="btn btn--ghost" href="#anatomy">
+            ดูว่ามันทำงานยังไง
+            <svg class="ico" aria-hidden="true"><use href="#i-arrow-down"></use></svg>
+          </a>
+        </div>
+        <p class="hero__note">
+          <svg class="ico ico--sm" aria-hidden="true"><use href="#i-check"></use></svg>
+          ตรวจไฟล์ด้วย SHA-256 ได้ · ใช้คู่กับ PacketEvents 2.14.0 ขึ้นไป
+        </p>
+        <dl class="hero__stats">
+          <div class="hstat"><dt>ชั้นการทำงาน</dt><dd><b>38</b></dd></div>
+          <div class="hstat"><dt>เทสต์ที่ผ่าน</dt><dd><b>102</b><span>ทั้งหมด</span></dd></div>
+          <div class="hstat"><dt>ช้าที่สุดต่อติ๊ก</dt><dd><b>≤3.0</b><span>ms</span></dd></div>
+          <div class="hstat"><dt>ข้อมูลหลุดในเทสต์</dt><dd><b>0</b><span>แพ็กเก็ต</span></dd></div>
+        </dl>
+      </div>
+
+      <div class="hero__visual" id="heroVisual">
+        <div class="hero__halo" aria-hidden="true"></div>
+        <div class="assembly assembly--hero" id="heroAssembly" aria-hidden="true"></div>
+        <div class="hero__caption" aria-hidden="true">
+          <span class="hero__caption-line"></span>
+          <span>EXPLODED VIEW<br><b>38 PARTS / 4 ASSEMBLIES</b></span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__fade" aria-hidden="true"></div>
+  </section>
+
+  <!-- ===================================================== TICKER -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+      <span>ไม่แน่ใจ = ซ่อนไว้ก่อน</span><i>◆</i>
+      <span>ซ่อนก่อนส่ง ไม่ใช่ส่งแล้วตามแก้</span><i>◆</i>
+      <span>ผู้เล่นไม่ต้องติดตั้งอะไร</span><i>◆</i>
+      <span>102 เทสต์ผ่านทั้งหมด</span><i>◆</i>
+      <span>ช้าที่สุด ≤ 3 ms ต่อติ๊ก</span><i>◆</i>
+      <span>Paper 1.21.4</span><i>◆</i>
+      <span>PacketEvents 2.14.0+</span><i>◆</i>
+      <span>ไม่แน่ใจ = ซ่อนไว้ก่อน</span><i>◆</i>
+      <span>ซ่อนก่อนส่ง ไม่ใช่ส่งแล้วตามแก้</span><i>◆</i>
+      <span>ผู้เล่นไม่ต้องติดตั้งอะไร</span><i>◆</i>
+      <span>102 เทสต์ผ่านทั้งหมด</span><i>◆</i>
+      <span>ช้าที่สุด ≤ 3 ms ต่อติ๊ก</span><i>◆</i>
+      <span>Paper 1.21.4</span><i>◆</i>
+      <span>PacketEvents 2.14.0+</span><i>◆</i>
+    </div>
+  </div>
+
+  <!-- ===================================================== ANATOMY -->
+  <section class="anatomy" id="anatomy" data-anatomy>
+    <div class="shell section-head">
+      <p class="eyebrow">01 — เบื้องหลัง</p>
+      <h2>แยกดูทีละชั้น<br><span class="muted">เหมือนช่างนาฬิกาถอดกลไกออกมาวางบนโต๊ะ</span></h2>
+      <p class="section-lead">
+        BaseHider ไม่ใช่กล่องดำ ข้างในมี 38 ชั้นที่ทำงานต่อกัน ตั้งแต่ยามหน้าเซิร์ฟเวอร์ไปจนถึงชุดทดสอบ
+        เลื่อนลงเพื่อคลี่ชั้นออก หรือกดที่ชิ้นส่วนที่สนใจเพื่ออ่านว่ามันทำอะไร
+      </p>
+    </div>
+
+    <div class="shell anatomy__grid">
+      <div class="anatomy__stage-col">
+        <div class="stage" id="stage">
+          <div class="stage__hud">
+            <span class="stage__hud-label">ASSEMBLY <b id="stageChapter">01</b> / <span id="stageChapterName">ENTRY</span></span>
+            <span class="stage__meter" aria-hidden="true">
+              <span class="stage__meter-label">แยกชั้น</span>
+              <span class="meter"><i id="spreadMeter"></i></span>
+              <b id="spreadPct">0%</b>
+            </span>
+          </div>
+
+          <div class="stage__scene">
+            <div class="stage__pin" aria-hidden="true"></div>
+            <div class="stage__glow" aria-hidden="true"></div>
+            <div class="assembly" id="assembly" data-assembly></div>
+            <div class="stage__shadow" aria-hidden="true"></div>
+          </div>
+
+          <div class="stage__foot">
+            <div class="stage__info" id="stageInfo" aria-live="polite">
+              <div class="stage__info-head">
+                <span class="stage__info-n">38 ชิ้นส่วน</span>
+                <span class="stage__info-code">4 ชุดกลไก</span>
+              </div>
+              <p class="stage__info-title">กดที่ชิ้นส่วนหรือรายการด้านขวา<br>เพื่ออ่านว่าชิ้นนั้นทำอะไร</p>
+              <p class="stage__info-desc">ตัวเลขทุกตัวในหน้านี้มาจากการวัดจริงบน Paper 1.21.4 ไม่ใช่ค่าประมาณ</p>
+            </div>
+            <button class="stage__reset" id="stageReset" type="button" hidden>ดูภาพรวม</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="anatomy__chapters" id="chapters">
+        <article class="chapter" data-ch="entry" data-ch-index="0">
+          <p class="chapter__num"><span>01</span> — ENTRY</p>
+          <h3 class="chapter__title">ด่านแรก</h3>
+          <p class="chapter__tagline">ก่อนข้อมูลจะออกจากเซิร์ฟเวอร์</p>
+          <p class="chapter__blurb">ทุกอย่างที่เซิร์ฟเวอร์จะส่งให้เกมผู้เล่น ต้องผ่านด่านนี้ก่อน ถ้าด่านนี้ไม่ให้ผ่าน ข้อมูลนั้นก็ไม่ถูกส่งออกไปเลย</p>
+          <ul class="chips" data-chips="entry"></ul>
+          <p class="chapter__hint">กดชิ้นส่วนเพื่ออ่านหน้าที่ของมัน</p>
+        </article>
+
+        <article class="chapter" data-ch="index" data-ch-index="1">
+          <p class="chapter__num"><span>02</span> — INDEX</p>
+          <h3 class="chapter__title">ทะเบียนของที่ซ่อน</h3>
+          <p class="chapter__tagline">รู้ว่ามีอะไร ซ่อนอยู่ตรงไหน</p>
+          <p class="chapter__blurb">ระบบจำจากของจริงในโลกเกม แล้วเดินตรวจซ้ำเป็นรอบ ไม่ได้เชื่อไฟล์เก่าที่อาจคลาดเคลื่อนจากของจริง</p>
+          <ul class="chips" data-chips="index"></ul>
+          <p class="chapter__hint">ทะเบียนนี้ไม่หายไปตอนแผนที่ถูกยกเลิกโหลด</p>
+        </article>
+
+        <article class="chapter" data-ch="policy" data-ch-index="2">
+          <p class="chapter__num"><span>03</span> — POLICY</p>
+          <h3 class="chapter__title">สมองตัดสินใจ</h3>
+          <p class="chapter__tagline">คนนี้ควรเห็นหรือยัง?</p>
+          <p class="chapter__blurb">ระยะ มุมมอง และสิ่งที่บังอยู่ ถูกตรวจทีละข้อ ถ้ายังไม่ผ่านข้อใดข้อหนึ่ง ก็ยังไม่เห็น — ไม่มีการเดาว่าน่าจะเห็นได้</p>
+          <ul class="chips" data-chips="policy"></ul>
+          <p class="chapter__hint">ทุกข้อต้องผ่านจริง ๆ ก่อนจะส่งข้อมูลให้</p>
+        </article>
+
+        <article class="chapter" data-ch="assurance" data-ch-index="3">
+          <p class="chapter__num"><span>04</span> — ASSURANCE</p>
+          <h3 class="chapter__title">หลักประกัน</h3>
+          <p class="chapter__tagline">ช้าแค่ไหน พังตรงไหน ตรวจได้</p>
+          <p class="chapter__blurb">ทุกอย่างถูกจำกัดเวลา วัดผลได้ และมีระบบคอยเตือนเมื่อทำงานผิดปกติ คำว่า “ปลอดภัย” จึงมีตัวเลขรองรับ ไม่ใช่แค่คำโฆษณา</p>
+          <ul class="chips" data-chips="assurance"></ul>
+          <p class="chapter__hint">ทุกตัวเลขในหน้านี้ตรวจย้อนได้จากผลทดสอบจริง</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="shell">
+      <div class="spec-strip" role="list">
+        <div class="spec" role="listitem"><b>12</b><span>บล็อก · ระยะที่เริ่มเห็นหีบ</span></div>
+        <div class="spec" role="listitem"><b>120°</b><span>มุมมองของหีบ</span></div>
+        <div class="spec" role="listitem"><b>32</b><span>บล็อก · ระยะที่เริ่มเห็นไอเท็ม</span></div>
+        <div class="spec" role="listitem"><b>130°</b><span>มุมมองของไอเท็ม</span></div>
+        <div class="spec" role="listitem"><b>1.5<small>ms</small></b><span>เวลาที่ใช้ต่อติ๊ก</span></div>
+        <div class="spec" role="listitem"><b>300</b><span>การยิงเส้นสายตาต่อติ๊ก</span></div>
+        <div class="spec" role="listitem"><b>40<small>/s</small></b><span>แผนที่ที่ตรวจซ้ำ</span></div>
+        <div class="spec" role="listitem"><b>2<small>ติ๊ก</small></b><span>รอบตรวจไอเท็ม</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== ATLAS -->
+  <section class="atlas section" id="atlas">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">01.1 — สมุดชิ้นส่วน</p>
+        <h2>ทั้ง 38 ชั้น อธิบายด้วยภาษาคน</h2>
+        <p class="section-lead">ทุกชิ้นมีหน้าที่เดียวและมีที่มาชัดเจน — เรียงตามลำดับการทำงานจริงในโค้ด ตั้งแต่ด่านแรกจนถึงสิทธิ์ของผู้ดูแล</p>
+      </div>
+      <div id="atlasGroups" class="atlas__groups"></div>
+    </div>
+  </section>
+
+  <!-- ===================================================== SCENES -->
+  <section class="section scenes" id="scenes">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">02 — ดูของจริง</p>
+        <h2>เกิดอะไรขึ้น<br><span class="muted">เมื่อมีคนเดินผ่านฐานของคุณ</span></h2>
+        <p class="section-lead">
+          ภาพด้านล่างคือมุมมองจากด้านบน ลองนึกภาพผู้เล่นยืนอยู่ตรงจุดหนึ่ง แล้วระบบตัดสินว่าหีบหรือไอเท็มตรงหน้าควรถูกส่งให้เห็นหรือไม่
+          ทุกกรณีใช้กติกาเดียวกัน และถ้าไม่ผ่านข้อใดข้อหนึ่ง ข้อมูลจะไม่ถูกส่งออกไปเลย
+        </p>
+      </div>
+
+      <div class="scene-grid">
+        <article class="scene">
+          <div class="scene__visual">
+            <span class="scene__tag">สถานการณ์ A</span>
+            <svg class="scene__map" viewBox="0 0 340 200" role="img" aria-label="ผู้เล่นอยู่ใกล้หีบในระยะ 5 บล็อกและมองเห็นได้">
+              <defs>
+                <radialGradient id="floorA" cx="50%" cy="40%" r="70%"><stop stop-color="#131b25"/><stop offset="1" stop-color="#080c11"/></radialGradient>
+                <linearGradient id="coneA" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e2bd6d" stop-opacity=".26"/><stop offset="1" stop-color="#e2bd6d" stop-opacity="0"/></linearGradient>
+              </defs>
+              <rect width="340" height="200" fill="url(#floorA)"/>
+              <g stroke="rgba(255,255,255,.06)" stroke-width="1">
+                <path d="M0 50h340M0 100h340M0 150h340M85 0v200M170 0v200M255 0v200"/>
+              </g>
+              <path d="M170 156 72 36h196L170 156Z" fill="url(#coneA)" stroke="rgba(226,189,109,.35)" stroke-dasharray="4 5"/>
+              <line x1="170" y1="156" x2="170" y2="86" stroke="rgba(246,226,172,.8)" stroke-width="1.4" stroke-dasharray="5 5"/>
+              <rect x="152" y="70" width="36" height="26" rx="3" fill="#b9852f" stroke="#f6e2ac" stroke-width="1.2"/>
+              <path d="M152 78h36M164 70v8M176 70v8" stroke="rgba(0,0,0,.45)" stroke-width="1.2"/>
+              <circle cx="170" cy="156" r="10" fill="#0c1118" stroke="#8edbd3" stroke-width="2"/>
+              <circle cx="170" cy="156" r="3.2" fill="#8edbd3"/>
+              <text x="188" y="160" class="scene__svg-label">ผู้เล่น</text>
+              <text x="196" y="88" class="scene__svg-label">หีบ · 5 บล็อก</text>
+            </svg>
+            <div class="scene__legend">
+              <span><i class="lg lg--player"></i>ผู้เล่น</span>
+              <span><i class="lg lg--chest"></i>หีบ</span>
+              <span><i class="lg lg--sight"></i>เส้นสายตา</span>
+            </div>
+          </div>
+          <div class="scene__body">
+            <h3>หีบอยู่ใกล้แค่เอื้อม</h3>
+            <p>ผู้เล่นยืนห่าง 5 บล็อก มองตรงมาที่หีบ และไม่มีอะไรกั้น ระบบตรวจแล้วเห็นว่าผ่านทุกข้อ จึงส่งข้อมูลหีบให้เห็นตามปกติ</p>
+            <ol class="scene__steps">
+              <li><b>ระยะ</b><span>5 บล็อก — ผ่าน (ไม่เกิน 12)</span></li>
+              <li><b>มุมมอง</b><span>อยู่ในกรวย 120° — ผ่าน</span></li>
+              <li><b>สิ่งกีดขวาง</b><span>ไม่มี — เส้นสายตาไปถึงหีบ</span></li>
+            </ol>
+            <p class="scene__result scene__result--ok"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-eye"></use></svg>ผลลัพธ์: เห็นหีบตามปกติ</p>
+          </div>
+        </article>
+
+        <article class="scene">
+          <div class="scene__visual">
+            <span class="scene__tag">สถานการณ์ B</span>
+            <svg class="scene__map" viewBox="0 0 340 200" role="img" aria-label="ผู้เล่นอยู่ห่าง 8 บล็อก แต่มีกำแพงบัง จึงไม่เห็นหีบ">
+              <defs>
+                <radialGradient id="floorB" cx="50%" cy="40%" r="70%"><stop stop-color="#131b25"/><stop offset="1" stop-color="#080c11"/></radialGradient>
+                <linearGradient id="coneB" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e2bd6d" stop-opacity=".18"/><stop offset="1" stop-color="#e2bd6d" stop-opacity="0"/></linearGradient>
+              </defs>
+              <rect width="340" height="200" fill="url(#floorB)"/>
+              <g stroke="rgba(255,255,255,.06)" stroke-width="1">
+                <path d="M0 50h340M0 100h340M0 150h340M85 0v200M170 0v200M255 0v200"/>
+              </g>
+              <path d="M170 166 84 52h172L170 166Z" fill="url(#coneB)" stroke="rgba(226,189,109,.22)" stroke-dasharray="4 5"/>
+              <rect x="132" y="96" width="76" height="14" rx="2" fill="#3c4a5b" stroke="#8fa3b8" stroke-width="1.2"/>
+              <path d="M132 103h76M151 96v14M170 96v14M189 96v14" stroke="rgba(0,0,0,.35)" stroke-width="1"/>
+              <line x1="170" y1="166" x2="170" y2="112" stroke="rgba(246,226,172,.75)" stroke-width="1.4" stroke-dasharray="5 5"/>
+              <circle cx="170" cy="166" r="10" fill="#0c1118" stroke="#8edbd3" stroke-width="2"/>
+              <circle cx="170" cy="166" r="3.2" fill="#8edbd3"/>
+              <rect x="154" y="61" width="32" height="24" rx="3" fill="#2c2416" stroke="rgba(226,189,109,.45)" stroke-width="1.2" stroke-dasharray="3 3"/>
+              <path d="M154 68h32M165 61v7M175 61v7" stroke="rgba(226,189,109,.3)" stroke-width="1"/>
+              <text x="188" y="170" class="scene__svg-label">ผู้เล่น</text>
+              <text x="196" y="76" class="scene__svg-label">หีบ · 8 บล็อก</text>
+              <text x="214" y="108" class="scene__svg-label">กำแพง</text>
+            </svg>
+            <div class="scene__legend">
+              <span><i class="lg lg--player"></i>ผู้เล่น</span>
+              <span><i class="lg lg--chest"></i>หีบ</span>
+              <span><i class="lg lg--wall"></i>กำแพง</span>
+            </div>
+          </div>
+          <div class="scene__body">
+            <h3>หีบอยู่หลังกำแพง</h3>
+            <p>ห่างแค่ 8 บล็อก อยู่ในมุมมอง แต่มีกำแพงกั้น ระบบยิงเส้นสายตาจากตาผู้เล่นไปชนกำแพงก่อน จึงตัดสินว่า “ยังไม่ควรเห็น”</p>
+            <ol class="scene__steps">
+              <li><b>ระยะ</b><span>8 บล็อก — ผ่าน</span></li>
+              <li><b>มุมมอง</b><span>อยู่ในกรวย — ผ่าน</span></li>
+              <li><b>สิ่งกีดขวาง</b><span>กำแพงบัง — ไม่ผ่าน</span></li>
+            </ol>
+            <p class="scene__result scene__result--ok"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-eye-off"></use></svg>ผลลัพธ์: ไม่เห็นหีบ และข้อมูลหีบไม่เคยถูกส่งไปที่เกม</p>
+          </div>
+        </article>
+
+        <article class="scene">
+          <div class="scene__visual">
+            <span class="scene__tag">สถานการณ์ C</span>
+            <svg class="scene__map" viewBox="0 0 340 200" role="img" aria-label="ผู้เล่นอยู่ห่างไอเท็ม 24 บล็อก จึงไม่เห็นไอเท็ม">
+              <defs>
+                <radialGradient id="floorC" cx="50%" cy="40%" r="70%"><stop stop-color="#131b25"/><stop offset="1" stop-color="#080c11"/></radialGradient>
+                <linearGradient id="coneC" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e2bd6d" stop-opacity=".14"/><stop offset="1" stop-color="#e2bd6d" stop-opacity="0"/></linearGradient>
+              </defs>
+              <rect width="340" height="200" fill="url(#floorC)"/>
+              <g stroke="rgba(255,255,255,.06)" stroke-width="1">
+                <path d="M0 50h340M0 100h340M0 150h340M85 0v200M170 0v200M255 0v200"/>
+              </g>
+              <path d="M74 168 20 88h108L74 168Z" fill="url(#coneC)" stroke="rgba(226,189,109,.18)" stroke-dasharray="4 5"/>
+              <circle cx="74" cy="168" r="10" fill="#0c1118" stroke="#8edbd3" stroke-width="2"/>
+              <circle cx="74" cy="168" r="3.2" fill="#8edbd3"/>
+              <g opacity=".55">
+                <rect x="252" y="62" width="18" height="18" rx="3" transform="rotate(12 261 71)" fill="#c96a5f" stroke="#ffc9c1" stroke-width="1"/>
+                <rect x="262" y="72" width="16" height="16" rx="3" transform="rotate(-8 270 80)" fill="#c96a5f" stroke="#ffc9c1" stroke-width="1"/>
+              </g>
+              <line x1="74" y1="168" x2="258" y2="82" stroke="rgba(255,255,255,.16)" stroke-width="1.2" stroke-dasharray="3 6"/>
+              <path d="M140 120h66" stroke="rgba(226,105,95,.5)" stroke-width="1.2" stroke-dasharray="4 4"/>
+              <text x="92" y="174" class="scene__svg-label">ผู้เล่น</text>
+              <text x="212" y="58" class="scene__svg-label">ไอเท็ม · 24 บล็อก</text>
+              <text x="112" y="112" class="scene__svg-label">ไกลเกินไป</text>
+            </svg>
+            <div class="scene__legend">
+              <span><i class="lg lg--player"></i>ผู้เล่น</span>
+              <span><i class="lg lg--item"></i>ไอเท็ม</span>
+              <span><i class="lg lg--sight"></i>ระยะที่ยังไม่ถึง</span>
+            </div>
+          </div>
+          <div class="scene__body">
+            <h3>ไอเท็มตกอยู่ไกล 24 บล็อก</h3>
+            <p>ไอเท็มตกอยู่หลังกำแพง ห่างออกไป 24 บล็อก ระบบจึงไม่ส่งข้อมูลไอเท็มนั้นออกไปเลย — ไม่มีแพ็กเก็ตเกิด ไม่มีชื่อไอเท็ม ไม่มีเงาให้เห็น</p>
+            <ol class="scene__steps">
+              <li><b>ระยะ</b><span>ไกลและมีกำแพงกั้น — ไม่ผ่าน</span></li>
+              <li><b>ข้อมูลที่ส่ง</b><span>0 แพ็กเก็ตเกิดไอเท็ม (ทดสอบจริง)</span></li>
+              <li><b>โปรแกรมโกงเห็น</b><span>ไม่มีอะไรให้เห็น เพราะไม่เคยได้รับข้อมูล</span></li>
+            </ol>
+            <p class="scene__result scene__result--ok"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-lock"></use></svg>ผลลัพธ์: ไม่มีข้อมูลไอเท็มถูกส่งออกไปเลย</p>
+          </div>
+        </article>
+      </div>
+
+      <p class="fineprint">
+        ทั้งสามกรณีคือสิ่งที่ทดสอบบน Paper 1.21.4 ด้วยไคลเอนต์จำลองสองตัว แล้วถอดรหัสข้อมูลที่ส่งมาจริง
+        ไม่ได้ดูแค่ข้อความในคำสั่ง <code>/basehider status</code>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================== RULES -->
+  <section class="section rules" id="how">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">03 — กติกาการมองเห็น</p>
+        <h2>สี่คำถาม<br><span class="muted">ก่อนระบบจะยอมให้ใครเห็นอะไร</span></h2>
+        <p class="section-lead">
+          ทุกครั้งที่ผู้เล่นขยับหรือมีของใหม่ ระบบจะถามสี่ข้อนี้ ถ้าตอบ “ผ่าน” ครบทุกข้อจึงจะส่งข้อมูลให้เห็น
+          ถ้าข้อใดข้อหนึ่งไม่ผ่าน หรือระบบไม่แน่ใจ คำตอบคือ “ซ่อน” เสมอ
+        </p>
+      </div>
+
+      <div class="gate-grid">
+        <article class="gate">
+          <span class="gate__n">01</span>
+          <div class="gate__ico"><svg aria-hidden="true"><use href="#i-ruler"></use></svg></div>
+          <h3>ใกล้พอไหม</h3>
+          <p>ถ้าอยู่ไกลเกินระยะที่ตั้งไว้ ก็ไม่ต้องเสียเวลาตรวจต่อ ค่าเริ่มต้นคือ <b>12 บล็อก</b> สำหรับหีบ และ 32 บล็อกสำหรับไอเท็ม</p>
+          <span class="gate__answer"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-check"></use></svg>ผ่านเมื่ออยู่ในระยะ</span>
+        </article>
+        <article class="gate">
+          <span class="gate__n">02</span>
+          <div class="gate__ico"><svg aria-hidden="true"><use href="#i-eye"></use></svg></div>
+          <h3>อยู่ในสายตาหรือเปล่า</h3>
+          <p>ถึงจะอยู่ใกล้ แต่ถ้าอยู่นอกมุมมองของผู้เล่น ก็ยังไม่เห็น ค่าเริ่มต้นคือ <b>120 องศา</b> ซึ่งกว้างกว่ามุมมองปกติเล็กน้อย เพื่อให้เห็นของที่อยู่ข้าง ๆ ได้บ้าง</p>
+          <span class="gate__answer"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-check"></use></svg>ผ่านเมื่ออยู่ในกรวยสายตา</span>
+        </article>
+        <article class="gate">
+          <span class="gate__n">03</span>
+          <div class="gate__ico"><svg aria-hidden="true"><use href="#i-wall"></use></svg></div>
+          <h3>มีอะไรบังอยู่ไหม</h3>
+          <p>ระบบยิงเส้นตรงจากตาผู้เล่นไปยังของ ถ้าชนกำแพงหรือบล็อกทึบก่อน ก็แปลว่ายังไม่ควรเห็น กระจกกับน้ำมองทะลุได้ แต่ลาวาบังจริง</p>
+          <span class="gate__answer"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-check"></use></svg>ผ่านเมื่อเส้นสายตาไปถึง</span>
+        </article>
+        <article class="gate gate--last">
+          <span class="gate__n">04</span>
+          <div class="gate__ico"><svg aria-hidden="true"><use href="#i-lock"></use></svg></div>
+          <h3>แน่ใจแค่ไหน</h3>
+          <p>ถ้าระบบไม่รู้จักโลก ไม่รู้จักผู้เล่น ตั้งค่าผิด ทำงานไม่ทัน หรือเกิดข้อผิดพลาด — คำตอบคือ <b>ซ่อน</b> ไม่ใช่ปล่อยผ่าน</p>
+          <span class="gate__answer gate__answer--locked"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-lock"></use></svg>ไม่แน่ใจ = ซ่อน</span>
+        </article>
+      </div>
+
+      <div class="rule-flow" role="img" aria-label="ถ้าผ่านครบสี่ข้อจะเห็น ถ้าไม่ผ่านข้อใดข้อหนึ่งจะซ่อน">
+        <span class="rule-flow__step rule-flow__step--ok">ผ่านครบ 4 ข้อ</span>
+        <span class="rule-flow__arrow" aria-hidden="true">→</span>
+        <span class="rule-flow__step rule-flow__step--see">ส่งข้อมูลให้เห็น</span>
+        <span class="rule-flow__or">หรือ</span>
+        <span class="rule-flow__step rule-flow__step--no">ไม่ผ่านแม้ข้อเดียว</span>
+        <span class="rule-flow__arrow" aria-hidden="true">→</span>
+        <span class="rule-flow__step rule-flow__step--hide">ซ่อนไว้ก่อน</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== WHY -->
+  <section class="section why" id="why">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">04 — ทำไมต้องเปลี่ยนวิธีคิด</p>
+        <h2>“ส่งไปก่อนแล้วค่อยแก้”<br><span class="muted">เอาไม่อยู่</span></h2>
+        <p class="section-lead">
+          ถ้าข้อมูลจริงถูกส่งไปถึงเกมผู้เล่นแล้ว โปรแกรมโกงสามารถเก็บข้อมูลนั้นไว้ได้ทันที
+          การตามไปแก้ทีหลังจึงไม่ได้ทำให้ข้อมูลที่หลุดไปแล้วหายไป — BaseHider จึงเลือกไม่ส่งตั้งแต่แรก
+        </p>
+      </div>
+
+      <div class="compare">
+        <article class="compare__col compare__col--old">
+          <header class="compare__head">
+            <span class="tag tag--bad"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-x"></use></svg>แบบเดิม · ตามแก้ทีหลัง</span>
+            <h3>ส่งของจริงไปก่อน แล้วค่อยแก้</h3>
+            <p>โค้ดชุดเก่าตรวจตำแหน่งหีบ แล้วส่งข้อมูลหีบไปพร้อมแผนที่ จากนั้นค่อยส่งคำสั่งแก้ทีหลัง</p>
+          </header>
+          <ul class="compare__list">
+            <li><svg aria-hidden="true"><use href="#i-x"></use></svg><div><b>ข้อมูลหีบในแผนที่</b><span>ถูกส่งออกไปแล้วพร้อมข้อมูลจริง ก่อนจะตามไปแก้</span></div></li>
+            <li><svg aria-hidden="true"><use href="#i-x"></use></svg><div><b>ไอเท็มที่ตกอยู่</b><span>ไม่มีระบบป้องกันไอเท็มเลย</span></div></li>
+            <li><svg aria-hidden="true"><use href="#i-x"></use></svg><div><b>ทะเบียนของที่ซ่อน</b><span>ถูกล้างทุกครั้งที่แผนที่ถูกยกเลิกโหลด และกู้คืนไม่ได้</span></div></li>
+            <li><svg aria-hidden="true"><use href="#i-x"></use></svg><div><b>เมื่อมีข้อผิดพลาด</b><span>หลายจุดปล่อยข้อมูลผ่านต่อ (ยิ่งผิด ยิ่งหลุด)</span></div></li>
+          </ul>
+          <div class="compare__result compare__result--bad">
+            <span class="compare__result-label">ผลทดสอบบน Paper 1.21.4</span>
+            <strong>หลุด</strong>
+            <span>2 แพ็กเก็ตเกิดไอเท็ม · สถานะหีบปรากฏในข้อมูลแผนที่ที่ถอดรหัสแล้ว</span>
+          </div>
+        </article>
+
+        <article class="compare__col compare__col--new">
+          <header class="compare__head">
+            <span class="tag tag--good"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-check"></use></svg>BaseHider · ซ่อนก่อนส่ง</span>
+            <h3>ส่งเฉพาะเมื่อพิสูจน์ได้ว่าควรเห็น</h3>
+            <p>ข้อมูลที่ยังไม่ผ่านกติกาจะไม่ถูกเขียนลงข้อมูลที่จะส่งตั้งแต่แรก</p>
+          </header>
+          <ul class="compare__list">
+            <li><svg aria-hidden="true"><use href="#i-check"></use></svg><div><b>ข้อมูลหีบในแผนที่</b><span>ถอดข้อมูลหีบออกก่อน แล้วเติมหินธรรมดาแทน</span></div></li>
+            <li><svg aria-hidden="true"><use href="#i-check"></use></svg><div><b>ไอเท็มที่ตกอยู่</b><span>ซ่อนตั้งแต่ต้นทางของเกม — ไม่มีข้อมูลการเกิด ข้อมูลเพิ่มเติม หรือการเคลื่อนที่ตั้งแต่แรก</span></div></li>
+            <li><svg aria-hidden="true"><use href="#i-check"></use></svg><div><b>ทะเบียนของที่ซ่อน</b><span>ไม่ผูกกับอายุของแผนที่ และค้นใหม่จากโลกจริงเสมอ</span></div></li>
+            <li><svg aria-hidden="true"><use href="#i-check"></use></svg><div><b>เมื่อมีข้อผิดพลาด</b><span>ทุกเส้นทางจบที่การซ่อน (ไม่แน่ใจ = ซ่อน)</span></div></li>
+          </ul>
+          <div class="compare__result compare__result--good">
+            <span class="compare__result-label">ผลทดสอบบน Paper 1.21.4</span>
+            <strong>ไม่หลุด</strong>
+            <span>0 แพ็กเก็ตเกิดไอเท็ม · ไม่พบข้อมูลหีบในแผนที่ที่ถอดรหัสแล้ว</span>
+          </div>
+        </article>
+      </div>
+
+      <p class="fineprint">
+        การทดสอบใช้ไคลเอนต์จำลองสองตัวเชื่อมต่อเซิร์ฟเวอร์ Paper 1.21.4 build 232 แล้วถอดรหัสข้อมูลแผนที่มาตรวจ
+        ผลดิบทั้งหมดเก็บไว้ในโฟลเดอร์ <code>docs/evidence</code> ของโปรเจกต์
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================== FEATURES -->
+  <section class="section features" id="features">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">05 — สิ่งที่คุณได้</p>
+        <h2>หกเรื่องที่ทำงานจริง<br><span class="muted">ไม่ใช่แค่เขียนไว้บนกล่อง</span></h2>
+        <p class="section-lead">ทุกข้อด้านล่างคือสิ่งที่โค้ดทำจริงและมีเทสต์รองรับ ไม่มีฟีเจอร์ที่ “ตั้งใจจะทำ” ถูกปนไว้กับของที่ทำเสร็จแล้ว</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature">
+          <div class="feature__ico"><svg aria-hidden="true"><use href="#i-box"></use></svg></div>
+          <h3>ซ่อนหีบจริง ไม่ใช่แค่ทำให้มองไม่เห็น</h3>
+          <p>ข้อมูลหีบถูกถอดออกจากข้อมูลแผนที่ก่อนส่ง และถูกแทนด้วยหินธรรมดา โปรแกรมโกงที่อ่านข้อมูลจะเห็นแค่หิน ไม่ใช่หีบที่แอบซ่อนอยู่</p>
+          <p class="feature__foot">หีบ · ถัง · กล่องชูลเกอร์ · เตา · ผู้เกิดมอน · ห้องนิรภัย</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature__ico"><svg aria-hidden="true"><use href="#i-eye-off"></use></svg></div>
+          <h3>ซ่อนไอเท็มที่ตกอยู่</h3>
+          <p>ไอเท็มที่ตกอยู่ถูกซ่อนตั้งแต่ต้นทางของเกม จึงไม่มีข้อมูลไอเท็มถูกสร้างมาตั้งแต่แรก ผู้เล่นจะเห็นของก็ต่อเมื่ออยู่ใกล้ ในมุมมอง และไม่มีอะไรบัง</p>
+          <p class="feature__foot">เจ้าของเห็นของตัวเองทันที · ตรวจซ้ำทุก 2 ติ๊ก</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature__ico"><svg aria-hidden="true"><use href="#i-user"></use></svg></div>
+          <h3>ผู้เล่นไม่ต้องติดตั้งอะไร</h3>
+          <p>ทำงานบนเซิร์ฟเวอร์ทั้งหมด ผู้เล่นใช้เกมปกติก็ได้ ไม่ต้องติดตั้งมอด ไม่ต้องปรับตั้งค่าไคลเอนต์ และไม่ต้องอัปเดตอะไรฝั่งผู้เล่น</p>
+          <p class="feature__foot">ใช้ได้กับไคลเอนต์ปกติทุกแบบ</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature__ico"><svg aria-hidden="true"><use href="#i-lock"></use></svg></div>
+          <h3>ไม่แน่ใจ = ซ่อน</h3>
+          <p>โลกไม่รู้จัก ผู้เล่นไม่รู้จัก ตั้งค่าผิด ระบบทำงานไม่ทัน หรือเกิดข้อผิดพลาด — ทุกกรณีจบที่การซ่อน และมีการบันทึกจำนวนไว้ให้ตรวจ</p>
+          <p class="feature__foot">ไม่มีโหมด “เร็วแต่ไม่ปลอดภัย” ให้เปิด</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature__ico"><svg aria-hidden="true"><use href="#i-gauge"></use></svg></div>
+          <h3>ไม่ทำให้เซิร์ฟเวอร์กระตุก</h3>
+          <p>งานถูกแบ่งเป็นชิ้นเล็ก ๆ ใช้เวลาไม่เกิน 1.5 มิลลิวินาทีต่อติ๊ก ส่วนที่เหลือเก็บไว้ทำต่อในติ๊กถัดไป และมีเพดานจำนวนงานที่ชัดเจน</p>
+          <p class="feature__foot">ช้าที่สุด ≤3.0 ms ต่อติ๊ก · เพิ่ม MSPT ราว 0.5–1.4 ms</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature__ico"><svg aria-hidden="true"><use href="#i-terminal"></use></svg></div>
+          <h3>ตรวจสอบได้ทุกเมื่อ</h3>
+          <p>คำสั่ง <code>/basehider diag</code>, <code>verify</code> และ <code>export</code> แสดงสถานะจริง พร้อมยามที่คอยเตือนถ้าระบบป้องกันเงียบผิดปกติ</p>
+          <p class="feature__foot">รายงานสุขภาพระบบ 38 ค่า · เตือนเมื่อเงียบ 5 นาที</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== CONFIG -->
+  <section class="section config" id="config">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">06 — ตั้งค่า</p>
+        <h2>ปรับให้พอดี<br><span class="muted">กับเซิร์ฟเวอร์ของคุณ</span></h2>
+        <p class="section-lead">
+          ค่าเริ่มต้นถูกเลือกให้ปลอดภัยและใช้งานได้กับเซิร์ฟเวอร์ส่วนใหญ่ ถ้าเซิร์ฟเวอร์คุณเล็กหรือใหญ่มาก
+          ลองใช้ค่าที่แนะนำด้านล่าง แล้วปรับทีละค่า — ค่าที่ปรับได้ทั้งหมดอยู่ในไฟล์ <code>config.yml</code>
+        </p>
+      </div>
+
+      <div class="config">
+        <div class="config__tabs" role="tablist" aria-label="ขนาดเซิร์ฟเวอร์">
+          <button class="config-tab is-active" type="button" role="tab" aria-selected="true" data-preset="small">เซิร์ฟเวอร์เล็ก</button>
+          <button class="config-tab" type="button" role="tab" aria-selected="false" data-preset="medium">เซิร์ฟเวอร์กลาง</button>
+          <button class="config-tab" type="button" role="tab" aria-selected="false" data-preset="large">เซิร์ฟเวอร์ใหญ่</button>
+        </div>
+
+        <div class="config__body">
+          <div class="config__panels">
+            <div class="config-panel" data-preset-panel="small">
+              <p class="config__meta">แนะนำสำหรับผู้เล่นไม่เกิน 20 คน หรือเซิร์ฟเวอร์ส่วนตัว</p>
+              <dl class="config-values">
+                <div><dt>ระยะเห็นหีบ</dt><dd>12 บล็อก</dd></div>
+                <div><dt>มุมมองหีบ</dt><dd>120°</dd></div>
+                <div><dt>ระยะเห็นไอเท็ม</dt><dd>32 บล็อก</dd></div>
+                <div><dt>เวลาต่อติ๊ก</dt><dd>1.5 ms</dd></div>
+                <div><dt>ยิงเส้นสายตา</dt><dd>300 / ติ๊ก</dd></div>
+                <div><dt>ตรวจแผนที่ซ้ำ</dt><dd>40 / วินาที</dd></div>
+              </dl>
+              <p class="config__note">ค่าชุดนี้คือค่าเริ่มต้น เหมาะกับการเล่นปกติและภาระน้อย</p>
+            </div>
+            <div class="config-panel" data-preset-panel="medium" hidden>
+              <p class="config__meta">แนะนำสำหรับผู้เล่น 20–100 คน หรือมีฐานขนาดกลาง</p>
+              <dl class="config-values">
+                <div><dt>ระยะเห็นหีบ</dt><dd>10 บล็อก</dd></div>
+                <div><dt>มุมมองหีบ</dt><dd>110°</dd></div>
+                <div><dt>ระยะเห็นไอเท็ม</dt><dd>28 บล็อก</dd></div>
+                <div><dt>เวลาต่อติ๊ก</dt><dd>2.0 ms</dd></div>
+                <div><dt>ยิงเส้นสายตา</dt><dd>450 / ติ๊ก</dd></div>
+                <div><dt>ตรวจแผนที่ซ้ำ</dt><dd>30 / วินาที</dd></div>
+              </dl>
+              <p class="config__note">ลดระยะลงเล็กน้อยเพื่อให้ตรวจได้เร็วขึ้น แต่ยังเห็นของในห้องของตัวเอง</p>
+            </div>
+            <div class="config-panel" data-preset-panel="large" hidden>
+              <p class="config__meta">แนะนำสำหรับผู้เล่น 100 คนขึ้นไป หรือมีคลังของหนาแน่น</p>
+              <dl class="config-values">
+                <div><dt>ระยะเห็นหีบ</dt><dd>8 บล็อก</dd></div>
+                <div><dt>มุมมองหีบ</dt><dd>100°</dd></div>
+                <div><dt>ระยะเห็นไอเท็ม</dt><dd>24 บล็อก</dd></div>
+                <div><dt>เวลาต่อติ๊ก</dt><dd>3.0 ms</dd></div>
+                <div><dt>ยิงเส้นสายตา</dt><dd>600 / ติ๊ก</dd></div>
+                <div><dt>ตรวจแผนที่ซ้ำ</dt><dd>20 / วินาที</dd></div>
+              </dl>
+              <p class="config__note">ระยะสั้นลงแต่ตรวจได้ละเอียดขึ้น — ควรทดสอบกับเซิร์ฟเวอร์จริงก่อนใช้</p>
+            </div>
+            <div class="config__hints">
+              <p><strong>ทำไมค่าชุดนี้ถึงปลอดภัย</strong></p>
+              <ul class="ticks">
+                <li>ระยะ 12 บล็อกทำให้เห็นหีบในห้องของตัวเอง แต่ไม่เห็นข้ามกำแพงหรือของที่อยู่ไกล</li>
+                <li>ถ้าระบบทำงานไม่ทัน งานจะถูกเลื่อนไปติ๊กถัดไป ไม่ใช่ปล่อยข้อมูลผ่าน</li>
+                <li>ทุกค่าเป็นเพียง “เพดาน” — ลดลงได้ตลอด แต่ไม่ควรเพิ่มจนเซิร์ฟเวอร์เริ่มกระตุก</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="config__code">
+            <div class="panel__head">
+              <span class="mono">config.yml · ค่าเริ่มต้น</span>
+              <button class="copy-btn" type="button" data-copy-target="configSnippet" aria-label="คัดลอกตัวอย่างคอนฟิก">
+                <svg class="ico ico--sm" aria-hidden="true"><use href="#i-copy"></use></svg><span>คัดลอก</span>
+              </button>
+            </div>
+<pre class="code" id="configSnippet"><code><span class="c-key">security</span>:
+  <span class="c-key">fail-closed</span>: <span class="c-val">true</span>            <span class="c-com"># ไม่แน่ใจ = ซ่อน (แนะนำให้เปิด)</span>
+  <span class="c-key">main-thread-budget-ms</span>: <span class="c-num">1.5</span>      <span class="c-com"># เวลาต่อติ๊ก</span>
+  <span class="c-key">raycast-budget-per-tick</span>: <span class="c-num">300</span>    <span class="c-com"># จำนวนเส้นสายตา</span>
+
+<span class="c-key">worlds</span>:
+  <span class="c-key">default</span>:
+    <span class="c-key">block-protection</span>:
+      <span class="c-key">enabled</span>: <span class="c-val">true</span>
+      <span class="c-key">hidden-blocks</span>: [<span class="c-val">CHEST</span>, <span class="c-val">TRAPPED_CHEST</span>, <span class="c-val">BARREL</span>,
+                      <span class="c-val">SHULKER_BOX</span>, <span class="c-val">HOPPER</span>, <span class="c-val">SPAWNER</span>, <span class="c-val">VAULT</span>]
+      <span class="c-key">replace-with</span>: <span class="c-val">STONE</span>              <span class="c-com"># กลบรอยด้วยหิน</span>
+      <span class="c-key">reveal</span>:
+        <span class="c-key">max-distance</span>: <span class="c-num">12.0</span>            <span class="c-com"># ใกล้สุดกี่บล็อก</span>
+        <span class="c-key">fov-degrees</span>: <span class="c-num">120.0</span>             <span class="c-com"># กว้างกี่องศา</span>
+        <span class="c-key">keep-distance-factor</span>: <span class="c-num">1.6</span>    <span class="c-com"># กันภาพกะพริบ</span>
+    <span class="c-key">item-protection</span>:
+      <span class="c-key">enabled</span>: <span class="c-val">true</span>
+      <span class="c-key">hidden-entity-types</span>: [<span class="c-val">ITEM</span>]
+      <span class="c-key">reveal</span>:
+        <span class="c-key">max-distance</span>: <span class="c-num">32.0</span>
+        <span class="c-key">fov-degrees</span>: <span class="c-num">130.0</span>
+        <span class="c-key">owner-grace</span>: <span class="c-val">true</span>             <span class="c-com"># เจ้าของเห็นก่อน</span></code></pre>
+            <p class="config__code-note">ตัวอย่างนี้คือค่าเริ่มต้นของปลั๊กอิน และไม่ได้เปลี่ยนตามแท็บด้านซ้าย — แท็บนั้นเป็นเพียงค่าแนะนำสำหรับปรับใช้</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel--table config-table">
+        <div class="panel__head"><span class="mono">ค่าที่ปรับบ่อย</span></div>
+        <table class="req">
+          <thead><tr><th scope="col">ค่า</th><th scope="col">ค่าเริ่มต้น</th><th scope="col">ทำอะไร</th><th scope="col">ปรับเมื่อไหร่</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>max-distance</code></th><td>12.0</td><td>ระยะที่เริ่มเห็นหีบ</td><td>อยากให้เห็นของใกล้ตัวมากขึ้น/น้อยลง</td></tr>
+            <tr><th scope="row"><code>fov-degrees</code></th><td>120.0</td><td>ความกว้างของมุมมอง</td><td>อยากให้เห็นเฉพาะของที่อยู่ตรงหน้า</td></tr>
+            <tr><th scope="row"><code>keep-distance-factor</code></th><td>1.6</td><td>ระยะที่ยังเห็นต่อหลังถอย</td><td>เจออาการภาพกะพริบเวลาเดิน</td></tr>
+            <tr><th scope="row"><code>main-thread-budget-ms</code></th><td>1.5</td><td>เวลาสูงสุดต่อติ๊ก</td><td>เซิร์ฟเวอร์ใหญ่และยังมีเวลาเหลือ</td></tr>
+            <tr><th scope="row"><code>raycast-budget-per-tick</code></th><td>300</td><td>จำนวนเส้นสายตาต่อติ๊ก</td><td>มีคลังของหนาแน่นแต่ยังมีพื้นที่ CPU</td></tr>
+            <tr><th scope="row"><code>chunks-per-second</code></th><td>40</td><td>ความเร็วในการตรวจแผนที่ซ้ำ</td><td>ต้องการให้จับของที่เปลี่ยนใหม่เร็วขึ้น</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== PERFORMANCE -->
+  <section class="section perf" id="performance">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">07 — ความเร็ว</p>
+        <h2>เบาแค่ไหน<br><span class="muted">ในแต่ละติ๊ก</span></h2>
+        <p class="section-lead">ตัวเลขนี้คือเวลาที่ BaseHider ใช้ทำงานของตัวเอง ไม่ใช่เวลาทั้งหมดของเซิร์ฟเวอร์ วัดบน Paper 1.21.4 ที่มีไอเท็มตกอยู่ 0–800 ชิ้น และมีไคลเอนต์เชื่อมต่อหนึ่งตัว</p>
+      </div>
+
+      <div class="perf__grid">
+        <div class="perf__stats">
+          <div class="pstat">
+            <span class="pstat__label">เวลาปกติ (p50)</span>
+            <span class="pstat__v"><b data-count="0.2" data-decimals="1">0.2</b><small>ms</small></span>
+            <span class="pstat__note">ครึ่งหนึ่งของติ๊กใช้เวลาน้อยกว่านี้</span>
+          </div>
+          <div class="pstat">
+            <span class="pstat__label">ช้าเป็นครั้งคราว (p95)</span>
+            <span class="pstat__v"><b data-count="0.85" data-decimals="2">0.85</b><small>ms</small></span>
+            <span class="pstat__note">ยังอยู่ในงบ 1.5 ms</span>
+          </div>
+          <div class="pstat">
+            <span class="pstat__label">ช้าที่สุดที่ยอมรับ (p99)</span>
+            <span class="pstat__v"><b data-count="3.0" data-decimals="1">3.0</b><small>ms</small></span>
+            <span class="pstat__note">เกิดได้นาน ๆ ครั้ง ไม่ใช่ทุกติ๊ก</span>
+          </div>
+          <div class="pstat">
+            <span class="pstat__label">เวลาเซิร์ฟเวอร์ที่เพิ่ม (MSPT)</span>
+            <span class="pstat__v"><b>+0.5–1.4</b><small>ms</small></span>
+            <span class="pstat__note">เทียบกับเซิร์ฟเวอร์ที่ไม่มีปลั๊กอิน</span>
+          </div>
+        </div>
+
+        <figure class="chart">
+          <figcaption class="chart__head">
+            <span>เวลางานของ BASESHIDER ต่อติ๊ก</span>
+            <span class="chart__legend"><i class="sw sw--brass"></i>p50 <i class="sw sw--cyan"></i>p95 <i class="sw sw--ruby"></i>p99</span>
+          </figcaption>
+          <div class="chart__plot" role="img" aria-label="กราฟแท่งเปรียบเทียบ p50 0.2 ms, p95 0.85 ms และ p99 3.0 ms เทียบงบ 1.5 ms ต่อติ๊ก">
+            <div class="chart__grid" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <div class="bar-row">
+              <span class="bar-row__label">p50</span>
+              <span class="bar-row__track"><i class="bar bar--brass" style="--v:6.7%"></i></span>
+              <span class="bar-row__val">0.20<small>ms</small></span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-row__label">p95</span>
+              <span class="bar-row__track"><i class="bar bar--cyan" style="--v:28.3%"></i></span>
+              <span class="bar-row__val">0.85<small>ms</small></span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-row__label">p99</span>
+              <span class="bar-row__track"><i class="bar bar--ruby" style="--v:100%"></i></span>
+              <span class="bar-row__val">3.00<small>ms</small></span>
+            </div>
+            <div class="chart__budget" aria-hidden="true"><span>งบ 1.5 ms</span></div>
+          </div>
+          <p class="chart__note">เทียบกับค่า p99 · งบประมาณต่อติ๊กตั้งไว้ที่ 1.5 ms ในคอนฟิกเริ่มต้น</p>
+        </figure>
+      </div>
+
+      <div class="perf__second">
+        <div class="spike">
+          <div class="spike__head">
+            <span class="mono">ตอนผู้เล่นเข้าเซิร์ฟเวอร์ครั้งแรก</span>
+            <span class="delta">เร็วขึ้น 71%</span>
+          </div>
+          <div class="spike__row">
+            <span class="spike__label">3.1.0</span>
+            <span class="spike__track"><i style="--v:100%"></i></span>
+            <b>38 <small>ms</small></b>
+          </div>
+          <div class="spike__row">
+            <span class="spike__label">3.2.0</span>
+            <span class="spike__track"><i class="is-good" style="--v:29%"></i></span>
+            <b>11 <small>ms</small></b>
+          </div>
+          <p class="spike__note">เวอร์ชัน 3.2.0 เตรียมระบบไว้ล่วงหน้าตอนเปิดเซิร์ฟเวอร์ และค่อย ๆ รับผู้เล่นใหม่ใน 60 ติ๊กแรก อาการหน่วงตอนคนเข้าจึงลดลง</p>
+        </div>
+
+        <div class="perf__notes">
+          <h3>วัดจากอะไร</h3>
+          <ul class="ticks">
+            <li>Paper 1.21.4 build 232 · Java 21 · Windows 11 · 8 คอร์</li>
+            <li>ไคลเอนต์จำลอง 2 ตัว · ไอเท็มตกอยู่ 0–800 ชิ้น · ทดสอบซ้ำหลายรอบ</li>
+            <li>เก็บค่าจากตัววัดภายในของปลั๊กอินเอง (p50/p95/p99)</li>
+            <li>เทียบ MSPT กับเซิร์ฟเวอร์ที่ไม่มีปลั๊กอิน แต่ยังมี PacketEvents</li>
+          </ul>
+          <p class="fineprint">ตัวเลขนี้มาจากเครื่องทดสอบเครื่องเดียว ไม่ใช่การรับประกันบนทุกฮาร์ดแวร์ — ปรับงบเวลาและจำนวนเส้นสายตาได้ตามเซิร์ฟเวอร์จริง</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== EVIDENCE -->
+  <section class="section evidence-section" id="evidence">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">08 — หลักฐาน</p>
+        <h2>เราพูดแบบนี้<br><span class="muted">เพราะมีผลทดสอบแบบนี้</span></h2>
+        <p class="section-lead">ตัวเลขทั้งหมดมาจากการทดสอบจริงบนเซิร์ฟเวอร์ ไม่ได้มาจากการคาดเดา — และเราแยกให้เห็นชัดว่าอะไรคือ “ทดสอบแล้ว” อะไรคือ “ยังไม่ได้ทดสอบ”</p>
+      </div>
+
+      <div class="evidence-grid">
+        <article class="evidence">
+          <span class="evidence__label">การทดสอบ A</span>
+          <h3>ไอเท็มตกหลังกำแพง 24 บล็อก</h3>
+          <div class="evidence__compare">
+            <div class="evidence__row evidence__row--bad"><span>โค้ดชุดเก่า</span><b>หลุด 2 แพ็กเก็ต</b></div>
+            <div class="evidence__row evidence__row--good"><span>BaseHider 3.2.0</span><b>0 แพ็กเก็ต</b></div>
+          </div>
+          <p>ไคลเอนต์จำลองไม่ได้รับข้อมูลไอเท็มเลย ไม่มีแม้แต่แพ็กเก็ตตามหลัง</p>
+        </article>
+
+        <article class="evidence">
+          <span class="evidence__label">การทดสอบ B</span>
+          <h3>ไอเท็มตกอยู่ใกล้ 3 บล็อก</h3>
+          <div class="evidence__compare">
+            <div class="evidence__row evidence__row--good"><span>ผู้เล่นเห็น</span><b>ปกติ</b></div>
+            <div class="evidence__row"><span>เวลาเห็น</span><b>22–63 ms</b></div>
+          </div>
+          <p>ผู้เล่นยังเห็นไอเท็มใกล้ตัวตามปกติ โดยใช้เวลาไม่เกิน 1–3 ติ๊ก</p>
+        </article>
+
+        <article class="evidence">
+          <span class="evidence__label">การทดสอบ C</span>
+          <h3>หีบที่ผู้เล่นวาง แล้วบังคับโหลดแผนที่ใหม่</h3>
+          <div class="evidence__compare">
+            <div class="evidence__row evidence__row--bad"><span>โค้ดชุดเก่า</span><b>พบหีบในข้อมูล</b></div>
+            <div class="evidence__row evidence__row--good"><span>BaseHider 3.2.0</span><b>พบแต่หิน</b></div>
+          </div>
+          <p>ข้อมูลแผนที่ถูกถอดรหัสแล้วไม่พบสถานะหีบ และไม่พบข้อมูลภายในหีบ</p>
+        </article>
+      </div>
+
+      <div class="evidence-summary">
+        <div class="evidence-summary__item">
+          <b>102</b>
+          <span>เทสต์อัตโนมัติ ผ่านทั้งหมด · 0 ล้มเหลว</span>
+        </div>
+        <div class="evidence-summary__item">
+          <b>3/3</b>
+          <span>สถานการณ์ทดสอบด้วยเกมจริงผ่านทั้งหมด</span>
+        </div>
+        <div class="evidence-summary__item">
+          <b>0</b>
+          <span>ครั้งที่พบข้อมูลหลุดในเทสต์ของ 3.2.0</span>
+        </div>
+        <div class="evidence-summary__item">
+          <b>p99 ≤3.0<small>ms</small></b>
+          <span>เวลางานสูงสุดต่อติ๊กจาก 0–800 ไอเท็ม</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== INSTALL -->
+  <section class="section install" id="install">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">09 — ติดตั้ง</p>
+        <h2>ติดตั้งในไม่กี่นาที<br><span class="muted">ไม่ต้องแก้โค้ดเซิร์ฟเวอร์</span></h2>
+        <p class="section-lead">BaseHider เป็นปลั๊กอินฝั่งเซิร์ฟเวอร์ ติดตั้งเหมือนปลั๊กอิน Paper ทั่วไป และไม่ต้องให้ผู้เล่นติดตั้งมอดใด ๆ</p>
+      </div>
+
+      <ol class="steps steps--five">
+        <li class="step">
+          <span class="step__n">01</span>
+          <h3>ดาวน์โหลดไฟล์</h3>
+          <p>ดาวน์โหลด <code>BaseHider-3.6.1.jar</code> แล้วตรวจค่า SHA-256 ให้ตรงกับที่หน้าเว็บก่อนทุกครั้ง</p>
+          <div class="step__file"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-download"></use></svg>BaseHider-3.6.1.jar</div>
+        </li>
+        <li class="step">
+          <span class="step__n">02</span>
+          <h3>วางในโฟลเดอร์ปลั๊กอิน</h3>
+          <p>คัดลอกไฟล์ไปไว้ในโฟลเดอร์ <code>plugins/</code> ของเซิร์ฟเวอร์</p>
+          <div class="step__file"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-chip"></use></svg>plugins/BaseHider-3.6.1.jar</div>
+        </li>
+        <li class="step">
+          <span class="step__n">03</span>
+          <h3>ติดตั้ง PacketEvents</h3>
+          <p>การซ่อนบล็อกต้องใช้ PacketEvents <strong>2.14.0 ขึ้นไป</strong> ซึ่งเป็นปลั๊กอินแยก ไม่ได้รวมมาในไฟล์ BaseHider</p>
+          <div class="step__file"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-packet"></use></svg>plugins/PacketEvents.jar</div>
+        </li>
+        <li class="step">
+          <span class="step__n">04</span>
+          <h3>รีสตาร์ทเซิร์ฟเวอร์</h3>
+          <p>เริ่มเซิร์ฟเวอร์ใหม่ แล้วดูว่าในหน้าจอเซิร์ฟเวอร์ไม่มีข้อความแจ้งข้อผิดพลาดสีแดง</p>
+          <div class="step__file"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-spark"></use></svg>เริ่มเซิร์ฟเวอร์</div>
+        </li>
+        <li class="step">
+          <span class="step__n">05</span>
+          <h3>ตรวจสถานะ</h3>
+          <p>รันคำสั่งด้านล่าง แล้วตรวจว่าการป้องกันบล็อกขึ้นสถานะ <strong>ACTIVE</strong> ก่อนเปิดให้ผู้เล่นเข้า</p>
+          <div class="step__file step__file--cmd"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-terminal"></use></svg>/basehider status</div>
+        </li>
+      </ol>
+
+      <div class="install__grid">
+        <div class="panel panel--table">
+          <div class="panel__head"><span class="mono">คำสั่งที่ใช้บ่อย</span></div>
+          <table class="cmds">
+            <caption class="sr-only">คำสั่งของ BaseHider</caption>
+            <tbody>
+              <tr><th scope="row"><code>status</code></th><td>ดูสถานะรวมว่าอะไรทำงานอยู่ อะไรยังไม่ทำงาน</td></tr>
+              <tr><th scope="row"><code>diag</code></th><td>ดูตัวเลขละเอียด เช่น จำนวนงานที่เลื่อนออกไป</td></tr>
+              <tr><th scope="row"><code>stats</code></th><td>ดูเวลาทำงาน p50/p95/p99</td></tr>
+              <tr><th scope="row"><code>verify</code></th><td>ให้ระบบเทียบข้อมูลที่จำไว้กับของจริงในโลก</td></tr>
+              <tr><th scope="row"><code>rescan</code></th><td>ค้นหาของที่ต้องซ่อนใหม่ทั้งโลก</td></tr>
+              <tr><th scope="row"><code>export</code></th><td>สร้างไฟล์รายงานสุขภาพระบบ</td></tr>
+              <tr><th scope="row"><code>reload</code></th><td>โหลดค่าตั้งใหม่โดยไม่ต้องรีสตาร์ท</td></tr>
+            </tbody>
+          </table>
+          <div class="perm">
+            <span class="mono">สิทธิ์</span>
+            <p><code>basehider.admin</code> — ใช้คำสั่งทั้งหมด · <code>basehider.bypass</code> — เห็นทุกอย่างตามปกติสำหรับผู้ดูแล</p>
+          </div>
+        </div>
+
+        <div class="panel panel--req">
+          <div class="panel__head"><span class="mono">สิ่งที่ต้องมี</span></div>
+          <table class="req">
+            <thead><tr><th scope="col">รายการ</th><th scope="col">ต้องมี</th><th scope="col">หมายเหตุ</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">เซิร์ฟเวอร์</th><td>Paper 1.21.4</td><td><code>api-version: 1.21</code> · ทดสอบบน build 232</td></tr>
+              <tr><th scope="row">Java</th><td>21</td><td>ใช้รันไทม์เดียวกับเซิร์ฟเวอร์</td></tr>
+              <tr><th scope="row">PacketEvents</th><td>2.14.0 ขึ้นไป</td><td>จำเป็นสำหรับซ่อนบล็อก — ไอเท็มยังทำงานได้ถ้าไม่มี</td></tr>
+              <tr><th scope="row">Folia</th><td class="no">ไม่รองรับ</td><td>ตามการออกแบบ</td></tr>
+              <tr><th scope="row">ฝั่งผู้เล่น</th><td class="ok">ไม่ต้องติดตั้งอะไร</td><td>ใช้ไคลเอนต์ปกติได้ทันที</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel panel--table trouble">
+        <div class="panel__head"><span class="mono">ถ้าเจอปัญหา</span></div>
+        <table class="req">
+          <thead><tr><th scope="col">อาการ</th><th scope="col">สาเหตุที่พบบ่อย</th><th scope="col">วิธีแก้</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">สถานะขึ้น INACTIVE</th><td>ยังไม่ได้ติดตั้ง PacketEvents หรือเวอร์ชันเก่าเกินไป</td><td>ติดตั้ง PacketEvents 2.14.0 ขึ้นไป แล้วรีสตาร์ท</td></tr>
+            <tr><th scope="row">ผู้เล่นเห็นหีบไกลผิดปกติ</th><td>บัญชีนั้นมีสิทธิ์ <code>basehider.bypass</code></td><td>ตรวจสิทธิ์ของกลุ่มผู้เล่นนั้น</td></tr>
+            <tr><th scope="row">กระตุกตอนมีคนเข้า</th><td>งบเวลาสูงเกินไป หรือมีคลังของหนาแน่น</td><td>ลด <code>main-thread-budget-ms</code> และจำนวนเส้นสายตา</td></tr>
+            <tr><th scope="row">ของใกล้ตัวกลับมองไม่เห็น</th><td>ระยะหรือมุมมองแคบเกินไป</td><td>เพิ่ม <code>max-distance</code> และ <code>fov-degrees</code></td></tr>
+            <tr><th scope="row">ปลั๊กอินไม่เริ่มทำงาน</th><td>Java ต่ำกว่า 21 หรือใช้เซิร์ฟเวอร์คนละค่าย</td><td>ตรวจว่าใช้ Paper 1.21.4 และ Java 21</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== LIMITS -->
+  <section class="section limits" id="limits">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">10 — ข้อจำกัด</p>
+        <h2>สิ่งที่ BaseHider<br><span class="muted">ไม่ได้ทำ และบอกไว้ก่อน</span></h2>
+        <p class="section-lead">ความน่าเชื่อถือของเครื่องมือวัดกันที่ความตรงไปตรงมา ข้อจำกัดด้านล่างคือสิ่งที่เราตั้งใจไม่ทำ หรือยังไม่รองรับในเวอร์ชันนี้</p>
+      </div>
+
+      <div class="limit-grid">
+        <article class="limit">
+          <div class="limit__ico"><svg aria-hidden="true"><use href="#i-x"></use></svg></div>
+          <h3>ไม่ซ่อนผู้เล่นด้วยกัน</h3>
+          <p>การซ่อนตัวผู้เล่นจะกระทบการต่อสู้ ทีม และกลไกของปลั๊กอินอื่น ต้องใช้นโยบายที่เข้าใจทีมจริง ๆ เราจึงเลือกไม่ทำ ดีกว่าปล่อยเป็นฟีเจอร์ที่ทำงานครึ่งเดียว</p>
+        </article>
+        <article class="limit">
+          <div class="limit__ico"><svg aria-hidden="true"><use href="#i-x"></use></svg></div>
+          <h3>ไม่กรองเสียงและอนุภาค</h3>
+          <p>เสียงเปิดหีบและอนุภาคบางอย่างยังบอกใบ้ตำแหน่งได้ เป็นช่องว่างที่บันทึกไว้ ไม่ได้อ้างว่าปิดแล้ว</p>
+        </article>
+        <article class="limit">
+          <div class="limit__ico"><svg aria-hidden="true"><use href="#i-x"></use></svg></div>
+          <h3>ยังไม่รองรับ Minecraft 1.21.5 ขึ้นไป</h3>
+          <p>ตัวจัดการข้อมูลแผนที่ผูกกับรูปแบบของ 1.21.4 ที่ผ่านการทดสอบ หากอัปเกรดเซิร์ฟเวอร์ควรตรวจสอบก่อน</p>
+        </article>
+        <article class="limit">
+          <div class="limit__ico"><svg aria-hidden="true"><use href="#i-warning"></use></svg></div>
+          <h3>ไม่มี PacketEvents = ซ่อนบล็อกไม่ได้</h3>
+          <p>ระบบจะปิดการซ่อนบล็อกและแจ้งเตือนชัดเจน ไม่แกล้งทำเหมือนยังป้องกันอยู่ ส่วนการซ่อนไอเท็มยังทำงานได้ด้วยความสามารถของ Paper</p>
+        </article>
+        <article class="limit">
+          <div class="limit__ico"><svg aria-hidden="true"><use href="#i-warning"></use></svg></div>
+          <h3>ไอเท็มที่ซ่อนอยู่ยังเก็บได้จริง</h3>
+          <p>การเก็บของ การรวมกอง และการหมดอายุยังทำงานฝั่งเซิร์ฟเวอร์ตามปกติ — การซ่อนมีผลต่อการมองเห็นเท่านั้น</p>
+        </article>
+        <article class="limit limit--good">
+          <div class="limit__ico"><svg aria-hidden="true"><use href="#i-check"></use></svg></div>
+          <h3>และสิ่งที่ยังทำจริง</h3>
+          <p>ซ่อนหีบและข้อมูลภายในทุกชนิดที่ตั้งไว้ ซ่อนไอเท็มที่ตกอยู่ ซ่อนข้อมูลการเปิดหีบ และเตือนผู้ดูแลเมื่อระบบป้องกันเงียบผิดปกติ</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== GLOSSARY -->
+  <section class="section glossary" id="glossary">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">11 — ศัพท์ที่ควรรู้</p>
+        <h2>คำที่เจอบ่อย<br><span class="muted">ในหน้าเว็บนี้</span></h2>
+        <p class="section-lead">อ่านแล้วไม่ต้องจำก็ได้ แต่ถ้าเข้าใจศัพท์เหล่านี้ จะเห็นภาพว่า BaseHider ทำงานตรงไหนของเกม</p>
+      </div>
+
+      <dl class="glossary__grid">
+        <div class="glossary__item">
+          <dt>แพ็กเก็ต (packet)</dt>
+          <dd>ข้อมูลชิ้นเล็ก ๆ ที่เซิร์ฟเวอร์ส่งให้เกมผู้เล่น เช่น “ตรงนี้มีหีบ” หรือ “มีไอเท็มตกอยู่ตรงนี้” ถ้าไม่ส่งแพ็กเก็ตนั้น ผู้เล่นก็ไม่มีทางรู้</dd>
+        </div>
+        <div class="glossary__item">
+          <dt>แผนที่ (chunk)</dt>
+          <dd>พื้นโลกถูกแบ่งเป็นแปลงสี่เหลี่ยมเล็ก ๆ เรียกว่า chunk ระบบจะส่งข้อมูลทีละแปลงให้ผู้เล่นที่อยู่ใกล้</dd>
+        </div>
+        <div class="glossary__item">
+          <dt>ข้อมูลในบล็อก (block entity)</dt>
+          <dd>ข้อมูลที่ซ่อนอยู่ “ใน” บล็อก เช่น ของในหีบ ข้อความบนป้าย หรือข้อมูลจุดเกิดมอน</dd>
+        </div>
+        <div class="glossary__item">
+          <dt>โปรแกรมโกงแบบ ESP / x-ray</dt>
+          <dd>โปรแกรมที่ดัดแปลงเกมเพื่อมองทะลุกำแพง เห็นหีบหรือไอเท็มที่อยู่ไกลหรืออยู่หลังกำแพง</dd>
+        </div>
+        <div class="glossary__item">
+          <dt>ไม่แน่ใจ = ซ่อน (fail-closed)</dt>
+          <dd>หลักการที่ว่าเมื่อระบบไม่มั่นใจหรือเกิดข้อผิดพลาด ให้เลือก “ซ่อน” ไว้ก่อนเสมอ ไม่ใช่ “ปล่อยผ่าน”</dd>
+        </div>
+        <div class="glossary__item">
+          <dt>ยิงเส้นสายตา (raycast)</dt>
+          <dd>การลากเส้นจากตาผู้เล่นไปยังของที่ต้องการตรวจ ถ้าเส้นชนอะไรก่อน ก็แปลว่าของนั้นถูกบัง</dd>
+        </div>
+        <div class="glossary__item">
+          <dt>การบัง (occlusion)</dt>
+          <dd>การที่มีของอื่นบังอยู่ระหว่างผู้เล่นกับของที่ต้องการเห็น</dd>
+        </div>
+        <div class="glossary__item">
+          <dt>TPS / MSPT</dt>
+          <dd>TPS คือจำนวนรอบการทำงานของเซิร์ฟเวอร์ต่อวินาที (ปกติ 20) ส่วน MSPT คือเวลาที่ใช้ต่อหนึ่งรอบ ยิ่งน้อยยิ่งลื่น</dd>
+        </div>
+        <div class="glossary__item">
+          <dt>PacketEvents</dt>
+          <dd>ปลั๊กอินที่ช่วยให้อ่านและแก้ข้อมูลที่วิ่งระหว่างเซิร์ฟเวอร์กับเกมได้ BaseHider ใช้ตัวนี้ในการซ่อนข้อมูลหีบ</dd>
+        </div>
+        <div class="glossary__item">
+          <dt>งบเวลาต่อติ๊ก (budget)</dt>
+          <dd>เวลาสูงสุดที่ระบบยอมใช้ในหนึ่งรอบ เพื่อไม่ให้เซิร์ฟเวอร์กระตุก งานที่ทำไม่ทันจะถูกเลื่อนไปรอบถัดไป</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ===================================================== FAQ -->
+  <section class="section faq" id="faq">
+    <div class="shell faq__grid">
+      <div class="faq__intro">
+        <p class="eyebrow">12 — คำถาม</p>
+        <h2>คำถามที่คนถามบ่อย</h2>
+        <p class="section-lead">ตอบจากสิ่งที่โค้ดทำจริง ไม่ใช่จากโบรชัวร์</p>
+        <div class="faq__aside">
+          <p>ยังมีคำถามอื่นอีกไหม</p>
+          <a class="link-arrow" href="#download">ไปที่หน้าดาวน์โหลด <svg class="ico ico--sm" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a>
+        </div>
+      </div>
+
+      <div class="faq__list">
+        <details class="qa" open>
+          <summary><span>ต่างจาก anti-xray (ระบบซ่อนแร่) ของ Paper อย่างไร?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>anti-xray ของ Paper เน้นซ่อนแร่โดยแทนที่บล็อกในข้อมูลแผนที่ ส่วน BaseHider เน้นหีบ กล่องเก็บของ และไอเท็มที่ตกอยู่ พร้อมกติกาการมองเห็นที่คิดระยะ มุมมอง และการบังด้วยเส้นสายตาจริง ทั้งสองอย่างทำงานคนละชั้นและเปิดใช้ร่วมกันได้</p></div>
+        </details>
+        <details class="qa">
+          <summary><span>จำเป็นต้องมี PacketEvents ไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>ถ้าต้องการซ่อนหีบและข้อมูลในบล็อก — จำเป็น เพราะการแก้ข้อมูลแผนที่ทำได้เฉพาะชั้นที่ข้อมูลกำลังจะถูกส่งออกไป ถ้าไม่มี PacketEvents ระบบจะปิดการซ่อนบล็อกและแจ้งเตือนอย่างชัดเจน แต่การซ่อนไอเท็มยังทำงานผ่านความสามารถของ Paper</p></div>
+        </details>
+        <details class="qa">
+          <summary><span>ผู้เล่นต้องติดตั้งมอดหรือปรับอะไรไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>ไม่ต้องเลย ทั้งหมดทำงานบนเซิร์ฟเวอร์ ผู้เล่นใช้ไคลเอนต์ปกติก็ได้ ไม่ต้องติดตั้งมอด ไม่ต้องตั้งค่า และไม่ต้องอัปเดตอะไรเพิ่ม</p></div>
+        </details>
+        <details class="qa">
+          <summary><span>จะทำให้เซิร์ฟเวอร์กระตุกไหม (TPS ตก)?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>งานของ BaseHider ถูกจำกัดที่ 1.5 ms ต่อติ๊ก และงานที่ค้างจะถูกเลื่อนไปติ๊กถัดไป ในเครื่องทดสอบ p99 อยู่ที่ ≤3.0 ms และ MSPT เพิ่มขึ้นราว 0.5–1.4 ms เมื่อมีไคลเอนต์เดียว ตัวเลขจริงขึ้นกับจำนวนไอเท็มและขนาดฐาน — ปรับ <code>main-thread-budget-ms</code> และ <code>raycast-budget-per-tick</code> ได้</p></div>
+        </details>
+        <details class="qa">
+          <summary><span>เจ้าของหีบจะเห็นหีบของตัวเองไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>เห็นได้เมื่ออยู่ในระยะและมุมมองที่กำหนด (ค่าเริ่มต้น 12 บล็อก / 120°) และไม่มีกำแพงบัง ผู้เล่นที่ถือสิทธิ์ <code>basehider.bypass</code> จะเห็นทุกอย่างตามปกติ</p></div>
+        </details>
+        <details class="qa">
+          <summary><span>ใช้กับ Minecraft 1.20 หรือ Folia ได้ไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>บิลด์นี้ทดสอบบน Paper 1.21.4 และประกาศ <code>api-version: 1.21</code> ไม่รองรับ Folia ตามการออกแบบ เพราะระบบอาศัยการทำงานเป็นรอบบนเธรดหลักของ Bukkit</p></div>
+        </details>
+        <details class="qa">
+          <summary><span>ถ้าตั้งค่าผิดจะเป็นอะไรไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>ระบบจะไม่พังหรือโยนข้อผิดพลาดจนเซิร์ฟเวอร์ล่ม ค่าที่ผิดจะถูกปรับให้อยู่ในช่วงที่ปลอดภัย วัสดุที่ไม่รองรับจะถูกปฏิเสธพร้อมคำเตือน และ <code>security.fail-closed: false</code> จะถูกบังคับกลับเป็น <code>true</code></p></div>
+        </details>
+        <details class="qa">
+          <summary><span>ข้อมูลรายงานสุขภาพระบบถูกส่งไปที่ไหน?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>อยู่บนเซิร์ฟเวอร์ของคุณเท่านั้น — เขียนเป็นไฟล์ <code>plugins/BaseHider/diagnostics.json</code> เมื่อคุณสั่ง ไม่มีการเชื่อมต่อออกภายนอกเพื่อส่งข้อมูล</p></div>
+        </details>
+        <details class="qa">
+          <summary><span>ทำไมไม่ซ่อนผู้เล่นด้วยกัน?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>เพราะการซ่อนผู้เล่นจะกระทบการต่อสู้ ทีม คะแนน และปลั๊กอินอื่นอีกมาก การทำถูกต้องต้องมีระบบที่เข้าใจทีมและโหมดเกมจริง ๆ เราจึงเลือกบันทึกเป็นข้อจำกัด ดีกว่าปล่อยฟีเจอร์ที่ทำงานครึ่งเดียว</p></div>
+        </details>
+        <details class="qa">
+          <summary><span>ไอเท็มที่ซ่อนอยู่ยังเก็บได้ไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>ได้ การเก็บของ การรวมกอง และการหมดอายุยังทำงานฝั่งเซิร์ฟเวอร์ตามปกติ การซ่อนมีผลต่อการมองเห็นเท่านั้น ผู้เล่นที่เดินไปใกล้และอยู่ในมุมมองจะเห็นและเก็บได้ตามปกติ</p></div>
+        </details>
+        <details class="qa">
+          <summary><span>ติดตั้งแล้วต้องตั้งค่าใหม่ทุกครั้งที่อัปเดตไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>ปกติไม่ต้อง ค่าที่ตั้งไว้จะยังอยู่ และค่าที่หายไปจะถูกเติมด้วยค่าเริ่มต้นที่ปลอดภัย ควรอ่านบันทึกการเปลี่ยนแปลงของเวอร์ชันใหม่อยู่เสมอ</p></div>
+        </details>
+        <details class="qa">
+          <summary><span>จะตรวจสอบได้อย่างไรว่าระบบทำงานจริง?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+          <div class="qa__body"><p>เริ่มที่ <code>/basehider status</code> ว่าด่านตรวจทำงาน, <code>/basehider verify</code> ให้เทียบข้อมูลที่จำไว้กับโลกจริง และ <code>/basehider diag</code> ดูตัวเลขละเอียด หากมีผู้เล่นออนไลน์แต่ระบบไม่ได้รับข้อมูลเลยห้านาที ระบบจะเตือนผู้ดูแลเอง</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== CHANGELOG -->
+  <section class="section changelog" id="changelog">
+    <div class="shell">
+      <div class="section-head">
+        <p class="eyebrow">13 — เปลี่ยนอะไรใน 3.6.x</p>
+        <h2>เวอร์ชันนี้<br><span class="muted">แก้เรื่องอะไรมาบ้าง</span></h2>
+        <p class="section-lead">3.6.x ต่อยอดจาก 3.2.0 โดยไม่แตะแกนหลักของการซ่อนข้อมูล — เพิ่มการซ่อนรูที่ผู้เล่นขุด ไคลเอนต์ไลเซนส์ที่ตรวจสอบได้ และงานทดสอบที่หนักขึ้น</p>
+      </div>
+
+      <ol class="timeline">
+        <li class="timeline__item">
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <div class="timeline__body">
+            <h3>ซ่อนรูที่ผู้เล่นขุด</h3>
+            <p>Tunnel Shield จำวัสดุเดิมของบล็อกที่ถูกขุด แล้วส่งกลับให้คนที่อยู่ไกลเกิน 28 บล็อกเห็นเป็นดิน/หินทึบ ทั้งตอนโหลด chunk และตอนขุดสด ๆ เดินเข้ามาใกล้จะเห็นรูจริง ถอยออกไปจะถูกปิดกลับ</p>
+            <span class="timeline__meta">TUNNEL SHIELD · 28 BLOCKS · MEMORY</span>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <div class="timeline__body">
+            <h3>ไคลเอนต์ไลเซนส์ตรวจสอบได้</h3>
+            <p>3.6.1 เพิ่มการลงทะเบียนเซิร์ฟเวอร์ด้วย Ed25519 ขอ lease ที่เซ็นชื่อไว้ และตรวจลายเซ็นได้แม้แพลตฟอร์มออฟไลน์ พร้อม heartbeat แบบสรุป ไม่มีชื่อผู้เล่นหรือพิกัดหลุดออกไป</p>
+            <span class="timeline__meta">LICENSE CLIENT · ED25519 · OFFLINE</span>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <div class="timeline__body">
+            <h3>สั่งงานและอ่านค่าจากคอนโซลได้จริง</h3>
+            <p>เพิ่ม <code>/basehider license status|link|refresh</code> และแก้ให้ข้อความตอบกลับแสดงบน RCON/คอนโซลครบทุกบรรทัด ไม่หายไปเพราะถูกเลื่อนไป tick ถัดไป</p>
+            <span class="timeline__meta">OPERATIONS · RCON · CONSOLE</span>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <div class="timeline__body">
+            <h3>ทดสอบหนักขึ้นและรันจริงแล้ว</h3>
+            <p>ชุดทดสอบเพิ่มเป็น 102 ตัว ผ่านทั้งหมด และ 3.6.1 ผ่านการรันบน Paper 1.21.4 staging จริง: gateway ACTIVE, license ACTIVE, lease ตรวจผ่าน, heartbeat ส่งถึงแพลตฟอร์ม</p>
+            <span class="timeline__meta">QUALITY · 102 TESTS · PAPER STAGING</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===================================================== DOWNLOAD -->
+  <section class="section download" id="download">
+    <div class="shell">
+      <div class="dl-card">
+        <div class="dl-card__glow" aria-hidden="true"></div>
+        <div class="dl-card__main">
+          <p class="eyebrow">14 — ดาวน์โหลด</p>
+          <h2>BaseHider <span class="grad">3.6.1</span></h2>
+          <p class="dl-card__lead">ไฟล์เดียวสำหรับตัวปลั๊กอิน ผ่านการทดสอบ 102 ตัว และทดสอบกับเกมจริงบน Paper 1.21.4 แล้ว — ดาวน์โหลดได้เลย ไม่ต้องสมัครสมาชิก</p>
+
+          <div class="dl-card__cta">
+            <a class="btn btn--primary btn--lg" href="download/BaseHider-3.6.1.jar" download>
+              <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+              <span>ดาวน์โหลด BaseHider-3.6.1.jar<small>6.8 MB · Java 21 · Paper 1.21.4</small></span>
+            </a>
+            <a class="btn btn--ghost btn--lg" href="#install">ดูวิธีติดตั้ง</a>
+          </div>
+
+          <dl class="dl-meta">
+            <div><dt>เวอร์ชัน</dt><dd>3.6.1</dd></div>
+            <div><dt>ขนาดไฟล์</dt><dd>6,877,057 ไบต์</dd></div>
+            <div><dt>รูปแบบ</dt><dd>.jar (รวมไลบรารีที่จำเป็นแล้ว)</dd></div>
+            <div><dt>ต้องมี</dt><dd>PacketEvents 2.14.0 ขึ้นไป</dd></div>
+          </dl>
+        </div>
+
+        <div class="dl-card__verify">
+          <div class="verify__head">
+            <span class="mono">SHA-256</span>
+            <button class="copy-btn" type="button" data-copy-target="shaValue" aria-label="คัดลอกค่า SHA-256">
+              <svg class="ico ico--sm" aria-hidden="true"><use href="#i-copy"></use></svg><span>คัดลอก</span>
+            </button>
+          </div>
+          <code class="hash" id="shaValue">fba61fd3c446c5d708cf146ddf8ed485dbb47fb874292268c6b82b5cea7fcc5d</code>
+          <p class="verify__hint">ตรวจไฟล์ก่อนติดตั้งทุกครั้ง โดยเฉพาะเมื่อดาวน์โหลดผ่าน proxy หรือเว็บอื่น</p>
+          <div class="verify__cmds">
+            <div class="verify__cmd">
+              <span class="mono">Windows</span>
+              <code>certutil -hashfile BaseHider-3.6.1.jar SHA256</code>
+            </div>
+            <div class="verify__cmd">
+              <span class="mono">Linux / macOS</span>
+              <code>sha256sum BaseHider-3.6.1.jar</code>
+            </div>
+          </div>
+          <p class="verify__foot">ค่าที่ได้ต้องตรงกับค่า SHA-256 ด้านบนทุกตัวอักษร</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="shell">
+    <div class="site-foot__top">
+      <div class="site-foot__brand">
+        <a class="brand brand--foot" href="#top" aria-label="BaseHider">
+          <span class="brand__mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="17.4" stroke="#e8c879" stroke-width="1.1"/>
+              <circle cx="20" cy="20" r="12.6" stroke="#e8c879" stroke-width=".7" opacity=".55"/>
+              <circle cx="20" cy="20" r="7.2" stroke="#e8c879" stroke-width="1.6"/>
+              <path d="M20 2.6v5.4M20 32v5.4M2.6 20h5.4M32 20h5.4" stroke="#e8c879" stroke-width="1.1" stroke-linecap="round"/>
+              <circle cx="20" cy="20" r="2.1" fill="#e8c879"/>
+            </svg>
+          </span>
+          <span class="brand__text"><strong>BaseHider</strong><span class="brand__ver">3.6.1</span></span>
+        </a>
+        <p>ปลั๊กอินซ่อนหีบและไอเท็มสำหรับ Paper<br>ซ่อนก่อนส่ง ไม่ใช่ส่งไปก่อนแล้วค่อยแก้</p>
+      </div>
+
+      <nav class="site-foot__nav" aria-label="เมนูส่วนท้าย">
+        <div>
+          <span class="mono">ทำความรู้จัก</span>
+          <a href="#anatomy">กลไก 38 ชั้น</a>
+          <a href="#scenes">สถานการณ์จริง</a>
+          <a href="#how">กติกาการมองเห็น</a>
+          <a href="#glossary">ศัพท์ที่ควรรู้</a>
+        </div>
+        <div>
+          <span class="mono">ใช้งาน</span>
+          <a href="#install">ติดตั้ง</a>
+          <a href="#config">ตั้งค่า</a>
+          <a href="#limits">ข้อจำกัด</a>
+          <a href="#faq">คำถามที่พบบ่อย</a>
+        </div>
+        <div>
+          <span class="mono">ไฟล์</span>
+          <a href="download/BaseHider-3.6.1.jar" download>BaseHider-3.6.1.jar</a>
+          <a href="#download">SHA-256</a>
+          <a href="#performance">ผลการวัด</a>
+          <a href="#evidence">หลักฐานการทดสอบ</a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="site-foot__notes">
+      <p><strong>Third-party notices:</strong> FastUtil (Apache-2.0) ถูก bundle และเปลี่ยนชื่อแพ็กเกจภายในไจาร์ · PacketEvents (GPL-3.0) เป็นปลั๊กอินภายนอก ไม่ได้ถูกรวมมา · ฟอนต์ Anuphan และ IBM Plex Mono อยู่ภายใต้ SIL Open Font License 1.1</p>
+      <p>BaseHider ไม่ได้สังกัด Mojang Studios หรือ Microsoft · Minecraft คือเครื่องหมายการค้าของ Mojang Studios</p>
+    </div>
+
+    <div class="site-foot__bar">
+      <span>© 2026 BaseHider · สร้างโดย AudiSMP</span>
+      <span class="site-foot__status"><span class="dot" aria-hidden="true"></span>Static site · พร้อม deploy บน Cloudflare Pages</span>
+    </div>
+  </div>
+</footer>
+
+<noscript>
+  <div class="noscript">หน้านี้ใช้ JavaScript เพื่อแสดงกลไกแบบแยกชิ้นส่วน — เนื้อหาการติดตั้ง คำถาม และลิงก์ดาวน์โหลดใช้งานได้ตามปกติ</div>
+</noscript>
+</body>
+</html>

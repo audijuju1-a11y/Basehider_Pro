@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# ไฟล์ไจาร์ไม่ต้องถูกจัดทำดัชนี
+Disallow: /download/

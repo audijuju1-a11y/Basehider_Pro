@@ -1,0 +1,13 @@
+{
+  "name": "BaseHider 3.6.1",
+  "short_name": "BaseHider",
+  "description": "ปลั๊กอินซ่อนหีบและไอเท็มสำหรับเซิร์ฟเวอร์ Paper — ซ่อนก่อนส่ง ไม่ส่งไปก่อนแล้วค่อยแก้",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#06080b",
+  "theme_color": "#06080b",
+  "lang": "th",
+  "icons": [
+    { "src": "assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

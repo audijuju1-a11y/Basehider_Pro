@@ -1,0 +1,5 @@
+# Convenience redirects (Cloudflare Pages _redirects)
+/jar                  /download/BaseHider-3.6.1.jar   302
+/download             /download/BaseHider-3.6.1.jar   302
+/download/            /download/BaseHider-3.6.1.jar   302
+/latest.jar           /download/BaseHider-3.6.1.jar   302

@@ -1,0 +1,11 @@
+{
+  "name": "basehider-landing",
+  "version": "3.6.1",
+  "private": true,
+  "description": "BaseHider 3.6.1 landing page — static site ready for Cloudflare Pages",
+  "scripts": {
+    "serve": "python -m http.server 4321 --directory public",
+    "deploy": "npx wrangler pages deploy public --project-name basehider",
+    "fonts": "python scripts/fetch-fonts.py"
+  }
+}

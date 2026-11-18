@@ -1,0 +1,24 @@
+name: BaseHider
+version: 3.1.0
+main: dev.audismp.basehider.BaseHiderPlugin
+api-version: '1.21'
+description: Server-side anti-ESP / anti-base-ESP / anti-storage-ESP. Packet-level container hiding and fail-closed item/entity visibility.
+authors: [AudiSMP]
+website: https://github.com/AudiSMP/BaseHider
+folia-supported: false
+softdepend: [packetevents]
+
+commands:
+  basehider:
+    description: BaseHider administration, status and diagnostics
+    usage: /basehider <status|diag|stats|reload|verify|help>
+    permission: basehider.admin
+    aliases: [bh]
+
+permissions:
+  basehider.bypass:
+    description: Player may see hidden blocks and entity-shielded entities normally
+    default: op
+  basehider.admin:
+    description: Access to /basehider administration commands
+    default: op

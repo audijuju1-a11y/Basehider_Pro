@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: dev.audismp.basehider.config.ConfigLoaderTest
+-------------------------------------------------------------------------------
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.934 s -- in dev.audismp.basehider.config.ConfigLoaderTest

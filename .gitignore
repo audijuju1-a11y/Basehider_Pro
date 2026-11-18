@@ -1,0 +1,6 @@
+# Minecraft test servers and downloaded caches
+.work/
+
+# Local JDK distributions
+.tools/jdk21/
+.tools/temurin21.zip
