@@ -25,9 +25,13 @@
 
 /download/*
   Content-Type: application/java-archive
-  Content-Disposition: attachment; filename="BaseHider-3.6.1.jar"
   Cache-Control: public, max-age=86400
   X-Robots-Tag: noindex
+
+# Per-file download name: a wildcard rule with a fixed filename served every new jar
+# under the old version's name. Add one block per published file.
+/download/BaseHider-3.6.1.jar
+  Content-Disposition: attachment; filename="BaseHider-3.6.1.jar"
 
 /404.html
   Cache-Control: no-store
