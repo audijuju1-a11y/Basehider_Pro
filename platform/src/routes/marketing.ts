@@ -27,9 +27,9 @@ import { getStatusReport } from "../services/status";
 import { createContactMessage } from "../services/support";
 import { first } from "../lib/db";
 import { clientIp, hashIp, readForm, formValue } from "../lib/http";
+import { enforceRateLimit } from "../lib/rate-limit";
 import { verifyTurnstile } from "../auth/turnstile";
 import { getSiteContent } from "../lib/site-content";
-import { enforceRateLimit } from "../lib/rate-limit";
 import { logError } from "../lib/logger";
 import { aboutPage } from "../views/marketing";
 
@@ -64,6 +64,8 @@ marketingRoutes.get("/plugins", async (c) => {
 });
 
 marketingRoutes.get("/release/:id/download", async (c) => {
+  // Public artifact download: rate-limited per hashed IP so it cannot be used as free bandwidth.
+  await enforceRateLimit(c.env, `download:${await hashIp(c.env, clientIp(c))}`, 120, 3600);
   const release = await first<{ version: string; artifact_r2_key: string | null; status: string }>(
     c.env.DB,
     `SELECT version, artifact_r2_key, status FROM product_releases WHERE id = ?`,
@@ -78,6 +80,7 @@ marketingRoutes.get("/release/:id/download", async (c) => {
     headers: {
       "content-type": "application/java-archive",
       "content-disposition": `attachment; filename="BaseHider-${release.version.replace(/[^A-Za-z0-9._-]/g, "")}.jar"`,
+      "x-content-type-options": "nosniff",
       "content-length": object.size.toString(),
       etag: object.httpEtag,
       "cache-control": "public, max-age=300",

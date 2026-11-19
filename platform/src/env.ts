@@ -17,6 +17,8 @@ export interface Env {
   OFFLINE_GRACE_HOURS: string;
 
   LICENSE_KEY_PEPPER?: string;
+  /** Optional dedicated pepper for hashed IPs; falls back to LICENSE_KEY_PEPPER. */
+  IP_HASH_PEPPER?: string;
   LICENSE_SIGNING_KEY?: string;
   LICENSE_PUBLIC_KEY?: string;
   LICENSE_SIGNING_KEY_ID?: string;
@@ -40,6 +42,12 @@ export interface Env {
   PROMPTPAY_PHONE?: string;
   PROMPTPAY_NAME?: string;
   BANK_WEBHOOK_SECRET?: string;
+  /** Development-only admin bootstrap. Both must be set for /auth/dev-admin to answer. */
+  DEV_BOOTSTRAP?: string;
+  DEV_ADMIN_TOKEN?: string;
+  /** Optional HTTP sink for warn/error logs and alert transitions (empty = console only). */
+  OBSERVABILITY_WEBHOOK_URL?: string;
+  OBSERVABILITY_WEBHOOK_TOKEN?: string;
   EMAIL_OTP_TTL_MINUTES?: string;
   AUTH_OTP_ENABLED?: string;
   OTP_PEPPER?: string;

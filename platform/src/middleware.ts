@@ -7,6 +7,7 @@ import { hashIp, clientIp } from "./lib/http";
 import { loadSession, touchSession } from "./auth/session";
 import { type Lang } from "./lib/i18n";
 import { log } from "./lib/logger";
+import { flushLogs, recordRequestOutcome } from "./services/observability";
 
 type Ctx = Context<AppEnv>;
 
@@ -26,6 +27,35 @@ export async function requestContext(c: Ctx, next: Next): Promise<void> {
       ms: elapsed,
       requestId,
     });
+  }
+
+  const counter = recordRequestOutcome(c.env, c.res.status).catch((error) => {
+    log("warn", "metrics.record_failed", {
+      message: error instanceof Error ? error.message : String(error),
+    });
+  });
+  const logs = flushLogs(c.env);
+  const ctx = executionContext(c);
+  if (!ctx) {
+    void counter;
+    void logs;
+    return;
+  }
+  try {
+    ctx.waitUntil(counter);
+    ctx.waitUntil(logs);
+  } catch {
+    void counter;
+    void logs;
+  }
+}
+
+/** The getter throws when the app is invoked without a worker execution context. */
+function executionContext(c: Ctx): Ctx["executionCtx"] | undefined {
+  try {
+    return c.executionCtx;
+  } catch {
+    return undefined;
   }
 }
 

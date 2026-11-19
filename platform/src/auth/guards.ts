@@ -17,6 +17,7 @@ export type Permission =
   | "support.write"
   | "servers.read"
   | "security.read"
+  | "security.write"
   | "audit.read"
   | "telemetry.read"
   | "settings.read"
@@ -36,6 +37,7 @@ const ALL_PERMISSIONS: Permission[] = [
   "support.write",
   "servers.read",
   "security.read",
+  "security.write",
   "audit.read",
   "telemetry.read",
   "settings.read",
@@ -44,9 +46,15 @@ const ALL_PERMISSIONS: Permission[] = [
 
 const READ_ONLY: Permission[] = ALL_PERMISSIONS.filter((permission) => permission.endsWith(".read"));
 
+// `admin` sits strictly below `super_admin`: it cannot change roles or platform settings,
+// so an admin cannot promote themselves or anyone else to super_admin.
+const ADMIN_PERMISSIONS: Permission[] = ALL_PERMISSIONS.filter(
+  (permission) => permission !== "settings.write",
+);
+
 const ROLE_PERMISSIONS: Record<string, Permission[]> = {
   super_admin: ALL_PERMISSIONS,
-  admin: ALL_PERMISSIONS,
+  admin: ADMIN_PERMISSIONS,
   product_manager: [
     "products.read",
     "products.write",

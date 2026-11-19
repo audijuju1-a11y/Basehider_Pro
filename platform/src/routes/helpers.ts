@@ -43,6 +43,7 @@ export function publicPage(c: Ctx, options: PageOptions): Response {
     flash: flashOf(c),
     noIndex: options.noIndex,
     noFooter: options.noFooter,
+    baseUrl: c.env.APP_URL,
   });
   return htmlResponse(c, html, options.status ?? 200);
 }
@@ -80,6 +81,7 @@ export function appPage(c: Ctx, options: AppPageOptions): Response {
     body,
     flash: flashOf(c),
     noIndex: true,
+    baseUrl: c.env.APP_URL,
   });
   return htmlResponse(c, html, options.status ?? 200);
 }

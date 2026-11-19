@@ -7,7 +7,10 @@ interface TurnstileResponse {
   "error-codes"?: string[];
   challenge_ts?: string;
   hostname?: string;
+  action?: string;
 }
+
+const MAX_CHALLENGE_AGE_MS = 5 * 60 * 1000;
 
 /**
  * Verifies a Cloudflare Turnstile token. In production the secret must be
@@ -43,5 +46,16 @@ export async function verifyTurnstile(
   }
   if (!result.success) {
     throw badRequest("การยืนยันตัวตนไม่ผ่าน กรุณาลองใหม่");
+  }
+  // A token solved on another hostname (same sitekey reuse) or an old token must not count.
+  const expectedHost = new URL(env.APP_URL).hostname.toLowerCase();
+  if (result.hostname && result.hostname.toLowerCase() !== expectedHost) {
+    throw badRequest("การยืนยันตัวตนไม่ผ่าน กรุณาลองใหม่");
+  }
+  if (result.challenge_ts) {
+    const solvedAt = Date.parse(result.challenge_ts);
+    if (!Number.isFinite(solvedAt) || Date.now() - solvedAt > MAX_CHALLENGE_AGE_MS) {
+      throw badRequest("การยืนยันตัวตนหมดอายุ กรุณาลองใหม่");
+    }
   }
 }

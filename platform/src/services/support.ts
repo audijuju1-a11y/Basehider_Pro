@@ -266,21 +266,3 @@ export async function createContactMessage(
     details: { topic: input.topic.slice(0, 80) },
   });
 }
-
-export async function listContactMessages(env: Env, limit = 50) {
-  return all<{ id: string; name: string; email: string; topic: string; message: string; status: string; created_at: number }>(
-    env.DB,
-    `SELECT id, name, email, topic, message, status, created_at FROM contact_messages ORDER BY created_at DESC LIMIT ?`,
-    limit,
-  );
-}
-
-export function ticketMessagesMeta(messages: TicketMessageRow[]): Array<{ id: string; body: string; role: string; internal: boolean; created_at: number }> {
-  return messages.map((message) => ({
-    id: message.id,
-    body: message.body,
-    role: message.author_role,
-    internal: Boolean(message.internal),
-    created_at: message.created_at,
-  }));
-}

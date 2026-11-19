@@ -65,7 +65,7 @@ INSERT OR IGNORE INTO product_releases (
   'rel_bh_360', 'prod_basehider', '3.6.0', 'stable', 'published',
   'BaseHider 3.6.0 — Tunnel/Dug-hole Shield (hide player-dug tunnels beyond 28 blocks, re-mask on leave), Y-Shield, contextual filler and player ESP shield. 85 unit tests; verified running on a live Paper 1.21.4 server at TPS 20.0.',
   '["1.21.4"]', '["21"]', '["Paper"]',
-  '/download/BaseHider-3.6.0.jar',
+  NULL,
   'bbb8da5323b925a28e681dbff18b1828e084416e8a443be91f0001dc82f09eb5',
   ((strftime('%s','now') * 1000) - 3600000), ((strftime('%s','now') * 1000) - 3600000)
 );
@@ -77,7 +77,7 @@ INSERT OR IGNORE INTO product_releases (
   'rel_bh_320', 'prod_basehider', '3.2.0', 'stable', 'published',
   'BaseHider 3.2.0 — startup warm-up, item spawn-storm priority lane, gateway watchdog, detected-position overflow alarm and async diagnostics snapshots. 75 unit tests, packet-level integration harness PASS on Paper 1.21.4.',
   '["1.21.4"]', '["21"]', '["Paper"]',
-  '/download/BaseHider-3.2.0.jar',
+  NULL,
   'cf3cc53e7529e35b7dbc801773eba3bf8c8d02dc7e0028cf89bbe3aa1191808c',
   ((strftime('%s','now') * 1000) - 2592000000), ((strftime('%s','now') * 1000) - 2592000000)
 );

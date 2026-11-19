@@ -1,14 +1,16 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import type { AppEnv } from "../env";
-import { badRequest } from "../lib/errors";
-import { jsonResponse, clientIp, hashIp } from "../lib/http";
+import { badRequest, unauthorized } from "../lib/errors";
+import { jsonResponse, clientIp, hashIp, readBodyText } from "../lib/http";
 import { enforceRateLimit } from "../lib/rate-limit";
 import {
   activePublicKeys,
   ensureSigningKey,
+  getInstallationByUuid,
   issueLease,
   registerInstallation,
+  verifySignedBody,
   verifySignedRequest,
 } from "../services/licensing";
 import { noteActivationRegistration } from "../services/activation-guard";
@@ -129,8 +131,18 @@ apiRoutes.post("/v1/installations/register", async (c) => {
   const ip = clientIp(c);
   const ipHash = await hashIp(c.env, ip);
   await enforceRateLimit(c.env, `register:${ipHash}`, 20, 3600);
-  const raw = await c.req.text();
+  // Bounded read: an unauthenticated caller must not be able to stream an arbitrary body.
+  const raw = await readBodyText(c.req.raw, 16 * 1024);
   const payload = parseBody(raw, registerSchema);
+  // Re-registration re-issues a pairing code, so the caller must prove it holds the key
+  // that is already bound to this installation_uuid. The plugin signs registration requests.
+  const existing = await getInstallationByUuid(c.env, payload.installation_uuid);
+  if (existing) {
+    const verified = await verifySignedBody(c.env, c.req.raw, raw);
+    if (verified.installation.id !== existing.id) {
+      throw unauthorized("ลายเซ็นไม่ได้มาจาก installation นี้");
+    }
+  }
   const result = await registerInstallation(c.env, {
     productSlug: payload.product,
     installationUuid: payload.installation_uuid,
@@ -141,7 +153,7 @@ apiRoutes.post("/v1/installations/register", async (c) => {
     platform: payload.platform,
     serverName: payload.server_name?.slice(0, 64) ?? null,
     javaVersion: payload.java_version,
-  });
+  }, { signedReregistration: Boolean(existing) });
   await noteActivationRegistration(c.env, ipHash, {
     pluginSlug: payload.product,
     serverName: payload.server_name ?? null,

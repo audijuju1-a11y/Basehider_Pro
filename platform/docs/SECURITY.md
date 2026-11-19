@@ -11,32 +11,37 @@
 
 - Passwordless email link: 32 random bytes, stored as SHA-256 hash, single-use, 15 minute TTL, rate-limited per IP and per email hash.
 - Sessions: opaque 32-byte tokens, SHA-256 hash in D1, HttpOnly + SameSite=Lax + Secure in production, 14 day TTL, revocable per session or all-other-sessions.
-- CSRF: double-submit cookie plus hidden field or header, with Origin/Referer validation, mandatory on cookie-authenticated mutations.
+- CSRF: double-submit cookie plus hidden field or header, with Origin/Referer validation, mandatory on cookie-authenticated mutations. Only `APP_URL` is an accepted origin in production (the `Host` header allowance is development-only). The emailed login link is a GET that renders a confirmation form; the session is only created by the CSRF-protected POST, which prevents login-CSRF/session fixation.
 - Admin: Cloudflare Access JWT verified server-side (RS256 against team JWKS, issuer, audience, exp/nbf). A valid assertion is not enough; the email must map to a pre-provisioned staff user.
+- Development admin bootstrap (`/auth/dev-admin`) answers 404 unless `ENVIRONMENT` is not production, `DEV_BOOTSTRAP=1` **and** the request carries a matching `DEV_ADMIN_TOKEN` (16+ characters, header or query). Deploying with the wrong environment therefore cannot expose a super_admin sign-in.
 - Plugin: Ed25519 request signatures with X-BH-Timestamp (+/- 300 seconds), single-use X-BH-Nonce and a SHA-256 body hash in the signed string. Nonces are inserted after signature verification; replay returns 409.
+- Registration: a first registration is unauthenticated, but every **re-registration** must carry a valid signature by the public key already bound to that installation_uuid. installation_uuid and public_key are not secrets, so without proof of possession a new pairing code (and therefore the licence slot) could be claimed by anyone who saw them.
+- Sign-up collects no password. The owner confirms the address from the emailed link and then sets a password in /app/account, so a password can never exist on an unverified mailbox. Password sign-in is refused while `email_verified_at` is null, and following an email link/OTP clears any password stored before verification.
 
 ## Authorisation and tenant isolation
 
 - Every portal query includes an organisation membership subquery.
 - Resource detail pages return 404 for foreign tenants.
 - Admin permissions: customers.*, licenses.*, products.*, releases.write, support.*, servers.read, security.read, audit.read, telemetry.read, settings.*.
-- Admins cannot change their own role or status; the action is blocked server-side to prevent lockout.
+- `admin` is strictly below `super_admin`: it has every permission except `settings.write`, so it cannot change roles or platform settings. Only a `super_admin` may grant `admin`/`super_admin`.
+- Admins cannot change their own role or status, and the last active administrator can be neither demoted nor disabled (server-side checks), so the console cannot be locked out.
 
 ## Cryptography
 
-- License keys: 100-bit random, HMAC-SHA256 with a secret pepper; plaintext is never stored.
-- Activation codes: 8 characters from a 32-symbol alphabet (40 bits), HMAC-hashed, attempt-capped, 24 hour TTL.
+- License keys: 240-bit random (`BH-` + 8 groups x 6 symbols from a 32-symbol alphabet), HMAC-SHA256 with a secret pepper; plaintext is never stored.
+- Activation codes: 16 characters from a 32-symbol alphabet (80 bits), HMAC-hashed, attempt-capped, 24 hour TTL.
 - Leases: Ed25519 over canonical JSON (sorted keys, integer numbers, no whitespace). Verification is over the received payload bytes, never a re-serialisation.
 - Fingerprints: SHA-256 of the SPKI DER public key, lowercase hex.
+- Hashing peppers are separated by purpose: `IP_HASH_PEPPER` (falls back to `LICENSE_KEY_PEPPER`) for hashed IPs, `LICENSE_KEY_PEPPER` for licence keys and activation codes, `OTP_PEPPER` for OTP codes, plus a distinct `ip:`/`license:`/`activation:`/`otp|` context in every HMAC input. In production a missing pepper fails closed instead of using a constant.
 - Secret comparisons use constant-time comparison.
 - Key rotation: signing_keys supports multiple active keys with key_id; the plugin chooses the key named in the lease payload.
 
 ## Input and output
 
 - Zod schemas with strict objects for every JSON API; unknown keys are rejected.
-- Body limits: 64 KB JSON, 128 KB signed plugin bodies, 5000-character support messages.
+- Body limits: 16 KB for installation registration, 64 KB JSON, 128 KB signed plugin bodies, 5000-character support messages. Registration reads its body through a size-capped helper before parsing.
 - HTML templating escapes interpolations by default. Markdown is escaped before rendering and link schemes are restricted to http(s) and relative paths.
-- SQL is parameterised. LIKE input escapes %, _ and backslash.
+- SQL is parameterised. LIKE input escapes %, _ and backslash, and every LIKE clause declares `ESCAPE '\'`.
 - The Worker never fetches a user-supplied URL (no SSRF surface). Release artifact URLs are rendered as links, not fetched.
 
 ## Headers
@@ -50,7 +55,7 @@ CSP (self plus Turnstile), X-Content-Type-Options: nosniff, X-Frame-Options: DEN
 - Activation codes are 80-bit, single-use, expire in 24 hours and are guarded by a per-IP escalating lock.
 - Plugin requests use signed canonical strings with nonces; leases are Ed25519-signed.
 
-## Authentication
+## Password authentication
 
 - Email + password sign-up/login: PBKDF2-SHA256, random 16-byte salt, 100,000 iterations (the maximum
   Cloudflare Workers accepts), constant-time comparison. Passwords require at least 10 characters with
@@ -61,6 +66,8 @@ CSP (self plus Turnstile), X-Content-Type-Options: nosniff, X-Frame-Options: DEN
 
 ## Activation and OTP
 
+- Login links are confirmed through a CSRF-protected POST and rate-limited per hashed IP (30 per 15 minutes).
+- Raw licence keys are shown once (KV slot with a 10-minute TTL, deleted on first display) and are never returned to read-only organisation members.
 - Activation claims are limited to 8-32 input characters, matched against HMAC hashes, single-use and expire
   in 24 hours. Wrong claims are counted per hashed IP; 5 failures lock 5 minutes, 10 lock 10 minutes, then
   20/40/80 minutes. The guard records plugin slugs, installation IDs and server names for admin review.
@@ -71,17 +78,25 @@ CSP (self plus Turnstile), X-Content-Type-Options: nosniff, X-Frame-Options: DEN
 
 ## Auditing
 
-- Admin mutations write an immutable admin_audit_events row with actor, action, target, before/after summary, reason, request id and hashed IP.
-- Security events record login, logout, registration, activation, invalid signatures, contact and webhook failures.
+- Admin mutations (including support ticket status changes) write an immutable admin_audit_events row with actor, action, target, before/after summary, reason, request id and hashed IP. If that write fails, the attempt is recorded in `security_events` instead of being dropped.
+- Security events record login, logout, registration, activation, invalid signatures and contact failures.
 - Logs are structured JSON; sensitive keys are redacted by the logger.
 
 ## Residual risks
 
-- Cloudflare, Cloudflare Access, the email provider and the payment provider are trusted third parties.
+- Cloudflare, Cloudflare Access and the email provider are trusted third parties.
 - A compromised customer server can copy its licence folder and private key. Fingerprinting detects duplicates but cannot prevent determined tampering.
-- Revocation is not instantaneous while a plugin is offline with a still-valid lease.
+- Revocation is not instantaneous while a plugin is offline with a still-valid lease. Suspended installations are rejected on signed requests, but an offline server keeps its last lease until expiry.
+- PBKDF2-SHA256 uses 100,000 iterations, the Cloudflare Workers maximum, below OWASP's current recommendation; rate limits, the 10-character policy and generic errors compensate.
+- Release artifacts are served with a published SHA-256 and a per-IP download limit; the plugin pins the jar hash it was built against, but it does not verify a platform signature before a first run.
+- Defence in depth for release artifacts: only the current reviewed jar is shipped in the Worker assets and static site; older vulnerable builds were removed, and CI/deploy must keep that true.
 - DDoS beyond Cloudflare edge protections and our rate limits is out of scope.
 - The platform cannot verify that a customer Minecraft server is honest; it only verifies signed requests.
+
+## Audit
+
+The full repository audit (2026-11-19), including confirmed defects and remediation order, is in
+[`docs/12-security-audit-2026-11.md`](../../docs/12-security-audit-2026-11.md).
 
 ## Reporting
 

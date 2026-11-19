@@ -2,6 +2,22 @@ import { SafeHtml, html, raw } from "../lib/html";
 import { csrfInput, icon } from "./ui";
 import { turnstileWidget } from "./marketing";
 
+export function verifyConfirmPage(options: { token: string; next: string; csrf: string }): SafeHtml {
+  return html`<div class="auth-wrap">
+    <div class="auth-card">
+      <p class="eyebrow" style="margin-bottom:.6rem">CONFIRM SIGN-IN</p>
+      <h1>ยืนยันการเข้าสู่ระบบ</h1>
+      <p class="lead">กดปุ่มด้านล่างเพื่อเข้าสู่ระบบด้วยลิงก์อีเมลนี้ ลิงก์ใช้ได้ครั้งเดียวและหมดอายุใน 15 นาที</p>
+      <form class="form" method="post" action="/auth/verify" data-lock>
+        ${csrfInput(options.csrf)}
+        <input type="hidden" name="token" value="${options.token}">
+        <input type="hidden" name="next" value="${options.next}">
+        <button class="btn btn-primary btn-block" type="submit">${icon("lock")} ยืนยันและเข้าสู่ระบบ</button>
+      </form>
+    </div>
+  </div>`;
+}
+
 export function loginPage(options: {
   csrf: string;
   next: string;
@@ -12,7 +28,7 @@ export function loginPage(options: {
     <div class="auth-card">
       <p class="eyebrow" style="margin-bottom:.6rem">SIGN IN</p>
       <h1>เข้าสู่ระบบ</h1>
-      <p class="lead">ใช้อีเมลและรหัสผ่านที่สมัครไว้ — ระบบ OTP ถูกปิดชั่วคราว</p>
+      <p class="lead">ใช้อีเมลและรหัสผ่านที่สมัครไว้ — บัญชีใหม่ต้องยืนยันอีเมลก่อนเข้าสู่ระบบครั้งแรก</p>
       ${options.error ? html`<div class="alert alert--error" style="margin-top:1rem">${icon("warning")}<div>${options.error}</div></div>` : raw("")}
       <form class="form" method="post" action="/auth/login" data-lock>
         ${csrfInput(options.csrf)}
@@ -78,7 +94,7 @@ export function registerPage(options: {
     <div class="auth-card">
       <p class="eyebrow" style="margin-bottom:.6rem">CREATE ACCOUNT</p>
       <h1>สมัครบัญชีฟรี</h1>
-      <p class="lead">สมัครด้วยอีเมลและรหัสผ่าน — ฟรี 100% ไม่มีระบบชำระเงิน และได้รับไลเซนส์อัตโนมัติ</p>
+      <p class="lead">สมัครด้วยอีเมล — ฟรี 100% ไม่มีระบบชำระเงิน และได้รับไลเซนส์อัตโนมัติ<br><span class="muted">ยืนยันอีเมลก่อน แล้วตั้งรหัสผ่านได้ที่หน้าบัญชี</span></p>
       ${options.error ? html`<div class="alert alert--error" style="margin-top:1rem">${icon("warning")}<div>${options.error}</div></div>` : raw("")}
       <form class="form" method="post" action="/auth/register" data-lock>
         ${csrfInput(options.csrf)}
@@ -87,16 +103,8 @@ export function registerPage(options: {
           <label for="email">อีเมล</label>
           <input class="input" id="email" name="email" type="email" required maxlength="200" autocomplete="email" autofocus placeholder="you@example.com">
         </div>
-        <div class="field">
-          <label for="password">รหัสผ่าน</label>
-          <input class="input" id="password" name="password" type="password" required minlength="10" maxlength="200" autocomplete="new-password" placeholder="อย่างน้อย 10 ตัวอักษร มีตัวอักษรและตัวเลข">
-        </div>
-        <div class="field">
-          <label for="confirm">ยืนยันรหัสผ่าน</label>
-          <input class="input" id="confirm" name="confirm" type="password" required minlength="10" maxlength="200" autocomplete="new-password">
-        </div>
         ${turnstileWidget(options.siteKey)}
-        <button class="btn btn-primary btn-block" type="submit">${icon("user")} สมัครและเข้าสู่ระบบ</button>
+        <button class="btn btn-primary btn-block" type="submit">${icon("mail")} ส่งลิงก์ยืนยันอีเมล</button>
       </form>
       <div class="auth-footer">
         มีบัญชีแล้ว? <a href="/auth/login?next=${encodeURIComponent(options.next)}">เข้าสู่ระบบ</a>

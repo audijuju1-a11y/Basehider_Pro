@@ -2,6 +2,7 @@ import type { Env } from "../env";
 import { all, first, run } from "../lib/db";
 import { now } from "../lib/time";
 import { telemetryHealth } from "./telemetry";
+import { listAlertStates, requestRate } from "./observability";
 import type { LicenseRow } from "./licensing";
 
 export interface AdminStats {
@@ -18,6 +19,10 @@ export interface AdminStats {
   detections24h: number;
   criticalEvents24h: number;
   freeLicenses: number;
+  /** 5xx ratio over the last five minutes (feeds the alert card). */
+  http5xxRate5m: number;
+  httpRequests5m: number;
+  alertsFiring: number;
 }
 
 export async function getAdminStats(env: Env): Promise<AdminStats> {
@@ -67,7 +72,11 @@ export async function getAdminStats(env: Env): Promise<AdminStats> {
     ),
     first<{ count: number }>(env.DB, `SELECT COUNT(*) AS count FROM licenses WHERE plan_id IS NULL`),
   ]);
-  const health = await telemetryHealth(env);
+  const [health, rate, alertStates] = await Promise.all([
+    telemetryHealth(env),
+    requestRate(env),
+    listAlertStates(env),
+  ]);
   return {
     customers: customers?.count ?? 0,
     activeLicenses: activeLicenses?.count ?? 0,
@@ -82,6 +91,9 @@ export async function getAdminStats(env: Env): Promise<AdminStats> {
     detections24h: detections?.count ?? 0,
     criticalEvents24h: criticalEvents?.count ?? 0,
     freeLicenses: freeLicenses?.count ?? 0,
+    http5xxRate5m: rate.rate,
+    httpRequests5m: rate.total,
+    alertsFiring: alertStates.filter((alert) => alert.status === "firing").length,
   };
 }
 
@@ -101,14 +113,21 @@ export interface AdminAnalytics {
   topServers: Array<{ name: string; events: number }>;
 }
 
+/** Dashboard day buckets are Bangkok days (UTC+7, no DST), matching the labels in the UI. */
+const ANALYTICS_TZ_OFFSET_MS = 7 * 60 * 60 * 1000;
+const ANALYTICS_TZ_SQL = "+7 hours";
+
+function analyticsDayKey(epochMs: number): string {
+  return new Date(epochMs + ANALYTICS_TZ_OFFSET_MS).toISOString().slice(0, 10);
+}
+
 /** 14-day series for the dashboard charts plus detection breakdowns. */
 export async function getAdminAnalytics(env: Env): Promise<AdminAnalytics> {
   const days = 14;
   const start = now() - days * 24 * 60 * 60 * 1000;
   const buckets = new Map<string, AdminAnalyticsDay>();
   for (let index = days - 1; index >= 0; index--) {
-    const date = new Date(now() - index * 24 * 60 * 60 * 1000);
-    const key = date.toISOString().slice(0, 10);
+    const key = analyticsDayKey(now() - index * 24 * 60 * 60 * 1000);
     buckets.set(key, { day: key, label: key.slice(5), activations: 0, users: 0, telemetry: 0, security: 0, critical: 0 });
   }
   const merge = (
@@ -123,31 +142,31 @@ export async function getAdminAnalytics(env: Env): Promise<AdminAnalytics> {
   const [activations, users, telemetry, security, critical, detections, topServers] = await Promise.all([
     all<{ day: string; count: number }>(
       env.DB,
-      `SELECT strftime('%Y-%m-%d', activated_at / 1000, 'unixepoch') AS day, COUNT(*) AS count
+      `SELECT strftime('%Y-%m-%d', activated_at / 1000, 'unixepoch', '${ANALYTICS_TZ_SQL}') AS day, COUNT(*) AS count
          FROM activations WHERE activated_at > ? GROUP BY day`,
       start,
     ),
     all<{ day: string; count: number }>(
       env.DB,
-      `SELECT strftime('%Y-%m-%d', created_at / 1000, 'unixepoch') AS day, COUNT(*) AS count
+      `SELECT strftime('%Y-%m-%d', created_at / 1000, 'unixepoch', '${ANALYTICS_TZ_SQL}') AS day, COUNT(*) AS count
          FROM users WHERE created_at > ? GROUP BY day`,
       start,
     ),
     all<{ day: string; count: number }>(
       env.DB,
-      `SELECT strftime('%Y-%m-%d', received_at / 1000, 'unixepoch') AS day, COUNT(*) AS count
+      `SELECT strftime('%Y-%m-%d', received_at / 1000, 'unixepoch', '${ANALYTICS_TZ_SQL}') AS day, COUNT(*) AS count
          FROM telemetry_events WHERE received_at > ? GROUP BY day`,
       start,
     ),
     all<{ day: string; count: number }>(
       env.DB,
-      `SELECT strftime('%Y-%m-%d', created_at / 1000, 'unixepoch') AS day, COUNT(*) AS count
+      `SELECT strftime('%Y-%m-%d', created_at / 1000, 'unixepoch', '${ANALYTICS_TZ_SQL}') AS day, COUNT(*) AS count
          FROM security_events WHERE created_at > ? GROUP BY day`,
       start,
     ),
     all<{ day: string; count: number }>(
       env.DB,
-      `SELECT strftime('%Y-%m-%d', created_at / 1000, 'unixepoch') AS day, COUNT(*) AS count
+      `SELECT strftime('%Y-%m-%d', created_at / 1000, 'unixepoch', '${ANALYTICS_TZ_SQL}') AS day, COUNT(*) AS count
          FROM security_events WHERE created_at > ? AND severity = 'critical' GROUP BY day`,
       start,
     ),
@@ -199,7 +218,7 @@ export async function listCustomers(
   const params: Array<string | number> = [];
   let where = "WHERE u.status != 'deleted'";
   if (options.q) {
-    where += " AND (u.email LIKE ? OR u.display_name LIKE ?)";
+    where += " AND (u.email LIKE ? ESCAPE '\\' OR u.display_name LIKE ? ESCAPE '\\')";
     const like = `%${options.q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
     params.push(like, like);
   }
@@ -298,7 +317,7 @@ export async function listAdminLicenses(
     params.push(options.status);
   }
   if (options.q) {
-    conditions.push("(l.key_prefix LIKE ? OR u.email LIKE ? OR p.name LIKE ?)");
+    conditions.push("(l.key_prefix LIKE ? ESCAPE '\\' OR u.email LIKE ? ESCAPE '\\' OR p.name LIKE ? ESCAPE '\\')");
     const like = `%${options.q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
     params.push(like, like, like);
   }
@@ -346,9 +365,12 @@ export async function listAdminInstallations(
     params.push(options.status);
   }
   if (options.q) {
-    conditions.push("(i.display_name LIKE ? OR i.installation_uuid LIKE ? OR i.fingerprint_sha256 LIKE ?)");
+    conditions.push(
+      "(i.display_name LIKE ? ESCAPE '\\' OR i.installation_uuid LIKE ? ESCAPE '\\'" +
+        " OR i.fingerprint_sha256 LIKE ? ESCAPE '\\' OR u.email LIKE ? ESCAPE '\\' OR o.name LIKE ? ESCAPE '\\')",
+    );
     const like = `%${options.q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
-    params.push(like, like, like);
+    params.push(like, like, like, like, like);
   }
   params.push(Math.min(options.limit ?? 50, 200), options.offset ?? 0);
   const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";

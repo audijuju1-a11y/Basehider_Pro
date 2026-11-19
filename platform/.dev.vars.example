@@ -28,8 +28,17 @@ RESEND_API_KEY=
 MAIL_FROM=BaseHider <noreply@example.com>
 SUPPORT_EMAIL=support@example.com
 
-# Development-only admin bootstrap allowlist (ignored in production)
+# Development-only admin bootstrap allowlist (ignored in production).
+# /auth/dev-admin stays disabled unless BOTH of these are set; the token must be sent
+# as ?token=... or the x-dev-admin-token header (16+ characters).
 ADMIN_EMAILS=you@example.com
+DEV_BOOTSTRAP=1
+DEV_ADMIN_TOKEN=local-dev-admin-token-change-me
+
+# Optional HTTP sink for warn/error logs and alert transitions. Leave empty for console only.
+# The bearer token is optional; production sets it with: wrangler secret put OBSERVABILITY_WEBHOOK_TOKEN
+OBSERVABILITY_WEBHOOK_URL=
+OBSERVABILITY_WEBHOOK_TOKEN=
 
 # Payment webhook HMAC secret (manual provider does not need it)
 
@@ -46,6 +55,8 @@ GMAIL_REFRESH_TOKEN=
 GMAIL_SENDER=
 # Optional dedicated pepper for OTP hashes (falls back to LICENSE_KEY_PEPPER).
 OTP_PEPPER=
+# Optional dedicated pepper for hashed IPs (falls back to LICENSE_KEY_PEPPER).
+IP_HASH_PEPPER=
 
 # --- Stripe PromptPay provider (optional) ---
 

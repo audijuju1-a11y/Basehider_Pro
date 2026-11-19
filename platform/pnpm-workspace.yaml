@@ -1,3 +1,6 @@
-﻿minimumReleaseAgeExclude:
-  - '@cloudflare/workers-types@5.20261115.1'
+packages:
+  - "."
+
+minimumReleaseAgeExclude:
+  - "@cloudflare/workers-types@5.20261115.1"
 verifyDepsBeforeRun: false

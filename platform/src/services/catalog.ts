@@ -111,7 +111,7 @@ export async function listProducts(env: Env, options: ProductListOptions = {}): 
     params.push(...statuses);
   }
   if (options.query) {
-    conditions.push(`(name LIKE ? OR tagline LIKE ? OR description LIKE ?)`);
+    conditions.push(`(name LIKE ? ESCAPE '\\' OR tagline LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\')`);
     const like = `%${options.query.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
     params.push(like, like, like);
   }

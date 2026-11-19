@@ -20,7 +20,8 @@
     "head_sampling_rate": 1
   },
   "triggers": {
-    "crons": ["17 * * * *"]
+    // hourly cleanup + 5-minute alert evaluation (see src/scheduled.ts)
+    "crons": ["17 * * * *", "*/5 * * * *"]
   },
   "vars": {
     "ENVIRONMENT": "production",
@@ -37,7 +38,10 @@
     "SUPPORT_EMAIL": "audijuju1@gmail.com",
     "ADMIN_EMAILS": "audijuju1@gmail.com",
     "EMAIL_OTP_TTL_MINUTES": "15",
-    "AUTH_OTP_ENABLED": "false"
+    "AUTH_OTP_ENABLED": "false",
+    // Optional HTTP log/alert sink; leave empty for console-only logging.
+    // Put the bearer token in a secret named OBSERVABILITY_WEBHOOK_TOKEN.
+    "OBSERVABILITY_WEBHOOK_URL": ""
   },
   "d1_databases": [
     {
@@ -73,6 +77,12 @@
         "max_batch_timeout": 5,
         "max_retries": 3,
         "dead_letter_queue": "bhcp-telemetry-dlq"
+      },
+      {
+        "queue": "bhcp-telemetry-dlq",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+        "max_retries": 1
       }
     ]
   }

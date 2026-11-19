@@ -54,7 +54,7 @@ Requirements: Node 24 + pnpm 11 (or use the bundled runtimes), and Windows/macOS
 
 ```bash
 cd platform
-pnpm install
+pnpm install            # single-package pnpm workspace (`packages: ["."]`)
 
 # local D1 (same local state used by wrangler dev)
 pnpm db:migrate:local
@@ -67,9 +67,14 @@ node scripts/dev-public-key.mjs
 pnpm dev          # http://127.0.0.1:8787
 ```
 
-Local admin bootstrap: open `http://127.0.0.1:8787/auth/dev-admin` (only enabled when
-`ENVIRONMENT !== production`). It signs in the first address in `ADMIN_EMAILS` and grants
-`super_admin`. Never available in production.
+Local admin bootstrap: set `DEV_BOOTSTRAP=1` and `DEV_ADMIN_TOKEN=<16+ characters>` in `.dev.vars`, then
+open `http://127.0.0.1:8787/auth/dev-admin?token=<token>` (or send the `x-dev-admin-token` header). It signs in
+the first address in `ADMIN_EMAILS` and grants `super_admin`. The route answers 404 unless both variables are
+set and `ENVIRONMENT !== production`.
+
+Customer sign-up is email-only: confirm the address from the link, then set a password in `/app/account`.
+Password sign-in is refused until the address is verified; verifying also clears any password that was stored
+before verification (the account-squatting defence).
 
 Customer login: use any email on `/auth/login`; with `EMAIL_PROVIDER=console` the one-time link is
 rendered on the check-email page and logged (development only).
@@ -89,6 +94,7 @@ Copy `.dev.vars.example` → `.dev.vars` and fill the values. Secrets required f
 | `EMAIL_PROVIDER`, `RESEND_API_KEY`, `MAIL_FROM` | transactional email (`console`, `resend`, `mailchannels`, `gmail`); production uses Resend with `onboarding@resend.dev` until a domain is verified |
 | `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, `GMAIL_REFRESH_TOKEN`, `GMAIL_SENDER` | optional Gmail API OTP delivery (OAuth, never an account password) |
 | `OTP_PEPPER` | optional dedicated pepper for OTP hashes; falls back to `LICENSE_KEY_PEPPER` |
+| `IP_HASH_PEPPER` | optional dedicated pepper for hashed IPs in rate limits/analytics; falls back to `LICENSE_KEY_PEPPER` and fails closed in production |
 
 Non-secret vars: `APP_URL`, `ENVIRONMENT`, session/lease TTLs, `EMAIL_OTP_TTL_MINUTES`, `ADMIN_EMAILS` (development only).
 
@@ -110,7 +116,7 @@ Gmail API setup:
 
 ```bash
 pnpm typecheck          # strict TypeScript, no errors
-pnpm test               # 15 tests: crypto, auth, licensing, tenancy, admin, telemetry, free licence issuance, lockout ladder
+pnpm test               # 21 tests: crypto, auth, licensing, tenancy, admin, telemetry, free licence issuance, lockout ladder
 node scripts/e2e-license.mjs
 
 # plugin client (Java 21 / Maven)

@@ -53,6 +53,8 @@ import {
   setTicketStatus,
 } from "../services/support";
 import { getLatestHeartbeat, listInstallationEvents, telemetryHealth } from "../services/telemetry";
+import { deadLetterSummary, listDeadLetters, resolveDeadLetter } from "../services/dlq";
+import { listAlertStates } from "../services/observability";
 import { recordAudit, setSetting } from "../services/audit";
 import { emailProvider } from "../auth/email";
 import {
@@ -187,7 +189,9 @@ adminRoutes.get("/customers/:id", async (c) => {
   const data = await getCustomer(c.env, c.req.param("id"));
   if (!data) return notFoundPage(c, "ไม่พบลูกค้า", "บัญชีนี้อาจถูกลบหรือไม่มีอยู่");
   const licenses = await listAdminLicenses(c.env, { q: data.user.email, limit: 50 });
-  const servers = await listAdminInstallations(c.env, { q: "", limit: 100 });
+  // Filter in SQL by the customer's email/organisation; filtering a global LIMIT 100
+  // page in memory silently hid servers for every customer outside that page.
+  const servers = await listAdminInstallations(c.env, { q: data.user.email, limit: 200 });
   return appPage(c, {
     title: data.user.email,
     subtitle: "รายละเอียดลูกค้า",
@@ -196,7 +200,7 @@ adminRoutes.get("/customers/:id", async (c) => {
     body: adminCustomerDetailPage(
       data,
       licenses.filter((license) => license.customer_email === data.user.email),
-      servers.filter((server) => server.customer_email === data.user.email),
+      servers,
       c.get("csrfToken") ?? "",
     ),
   });
@@ -211,6 +215,20 @@ adminRoutes.post("/customers/:id/status", async (c) => {
   const status = formValue(values, "status", 20) as "active" | "suspended" | "deleted";
   if (!["active", "suspended", "deleted"].includes(status)) throw badRequest("สถานะไม่ถูกต้อง");
   const before = await first<{ status: string }>(c.env.DB, `SELECT status FROM users WHERE id = ?`, targetId);
+  if (status !== "active") {
+    // Never disable the last active administrator: nobody could reach the console again.
+    const target = await first<{ role: string }>(c.env.DB, `SELECT role FROM users WHERE id = ?`, targetId);
+    if (target && ["admin", "super_admin"].includes(target.role)) {
+      const remaining = await first<{ count: number }>(
+        c.env.DB,
+        `SELECT COUNT(*) AS count FROM users WHERE status = 'active' AND role IN ('admin','super_admin') AND id <> ?`,
+        targetId,
+      );
+      if ((remaining?.count ?? 0) === 0) {
+        return c.redirect(`/admin/customers/${targetId}?err=forbidden`, 303);
+      }
+    }
+  }
   await setUserStatus(c.env, targetId, status);
   await audit(c, "customer.status", "user", targetId, before, { status }, formValue(values, "reason", 300) || null);
   return c.redirect(`/admin/customers/${targetId}?ok=saved`, 303);
@@ -226,7 +244,21 @@ adminRoutes.post("/customers/:id/role", async (c) => {
   if (!["customer", "support", "product_manager", "security_analyst", "read_only_admin", "admin", "super_admin"].includes(role)) {
     throw badRequest("บทบาทไม่ถูกต้อง");
   }
+  // Only a super_admin may grant or change administrator roles.
+  if (["admin", "super_admin"].includes(role) && user.role !== "super_admin") {
+    return c.redirect(`/admin/customers/${targetId}?err=forbidden`, 303);
+  }
   const before = await first<{ role: string }>(c.env.DB, `SELECT role FROM users WHERE id = ?`, targetId);
+  if (before && ["admin", "super_admin"].includes(before.role) && !["admin", "super_admin"].includes(role)) {
+    const remaining = await first<{ count: number }>(
+      c.env.DB,
+      `SELECT COUNT(*) AS count FROM users WHERE status = 'active' AND role IN ('admin','super_admin') AND id <> ?`,
+      targetId,
+    );
+    if ((remaining?.count ?? 0) === 0) {
+      return c.redirect(`/admin/customers/${targetId}?err=forbidden`, 303);
+    }
+  }
   await setUserRole(c.env, targetId, role);
   await audit(c, "customer.role", "user", targetId, before, { role }, "role change");
   return c.redirect(`/admin/customers/${targetId}?ok=saved`, 303);
@@ -296,6 +328,7 @@ adminRoutes.post("/licenses", async (c) => {
     createdBy: requireUser(c).id,
     reason: "admin issued",
   });
+  if (!issued) return c.redirect("/admin/licenses/new?err=invalid", 303);
   await c.env.CACHE.put(`newlic:${issued.id}`, issued.rawKey, { expirationTtl: 600 });
   await audit(c, "license.issue", "license", issued.id, null, { product: product.slug, org: org.orgId }, "admin issued");
   return c.redirect(`/admin/licenses/${issued.id}?ok=created`, 303);
@@ -516,11 +549,14 @@ adminRoutes.post("/releases", async (c) => {
   if (!/^[0-9A-Za-z._-]{1,32}$/.test(version)) throw badRequest("เวอร์ชันไม่ถูกต้อง");
   const notes = formValue(values, "notes", 8000);
   const list = (value: string) => JSON.stringify(value.split(",").map((item) => item.trim()).filter(Boolean));
+  // Draft lets staff upload the artifact and write notes before the release is public.
+  const status = formValue(values, "status", 12) || "published";
+  if (!["draft", "published"].includes(status)) throw badRequest("สถานะไม่ถูกต้อง");
   const releaseId = await createRelease(c.env, {
     productId,
     version,
     channel: formValue(values, "channel", 20) || "stable",
-    status: "published",
+    status,
     notes,
     supportedMinecraft: list(formValue(values, "minecraft", 200)),
     supportedJava: list(formValue(values, "java", 200)),
@@ -528,8 +564,32 @@ adminRoutes.post("/releases", async (c) => {
     artifactUrl: formValue(values, "artifact_url", 300) || null,
     artifactSha256: formValue(values, "artifact_sha256", 64) || null,
   });
-  await audit(c, "release.create", "product_release", releaseId, null, { product: productId, version }, null);
+  await audit(c, "release.create", "product_release", releaseId, null, { product: productId, version, status }, null);
   return c.redirect("/admin/releases?ok=created", 303);
+});
+
+adminRoutes.post("/releases/:id/status", async (c) => {
+  guard(c, "releases.write");
+  const values = await readForm(c);
+  const releaseId = c.req.param("id");
+  const status = formValue(values, "status", 12);
+  if (!["draft", "published"].includes(status)) throw badRequest("สถานะไม่ถูกต้อง");
+  const before = await first<{ status: string; version: string }>(
+    c.env.DB,
+    `SELECT status, version FROM product_releases WHERE id = ?`,
+    releaseId,
+  );
+  if (!before) throw badRequest("ไม่พบรีลีส");
+  await c.env.DB.prepare(
+    `UPDATE product_releases
+        SET status = ?,
+            released_at = CASE WHEN ? = 'published' THEN ? ELSE released_at END
+      WHERE id = ?`,
+  )
+    .bind(status, status, now(), releaseId)
+    .run();
+  await audit(c, "release.status", "product_release", releaseId, before.status, { status }, "release status change");
+  return c.redirect("/admin/releases?ok=saved", 303);
 });
 
 adminRoutes.post("/releases/:id/file", async (c) => {
@@ -668,7 +728,16 @@ adminRoutes.post("/support/:id", async (c) => {
   const body = formValue(values, "body", 5000);
   if (body) await addStaffMessage(c.env, { id: actor.id, email: actor.email }, c.req.param("id"), body, values["internal"] === "1");
   const status = formValue(values, "status", 20);
-  if (status) await setTicketStatus(c.env, c.req.param("id"), status);
+  if (status) {
+    const ticketId = c.req.param("id");
+    const before = await first<{ status: string }>(
+      c.env.DB,
+      `SELECT status FROM support_tickets WHERE id = ?`,
+      ticketId,
+    );
+    await setTicketStatus(c.env, ticketId, status);
+    await audit(c, "ticket.status", "support_ticket", ticketId, before?.status ?? null, { status }, body ? "staff reply" : null);
+  }
   return c.redirect(`/admin/support/${c.req.param("id")}?ok=sent`, 303);
 });
 
@@ -678,17 +747,31 @@ adminRoutes.post("/support/:id", async (c) => {
 
 adminRoutes.get("/security", async (c) => {
   guard(c, "security.read");
-  const [events, guards] = await Promise.all([
+  const [events, guards, deadLetters, dlq, alerts] = await Promise.all([
     getAdminSecurityEvents(c.env, 200),
     listActivationGuards(c.env, 50),
+    listDeadLetters(c.env, 50),
+    deadLetterSummary(c.env),
+    listAlertStates(c.env),
   ]);
   return appPage(c, {
     title: "ศูนย์ความปลอดภัย",
-    subtitle: "เหตุการณ์ความปลอดภัย การพยายามเข้าถึง และ IP ที่ถูกล็อก",
+    subtitle: "เหตุการณ์ความปลอดภัย การพยายามเข้าถึง และข้อความที่ตกค้างในคิว",
     active: "/admin/security",
     admin: true,
-    body: adminSecurityPage(events, guards),
+    body: adminSecurityPage(events, guards, deadLetters, dlq, c.get("csrfToken") ?? "", alerts),
   });
+});
+
+adminRoutes.post("/security/dlq/:id/resolve", async (c) => {
+  guard(c, "security.write");
+  const user = requireUser(c);
+  const id = c.req.param("id").slice(0, 120);
+  await readForm(c);
+  if (await resolveDeadLetter(c.env, id, user.email)) {
+    await audit(c, "queue.dlq_resolve", "telemetry_dlq", id, null, { resolved: true }, null);
+  }
+  return c.redirect("/admin/security?ok=dlq-resolved", 303);
 });
 
 adminRoutes.get("/audit", async (c) => {

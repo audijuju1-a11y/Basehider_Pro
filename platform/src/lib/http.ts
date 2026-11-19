@@ -1,9 +1,8 @@
 import type { Context } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
-import type { z } from "zod";
 import type { AppEnv, Env } from "../env";
 import { isProduction } from "../env";
-import { AppError, badRequest, forbidden } from "./errors";
+import { AppError, badRequest, configError, forbidden } from "./errors";
 import { hmacSha256Hex } from "./core";
 
 export const SESSION_COOKIE = "bh_session";
@@ -24,9 +23,29 @@ export function clientIp(c: Ctx): string {
   return "0.0.0.0";
 }
 
-/** HMAC hashed IP so analytics can rate-limit without storing raw addresses. */
+/** Reads a text body with a hard size cap, so an unauthenticated caller cannot stream megabytes. */
+export async function readBodyText(request: Request, limit: number): Promise<string> {
+  const declared = Number.parseInt(request.headers.get("content-length") ?? "", 10);
+  if (Number.isFinite(declared) && declared > limit) {
+    throw new AppError(413, "payload_too_large", "ข้อมูลใหญ่เกินกำหนด");
+  }
+  const text = await request.text();
+  if (text.length > limit) throw new AppError(413, "payload_too_large", "ข้อมูลใหญ่เกินกำหนด");
+  return text;
+}
+
+/**
+ * HMAC hashed IP so analytics can rate-limit without storing raw addresses.
+ * Uses its own pepper when configured (key separation from licence and OTP hashes) and
+ * fails closed in production: a constant fallback pepper would make the hashes reversible
+ * and would collide across deployments.
+ */
 export async function hashIp(env: Env, ip: string): Promise<string> {
-  const pepper = env.LICENSE_KEY_PEPPER ?? "unconfigured-pepper";
+  const pepper = env.IP_HASH_PEPPER ?? env.LICENSE_KEY_PEPPER;
+  if (!pepper) {
+    if (isProduction(env)) throw configError("ยังไม่ได้ตั้งค่า IP_HASH_PEPPER หรือ LICENSE_KEY_PEPPER");
+    return (await hmacSha256Hex("dev-only-insecure-ip-pepper", `ip:${ip}`)).slice(0, 32);
+  }
   const digest = await hmacSha256Hex(pepper, `ip:${ip}`);
   return digest.slice(0, 32);
 }
@@ -79,7 +98,10 @@ export function verifyCsrf(c: Ctx, submitted: string | undefined): void {
 
   const appUrl = new URL(c.env.APP_URL);
   const requestUrl = new URL(c.req.url);
-  const allowedHosts = new Set([appUrl.host, requestUrl.host]);
+  // Only the configured origin is trusted. The Host header is attacker-controlled behind a
+  // proxy, so it is accepted as an extra allowance in local development only.
+  const allowedHosts = new Set([appUrl.host]);
+  if (!isProduction(c.env)) allowedHosts.add(requestUrl.host);
   const origin = c.req.header("origin");
   const referer = c.req.header("referer");
   if (origin) {
@@ -105,28 +127,6 @@ export function verifyCsrf(c: Ctx, submitted: string | undefined): void {
 }
 
 const MAX_BODY_BYTES = 64 * 1024;
-
-export async function readJson<T>(c: Ctx, schema: z.ZodType<T>, maxBytes = MAX_BODY_BYTES): Promise<T> {
-  const declared = Number(c.req.header("content-length") ?? "0");
-  if (declared > maxBytes) throw new AppError(413, "payload_too_large", "ข้อมูลมีขนาดใหญ่เกินกำหนด");
-  const text = await c.req.text();
-  if (text.length > maxBytes) throw new AppError(413, "payload_too_large", "ข้อมูลมีขนาดใหญ่เกินกำหนด");
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    throw badRequest("รูปแบบ JSON ไม่ถูกต้อง");
-  }
-  const result = schema.safeParse(parsed);
-  if (!result.success) {
-    const details = result.error.issues.slice(0, 8).map((issue) => ({
-      path: issue.path.join("."),
-      message: issue.message,
-    }));
-    throw badRequest("ข้อมูลไม่ผ่านการตรวจสอบ", details);
-  }
-  return result.data;
-}
 
 export type FormValues = Record<string, string>;
 
@@ -191,13 +191,6 @@ export function jsonResponse(data: unknown, status = 200, headers: Record<string
   });
 }
 
-export function safeNextPath(value: string | undefined, fallback = "/app"): string {
-  if (!value) return fallback;
-  if (!value.startsWith("/") || value.startsWith("//") || value.includes("\\")) return fallback;
-  if (value.startsWith("/api/") || value.startsWith("/auth/")) return fallback;
-  return value;
-}
-
 export function getQuery(c: Ctx, name: string, maxLength = 200): string {
   return (c.req.query(name) ?? "").trim().slice(0, maxLength);
 }
@@ -208,15 +201,4 @@ export function pagination(c: Ctx, defaultPerPage = 20): { page: number; perPage
   return { page, perPage, offset: (page - 1) * perPage };
 }
 
-export function pageCount(total: number, perPage: number): number {
-  return Math.max(1, Math.ceil(total / perPage));
-}
 
-export function escapeLike(input: string): string {
-  return input.replace(/[\\%_]/g, (char) => `\\${char}`);
-}
-
-export function noStore(response: Response): Response {
-  response.headers.set("Cache-Control", "no-store");
-  return response;
-}

@@ -14,6 +14,7 @@ import {
   signedPost,
 } from "./helpers";
 import {
+  base64urlEncode,
   bytesToBase64,
   ed25519Sign,
   ed25519Verify,
@@ -22,8 +23,17 @@ import {
   publicKeyFingerprint,
   sha256Hex,
 } from "../src/lib/core";
+import { hashPassword } from "../src/auth/password";
 import { processTelemetryMessage } from "../src/services/telemetry";
+import { handleQueue } from "../src/queue";
 import { now } from "../src/lib/time";
+import {
+  ALERT_CRON,
+  evaluateAlerts,
+  listAlertStates,
+  postSink,
+} from "../src/services/observability";
+import { handleScheduled } from "../src/scheduled";
 
 function b64urlBytes(value: string): Uint8Array {
   const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
@@ -74,7 +84,7 @@ describe("authentication", () => {
     return { cookie: csrfCookie!, token: csrfCookie!.split("=")[1]! };
   }
 
-  it("registers and logs in with email + password", async () => {
+  it("registers with email + password and only signs in after the address is verified", async () => {
     await seedProduct();
     const registerPage = await request("/auth/register");
     const csrf = csrfFrom(registerPage);
@@ -84,13 +94,16 @@ describe("authentication", () => {
     const registered = await request("/auth/register", {
       method: "POST",
       headers: { cookie: csrf.cookie, "content-type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ _csrf: csrf.token, email, password, confirm: password, next: "/app" }).toString(),
+      body: new URLSearchParams({ _csrf: csrf.token, email, next: "/app" }).toString(),
     });
-    expect(registered.status).toBe(303);
-    const registeredCookies = extractSetCookies(registered).map((value) => value.split(";")[0]);
-    const session = registeredCookies.find((value) => value.startsWith("bh_session="));
-    expect(session).toBeTruthy();
-    expect((await request("/app", { headers: { cookie: `${session}; ${csrf.cookie}` } })).status).toBe(200);
+    // No session and no password: the address has to be proven first (pre-account-takeover).
+    expect(registered.status).toBe(200);
+    expect(await registered.text()).toContain("ตรวจสอบอีเมล");
+    expect(extractSetCookies(registered).some((value) => value.startsWith("bh_session="))).toBe(false);
+    const registeredRow = await env.DB.prepare(`SELECT password_hash FROM users WHERE email = ?`)
+      .bind(email)
+      .first<{ password_hash: string | null }>();
+    expect(registeredRow?.password_hash).toBeNull();
 
     const loginPage = await request("/auth/login");
     const loginCsrf = csrfFrom(loginPage);
@@ -101,16 +114,117 @@ describe("authentication", () => {
     });
     expect(wrong.status).toBe(400);
 
+    // Sign-up stored no password, so password login is impossible until the owner sets one.
+    const unverified = await request("/auth/login", {
+      method: "POST",
+      headers: { cookie: loginCsrf.cookie, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ _csrf: loginCsrf.token, email, password, next: "/app" }).toString(),
+    });
+    expect(unverified.status).toBe(400);
+
+    const outbox = await env.CACHE.get("dev:email:last", "json");
+    const link = (outbox as { text: string }).text.match(/https?:\/\/[^\s]+\/auth\/verify\?[^\s]+/)?.[0];
+    expect(link).toBeTruthy();
+    const token = new URL(link!).searchParams.get("token");
+    // A bare GET only renders the confirmation form (no login-CSRF), the POST signs in.
+    const confirm = await request(`/auth/verify?token=${token}&next=/app`, { headers: { cookie: loginCsrf.cookie } });
+    expect(confirm.status).toBe(200);
+    expect(extractSetCookies(confirm).some((value) => value.startsWith("bh_session="))).toBe(false);
+    const verified = await request("/auth/verify", {
+      method: "POST",
+      headers: { cookie: loginCsrf.cookie, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ _csrf: loginCsrf.token, token: token!, next: "/app" }).toString(),
+    });
+    expect([302, 303]).toContain(verified.status);
+    const session = extractSetCookies(verified)
+      .map((value) => value.split(";")[0])
+      .find((value) => value.startsWith("bh_session="));
+    expect(session).toBeTruthy();
+    expect((await request("/app", { headers: { cookie: `${session}; ${loginCsrf.cookie}` } })).status).toBe(200);
+
+    // The verified owner sets the password from the account page, then password login works.
+    const owner = await env.DB.prepare(`SELECT id FROM users WHERE email = ?`)
+      .bind(email)
+      .first<{ id: string }>();
+    const ownerCookie = await sessionCookie(owner!.id);
+    const setPassword = await formRequest(
+      "/app/account/password",
+      { new_password: password, confirm_password: password },
+      ownerCookie,
+    );
+    expect(setPassword.status).toBe(303);
+
     const correct = await request("/auth/login", {
       method: "POST",
       headers: { cookie: loginCsrf.cookie, "content-type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ _csrf: loginCsrf.token, email, password, next: "/app" }).toString(),
     });
     expect(correct.status).toBe(303);
-    const loginCookies = extractSetCookies(correct).map((value) => value.split(";")[0]);
-    const loginSession = loginCookies.find((value) => value.startsWith("bh_session="));
+    const loginSession = extractSetCookies(correct)
+      .map((value) => value.split(";")[0])
+      .find((value) => value.startsWith("bh_session="));
     expect(loginSession).toBeTruthy();
     expect((await request("/app", { headers: { cookie: `${loginSession}; ${loginCsrf.cookie}` } })).status).toBe(200);
+  });
+
+  it("clears a password that was set before the address was verified", async () => {
+    await seedProduct();
+    const email = "squatted@example.com";
+    const password = "Attacker2026x";
+    // Reproduce the shape an attacker creates: an account whose password was stored while
+    // the address was still unverified (legacy rows and pre-fix deployments look like this).
+    const user = await seedUser({ email });
+    await env.DB.prepare(
+      `UPDATE users SET email_verified_at = NULL, password_hash = ?, password_updated_at = ? WHERE id = ?`,
+    )
+      .bind(await hashPassword(password), now(), user.id)
+      .run();
+
+    // The gate: a password on an unverified address never opens a session, it sends a link.
+    const earlyLoginPage = await request("/auth/login");
+    const earlyCsrf = csrfFrom(earlyLoginPage);
+    const gated = await request("/auth/login", {
+      method: "POST",
+      headers: { cookie: earlyCsrf.cookie, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ _csrf: earlyCsrf.token, email, password, next: "/app" }).toString(),
+    });
+    expect(gated.status).toBe(200);
+    expect(await gated.text()).toContain("ตรวจสอบอีเมลก่อนเข้าสู่ระบบ");
+
+    const emailPage = await request("/auth/email");
+    const csrf = csrfFrom(emailPage);
+    const posted = await request("/auth/email", {
+      method: "POST",
+      headers: { cookie: csrf.cookie, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ _csrf: csrf.token, email, next: "/app" }).toString(),
+    });
+    expect(posted.status).toBe(200);
+
+    const outbox = await env.CACHE.get("dev:email:last", "json");
+    const link = (outbox as { text: string }).text.match(/https?:\/\/[^\s]+\/auth\/verify\?[^\s]+/)?.[0];
+    const token = new URL(link!).searchParams.get("token");
+    await request("/auth/verify", {
+      method: "POST",
+      headers: { cookie: csrf.cookie, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ _csrf: csrf.token, token: token!, next: "/app" }).toString(),
+    });
+
+    const row = await env.DB.prepare(
+      `SELECT password_hash, email_verified_at FROM users WHERE email = ?`,
+    )
+      .bind(email)
+      .first<{ password_hash: string | null; email_verified_at: number | null }>();
+    expect(row?.email_verified_at).not.toBeNull();
+    expect(row?.password_hash).toBeNull();
+
+    const loginPage = await request("/auth/login");
+    const loginCsrf = csrfFrom(loginPage);
+    const attacker = await request("/auth/login", {
+      method: "POST",
+      headers: { cookie: loginCsrf.cookie, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ _csrf: loginCsrf.token, email, password, next: "/app" }).toString(),
+    });
+    expect(attacker.status).toBe(400);
   });
 
   it("rejects non-form content types with 415 instead of 500", async () => {
@@ -147,7 +261,11 @@ describe("authentication", () => {
     expect(link).toBeTruthy();
     const token = new URL(link!).searchParams.get("token");
     expect(token).toBeTruthy();
-    const verified = await request(`/auth/verify?token=${token}&next=/app`, { headers: { cookie: csrf.cookie } });
+    const verified = await request("/auth/verify", {
+      method: "POST",
+      headers: { cookie: csrf.cookie, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ _csrf: csrf.token, token: token!, next: "/app" }).toString(),
+    });
     expect([302, 303]).toContain(verified.status);
     const session = extractSetCookies(verified)
       .map((value) => value.split(";")[0])
@@ -250,7 +368,10 @@ describe("licensing and signed requests", () => {
     const nonce = "dGFtcGVyZWQtbm9uY2UtMTIzNDU2Nzg5MDEyMzQ1Ng";
     const canonical = ["POST", "/api/v1/installations/lease", installation.installationUuid, String(timestamp), nonce, await sha256Hex(leaseBody)].join("\n");
     const signatureBytes = await ed25519Sign(installation.privateKey, new TextEncoder().encode(canonical));
-    const tampered = "A" + bytesToBase64(signatureBytes).slice(1);
+    // Flip one byte of the decoded signature: rewriting the first base64 character can
+    // leave the bytes unchanged when the original first byte already started with 00xxxxxx.
+    signatureBytes[0] ^= 0x01;
+    const tampered = bytesToBase64(signatureBytes);
     const rejected = await request("/api/v1/installations/lease", {
       method: "POST",
       headers: {
@@ -442,6 +563,96 @@ describe("free licensing and activation guard", () => {
     expect(await page.text()).toContain("ฟรี 100%");
   });
 
+  it("keeps one open pairing code and re-activates an installation after a reset", async () => {
+    await seedProduct();
+    const user = await seedUser({ email: "reactivate@example.com" });
+    const cookie = await sessionCookie(user.id);
+    const keyPair = await generateEd25519KeyPair();
+    const installationUuid = crypto.randomUUID();
+    const fingerprint = await publicKeyFingerprint(keyPair.publicKeyBase64);
+
+    // The plugin signs registration; a re-registration is only accepted with that signature.
+    const register = async () => {
+      const body = JSON.stringify({
+        product: "test-product",
+        installation_uuid: installationUuid,
+        public_key: keyPair.publicKeyBase64,
+        fingerprint_sha256: fingerprint,
+        plugin_version: "3.6.1",
+        minecraft_version: "1.21.4",
+        platform: "Paper",
+        server_name: "Reset SMP",
+        java_version: "21",
+      });
+      const timestamp = Math.floor(Date.now() / 1000);
+      const nonce = base64urlEncode(crypto.getRandomValues(new Uint8Array(24)));
+      const canonical = [
+        "POST",
+        "/api/v1/installations/register",
+        installationUuid,
+        String(timestamp),
+        nonce,
+        await sha256Hex(body),
+      ].join("\n");
+      const signature = await ed25519Sign(keyPair.privateKey, new TextEncoder().encode(canonical));
+      const response = await request("/api/v1/installations/register", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-bh-installation": installationUuid,
+          "x-bh-timestamp": String(timestamp),
+          "x-bh-nonce": nonce,
+          "x-bh-signature": bytesToBase64(signature),
+        },
+        body,
+      });
+      expect(response.status).toBe(201);
+      return (await response.json()) as {
+        data: { activation_code: string; installation_id: string };
+      };
+    };
+
+    // Re-registration supersedes the previous pairing code instead of leaving both usable.
+    const first = await register();
+    const second = await register();
+    expect(second.data.installation_id).toBe(first.data.installation_id);
+    const openChallenges = await env.DB.prepare(
+      `SELECT COUNT(*) AS count FROM activation_challenges
+        WHERE installation_id = ? AND consumed_at IS NULL`,
+    )
+      .bind(first.data.installation_id)
+      .first<{ count: number }>();
+    expect(openChallenges?.count).toBe(1);
+
+    expect((await formRequest("/app/activations", { code: second.data.activation_code }, cookie)).status).toBe(303);
+    const licence = await env.DB.prepare(`SELECT id FROM licenses LIMIT 1`).first<{ id: string }>();
+    const activation = await env.DB.prepare(
+      `SELECT id FROM activations WHERE installation_id = ? AND status = 'active'`,
+    )
+      .bind(first.data.installation_id)
+      .first<{ id: string }>();
+    expect(activation).toBeTruthy();
+
+    const reset = await formRequest(
+      `/app/licenses/${licence!.id}/reset`,
+      { activation_id: activation!.id },
+      cookie,
+    );
+    expect(reset.status).toBe(303);
+
+    // Re-claiming after a reset must revive the released row: the old code threw a
+    // UNIQUE(license_id, installation_id) conflict and left the server unactivatable.
+    const third = await register();
+    expect((await formRequest("/app/activations", { code: third.data.activation_code }, cookie)).status).toBe(303);
+    const revived = await env.DB.prepare(
+      `SELECT status, license_id FROM activations WHERE installation_id = ?`,
+    )
+      .bind(first.data.installation_id)
+      .first<{ status: string; license_id: string }>();
+    expect(revived?.status).toBe("active");
+    expect(revived?.license_id).toBe(licence!.id);
+  });
+
   it("escalates activation lockouts: 5 failures -> 5 minutes, 10 failures -> 10 minutes", async () => {
     const code = await import("../src/services/activation-guard");
     const ip = "test-ip-hash-guard";
@@ -479,6 +690,39 @@ describe("free licensing and activation guard", () => {
   });
 });
 
+describe("admin hierarchy and licence key visibility", () => {
+  it("stops an admin from changing roles and hides raw keys from read-only members", async () => {
+    await seedProduct();
+    const admin = await seedUser({ email: "plain-admin@example.com", role: "admin" });
+    const target = await seedUser({ email: "role-target@example.com" });
+    const adminCookie = await sessionCookie(admin.id);
+
+    // `admin` sits below `super_admin` and cannot touch settings.write (role changes).
+    const roleChange = await formRequest(
+      `/admin/customers/${target.id}/role`,
+      { role: "super_admin" },
+      adminCookie,
+    );
+    expect(roleChange.status).toBe(403);
+    const unchanged = await env.DB.prepare(`SELECT role FROM users WHERE id = ?`)
+      .bind(target.id)
+      .first<{ role: string }>();
+    expect(unchanged?.role).toBe("customer");
+
+    // A read-only organisation member must not receive the one-time raw licence key.
+    const readOnly = await seedUser({ email: "readonly@example.com" });
+    await env.DB.prepare(`UPDATE organization_members SET role = 'read_only' WHERE user_id = ?`)
+      .bind(readOnly.id)
+      .run();
+    const licenceId = await issueLicenseFor(readOnly);
+    await env.CACHE.put(`newlic:${licenceId}`, "BH-SECRET-KEY", { expirationTtl: 600 });
+    const page = await request("/app/licenses", { headers: { cookie: await sessionCookie(readOnly.id) } });
+    expect(page.status).toBe(200);
+    expect(await page.text()).not.toContain("BH-SECRET-KEY");
+    expect(await env.CACHE.get(`newlic:${licenceId}`)).toBe("BH-SECRET-KEY");
+  });
+});
+
 describe("admin analytics", () => {
   it("renders the 14-day graphs, detection panels and lockout table", async () => {
     await seedProduct();
@@ -495,5 +739,145 @@ describe("admin analytics", () => {
     const security = await request("/admin/security", { headers: { cookie } });
     expect(security.status).toBe(200);
     expect(await security.text()).toContain("การป้องกันการเดารหัสเปิดใช้งาน");
+  });
+});
+
+describe("dead letter queue", () => {
+  it("persists a poison message, acks it and lets an admin resolve it", async () => {
+    await seedProduct();
+    const admin = await seedUser({ email: "dlq-admin@example.com", role: "super_admin" });
+    const cookie = await sessionCookie(admin.id);
+    const messageId = "msg_dlq_test_1";
+    const actions: string[] = [];
+    const batch = {
+      queue: "bhcp-telemetry-dlq",
+      messages: [
+        {
+          id: messageId,
+          timestamp: new Date(),
+          body: { kind: "event", id: "evt_dlq_1", installationId: "ins_dlq_1", receivedAt: now() },
+          attempts: 3,
+          ack: () => actions.push("ack"),
+          retry: () => actions.push("retry"),
+        },
+      ],
+    } as unknown as MessageBatch<unknown>;
+
+    await handleQueue(batch, env);
+    expect(actions).toEqual(["ack"]);
+
+    const row = await env.DB.prepare(
+      `SELECT event_id, installation_id, attempts, resolved_at FROM telemetry_dlq WHERE id = ?`,
+    )
+      .bind(`dlq_${messageId}`)
+      .first<{ event_id: string | null; installation_id: string | null; attempts: number; resolved_at: number | null }>();
+    expect(row?.event_id).toBe("evt_dlq_1");
+    expect(row?.installation_id).toBe("ins_dlq_1");
+    expect(row?.attempts).toBe(3);
+    expect(row?.resolved_at).toBeNull();
+
+    const page = await request("/admin/security", { headers: { cookie } });
+    expect(page.status).toBe(200);
+    expect(await page.text()).toContain("evt_dlq_1");
+
+    const resolved = await formRequest(`/admin/security/dlq/dlq_${messageId}/resolve`, {}, cookie);
+    expect(resolved.status).toBe(303);
+    const after = await env.DB.prepare(
+      `SELECT resolved_at, resolved_by FROM telemetry_dlq WHERE id = ?`,
+    )
+      .bind(`dlq_${messageId}`)
+      .first<{ resolved_at: number | null; resolved_by: string | null }>();
+    expect(after?.resolved_at).not.toBeNull();
+    expect(after?.resolved_by).toBe(admin.email);
+
+    const audit = await env.DB.prepare(
+      `SELECT COUNT(*) AS count FROM admin_audit_events WHERE action = 'queue.dlq_resolve'`,
+    ).first<{ count: number }>();
+    expect(audit?.count).toBe(1);
+  });
+});
+
+describe("observability alerts", () => {
+  it("fires and resolves the 5xx and DLQ alerts and shows them to admins", async () => {
+    await seedProduct();
+    const admin = await seedUser({ email: "obs-admin@example.com", role: "super_admin" });
+    const cookie = await sessionCookie(admin.id);
+    const timestamp = now();
+    const bucket = Math.floor(timestamp / 60000) * 60000;
+    await env.DB.batch([
+      env.DB.prepare(
+        `INSERT INTO metric_counters (bucket_start, total, errors, updated_at) VALUES (?, 200, 10, ?)`,
+      ).bind(bucket, timestamp),
+      env.DB.prepare(
+        `INSERT INTO telemetry_dlq (id, queue, message_id, attempts, payload, failed_at, created_at, updated_at)
+         VALUES ('dlq_alert_1', 'bhcp-telemetry-dlq', 'msg_alert_1', 3, '{}', ?, ?, ?)`,
+      ).bind(timestamp, timestamp, timestamp),
+    ]);
+
+    const firing = await evaluateAlerts(env);
+    expect(firing.find((alert) => alert.key === "http.5xx_rate")?.status).toBe("firing");
+    expect(firing.find((alert) => alert.key === "queue.dlq_depth")?.status).toBe("firing");
+    expect(firing.every((alert) => alert.changed)).toBe(true);
+
+    const dashboard = await request("/admin", { headers: { cookie } });
+    expect(dashboard.status).toBe(200);
+    expect(await dashboard.text()).toContain("5xx (5 นาที)");
+
+    const security = await request("/admin/security", { headers: { cookie } });
+    expect(security.status).toBe(200);
+    expect(await security.text()).toContain("queue.dlq_depth");
+
+    // Clearing both conditions resolves the alerts and records the transitions.
+    await env.DB.batch([
+      env.DB.prepare(`DELETE FROM metric_counters`),
+      env.DB.prepare(`UPDATE telemetry_dlq SET resolved_at = ?, resolved_by = 'test' WHERE id = 'dlq_alert_1'`).bind(
+        now(),
+      ),
+    ]);
+    const cleared = await evaluateAlerts(env);
+    expect(cleared.every((alert) => alert.status === "ok")).toBe(true);
+    const states = await listAlertStates(env);
+    expect(states).toHaveLength(2);
+    expect(states.every((row) => row.resolved_at !== null)).toBe(true);
+
+    const events = await env.DB.prepare(`SELECT COUNT(*) AS count FROM alert_events`).first<{ count: number }>();
+    expect(events?.count).toBe(4);
+  });
+
+  it("runs the alert tick from the five-minute cron and records the job", async () => {
+    const ctx = { waitUntil() {}, passThroughOnException() {} } as unknown as ExecutionContext;
+    await handleScheduled({ cron: ALERT_CRON } as ScheduledController, env, ctx);
+    const job = await env.DB.prepare(`SELECT status FROM job_runs WHERE job = 'scheduled.alerts'`).first<{
+      status: string;
+    }>();
+    expect(job?.status).toBe("ok");
+    const states = await listAlertStates(env);
+    expect(states.map((row) => row.key).sort()).toEqual(["http.5xx_rate", "queue.dlq_depth"]);
+  });
+
+  it("posts records to the configured HTTP sink with the bearer token", async () => {
+    const calls: Array<{ url: string; init?: RequestInit }> = [];
+    const original = globalThis.fetch;
+    globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+      calls.push({ url: String(input), init });
+      return new Response("ok", { status: 200 });
+    }) as typeof fetch;
+    try {
+      const sinkEnv = {
+        ...env,
+        OBSERVABILITY_WEBHOOK_URL: "https://sink.example/ingest",
+        OBSERVABILITY_WEBHOOK_TOKEN: "sink-token",
+      } as typeof env;
+      const delivered = await postSink(sinkEnv, [{ type: "alert", event: "alert.firing" }]);
+      expect(delivered).toBe(true);
+      expect(calls).toHaveLength(1);
+      expect(calls[0]?.url).toBe("https://sink.example/ingest");
+      const headers = new Headers(calls[0]?.init?.headers);
+      expect(headers.get("authorization")).toBe("Bearer sink-token");
+      const body = JSON.parse(String(calls[0]?.init?.body)) as { records: Array<{ event: string }> };
+      expect(body.records[0]?.event).toBe("alert.firing");
+    } finally {
+      globalThis.fetch = original;
+    }
   });
 });

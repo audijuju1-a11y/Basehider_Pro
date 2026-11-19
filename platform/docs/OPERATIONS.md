@@ -11,7 +11,10 @@
 | Stale installations | installations.status = stale | expected only for offline servers |
 | Failed logins | /admin/security | no sustained spikes |
 | Invalid signatures | security_events event_type = request.invalid_signature | investigate immediately |
-| Queue DLQ | Cloudflare dashboard | empty |
+| Queue DLQ | /admin/security (telemetry_dlq) and Cloudflare dashboard | 0 open |
+| 5xx ratio | /admin dashboard card, alert_state key http.5xx_rate | under 1% over 5 minutes |
+| Firing alerts | /admin/security card, /status component, alert_events | none firing |
+| Alert cron | job_runs job = scheduled.alerts | every 5 minutes, status ok |
 | Cron executions | job_runs table | hourly, status ok |
 
 ## Logs
@@ -22,12 +25,22 @@ telemetry.archive_failed, security_event.write_failed.
 
 Sensitive keys (token, secret, password, authorization, api key, private, signature, cookie) are redacted.
 
+Each request performs one small D1 upsert into the current minute row (`total`, `errors`) through
+`waitUntil`, which is what makes the five-minute ratio accurate; the hourly cleanup keeps the last 7 days.
+If D1 write volume ever matters more than the ratio, this counter is the first thing to move to Analytics
+Engine.
+
+Warn and error lines are also buffered and POSTed to `OBSERVABILITY_WEBHOOK_URL` when it is set, together
+with alert transitions. A sink failure is itself logged as `observability.sink_failed` and never blocks a
+request; check `observability.sink_rejected` for a receiver that answers non-2xx.
+
 ## Runbooks
 
 ### Telemetry backlog growing / not draining
 1. Check the consumer is attached: npx wrangler queues consumer list bhcp-telemetry.
 2. Check Workers logs for queue.processing_failed and R2 errors.
-3. Inspect the DLQ. If messages are poisoned, fix the payload and replay from DLQ after deploying.
+3. Inspect the DLQ at /admin/security (table `telemetry_dlq`). If messages are poisoned, fix the cause,
+   replay the payload from the Cloudflare dashboard, then mark the row resolved.
 4. Confirm R2 bucket exists and the binding name matches ARCHIVE.
 5. Telemetry failure does not affect licence verification; communicate scope accordingly.
 
@@ -66,6 +79,28 @@ Sensitive keys (token, secret, password, authorization, api key, private, signat
    in a support ticket; there is no manual unlock button yet (database-only operation if urgent).
 4. Look for repeated failures across many server names from one IP: that is the "other server names"
    signal the guard records.
+
+### 5xx alert firing (`http.5xx_rate`)
+
+1. Open /admin/security; the card shows the current ratio, the request count and the threshold.
+2. Check Workers Logs (`observability.enabled`) for `unhandled_error` and `metrics.record_failed` in the
+   same window. The counter is per minute, so a spike older than 5 minutes is expected to clear itself.
+3. Reproduce the failing route with a request id from the log line (every response carries X-Request-Id).
+4. A low-traffic hour cannot fire the rule: it needs at least 20 requests in the window.
+5. The alert resolves on its own when the ratio drops; the transition is recorded in `alert_events`.
+
+### DLQ depth alert firing (`queue.dlq_depth`)
+
+1. The rule fires while any unresolved row exists, so it stays on until an operator resolves the rows.
+2. Follow the DLQ runbook in DEPLOYMENT.md section 7, then mark each row handled on /admin/security.
+3. Confirm the card shows zero open and the next tick (within 5 minutes) records the resolution.
+
+### Alert cron failure
+
+1. `job_runs` with job = scheduled.alerts and status = error carries the message in detail.
+2. Alert evaluation needs `metric_counters`, `alert_state`, `alert_events`; run the migrations if a
+   deployment predates migration 0008.
+3. A failing sink does not change alert state; fix the receiver and the next transition is delivered.
 
 ### Scheduled job failure
 1. Read job_runs status=error and the detail column.

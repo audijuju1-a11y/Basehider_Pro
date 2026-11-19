@@ -129,6 +129,8 @@ export interface IssueLicenseInput {
   createdBy: string | null;
   entitlements?: string[];
   reason?: string;
+  /** Refuse to create a second active licence for the same org + product (free tier). */
+  onlyIfNoActive?: boolean;
 }
 
 export interface IssuedLicense {
@@ -138,7 +140,7 @@ export interface IssuedLicense {
   expiresAt: number | null;
 }
 
-export async function issueLicense(env: Env, input: IssueLicenseInput): Promise<IssuedLicense> {
+export async function issueLicense(env: Env, input: IssueLicenseInput): Promise<IssuedLicense | null> {
   const product = await first<{ id: string; slug: string; status: string }>(
     env.DB,
     `SELECT id, slug, status FROM products WHERE id = ?`,
@@ -166,16 +168,16 @@ export async function issueLicense(env: Env, input: IssueLicenseInput): Promise<
   let rawKey = "";
   let keyHash = "";
 
+  const uniqueActive = input.onlyIfNoActive === true;
   for (let attempt = 0; attempt < 4; attempt++) {
     rawKey = newLicenseKey("BH");
     keyHash = await hashLicenseKey(env, rawKey);
     try {
-      await run(
-        env.DB,
-        `INSERT INTO licenses (
+      const columns = `(
            id, product_id, plan_id, org_id, owner_user_id, key_prefix, key_hash, status,
            activation_limit, entitlements, issued_at, expires_at, created_by, created_at, updated_at
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?)`,
+         )`;
+      const values = [
         licenseId,
         input.productId,
         input.planId,
@@ -190,7 +192,24 @@ export async function issueLicense(env: Env, input: IssueLicenseInput): Promise<
         input.createdBy,
         createdAt,
         createdAt,
-      );
+      ] as const;
+      // The guarded form re-checks "no active licence for this org+product" inside the
+      // INSERT, so two concurrent free-licence requests cannot both create one.
+      const statement = uniqueActive
+        ? env.DB.prepare(
+            `INSERT INTO licenses ${columns}
+             SELECT ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?
+              WHERE NOT EXISTS (
+                SELECT 1 FROM licenses
+                 WHERE org_id = ? AND product_id = ? AND status = 'active'
+                   AND (expires_at IS NULL OR expires_at > ?)
+              )`,
+          ).bind(...values, input.orgId, input.productId, createdAt)
+        : env.DB.prepare(`INSERT INTO licenses ${columns} VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?)`).bind(
+            ...values,
+          );
+      const result = await statement.run();
+      if (affected(result) === 0) return null;
       break;
     } catch (error) {
       if (attempt === 3) throw error;
@@ -397,6 +416,7 @@ export interface RegisteredInstallation {
 export async function registerInstallation(
   env: Env,
   input: RegisterInstallationInput,
+  options: { signedReregistration?: boolean } = {},
 ): Promise<RegisteredInstallation> {
   if (!UUID_RE.test(input.installationUuid)) throw badRequest("installation_uuid ไม่ถูกต้อง");
   const product = await first<{ id: string; slug: string; status: string }>(
@@ -441,6 +461,12 @@ export async function registerInstallation(
       throw conflict("installation_uuid นี้ลงทะเบียนด้วยกุญแจอื่นแล้ว");
     }
     if (existing.status === "revoked") throw forbidden("installation นี้ถูกเพิกถอน");
+    // installation_uuid and public_key are not secrets (they travel in every request and
+    // appear in the portal). Without proof of possession anyone who saw them could obtain
+    // a fresh pairing code and bind the victim's server to their own account.
+    if (!options.signedReregistration) {
+      throw unauthorized("การลงทะเบียนซ้ำต้องลงนามด้วยกุญแจของ installation เดิม");
+    }
     if (normalizedServerName) {
       await run(
         env.DB,
@@ -512,7 +538,16 @@ async function createActivationChallenge(
   if (!pepper) throw configError("ยังไม่ได้ตั้งค่า LICENSE_KEY_PEPPER");
   const code = newActivationCode(16);
   const codeHash = await hmacSha256Hex(pepper, `activation:${code}`);
-  const expiresAt = now() + 24 * HOUR;
+  const timestamp = now();
+  const expiresAt = timestamp + 24 * HOUR;
+  // A new code supersedes every older unconsumed code for this installation, so exactly
+  // one pairing code is valid at a time and abandoned codes cannot pile up.
+  await run(
+    env.DB,
+    `UPDATE activation_challenges SET consumed_at = ? WHERE installation_id = ? AND consumed_at IS NULL`,
+    timestamp,
+    installationId,
+  );
   await run(
     env.DB,
     `INSERT INTO activation_challenges (id, installation_id, code_hash, code_prefix, expires_at, created_at)
@@ -522,7 +557,7 @@ async function createActivationChallenge(
     codeHash,
     code.slice(0, 3),
     expiresAt,
-    now(),
+    timestamp,
   );
   return { code, expiresAt };
 }
@@ -554,7 +589,7 @@ async function createFreeLicense(
   user: SessionUser,
   productId: string,
   productSlug: string,
-): Promise<LicenseRow> {
+): Promise<LicenseRow | null> {
   const orgId = user.memberships[0]?.orgId;
   if (!orgId) throw badRequest("บัญชีนี้ยังไม่มีองค์กรสำหรับออกไลเซนส์");
   const issued = await issueLicense(env, {
@@ -567,8 +602,11 @@ async function createFreeLicense(
     createdBy: user.id,
     entitlements: FREE_ENTITLEMENTS[productSlug] ?? ["free"],
     reason: "free self-service",
+    onlyIfNoActive: true,
   });
-  await env.CACHE.put(`newlic:${issued.id}`, issued.rawKey, { expirationTtl: 7 * 24 * 60 * 60 });
+  if (!issued) return null;
+  // Shown once, soon after issue; a long-lived KV copy of the raw key is unnecessary risk.
+  await env.CACHE.put(`newlic:${issued.id}`, issued.rawKey, { expirationTtl: 600 });
   const row = await getLicenseRow(env, issued.id);
   if (!row) throw notFound("ไม่พบไลเซนส์ที่สร้างใหม่");
   await recordSecurityEvent(env, {
@@ -595,7 +633,20 @@ export async function ensureFreeLicenseForUser(
     productSlug,
   );
   if (!product) return { license: null, created: false };
-  const existing = await first<LicenseRow>(
+  const existing = await findActiveLicenseForUser(env, product.id, user.id);
+  if (existing) return { license: existing, created: false };
+  const created = await createFreeLicense(env, user, product.id, product.slug);
+  if (created) return { license: created, created: true };
+  // A concurrent request created the free licence between the SELECT and the guarded INSERT.
+  return { license: await findActiveLicenseForUser(env, product.id, user.id), created: false };
+}
+
+async function findActiveLicenseForUser(
+  env: Env,
+  productId: string,
+  userId: string,
+): Promise<LicenseRow | null> {
+  return first<LicenseRow>(
     env.DB,
     `${LICENSE_SELECT}
       WHERE l.product_id = ?
@@ -604,12 +655,10 @@ export async function ensureFreeLicenseForUser(
         AND (l.expires_at IS NULL OR l.expires_at > ?)
       ORDER BY l.created_at DESC
       LIMIT 1`,
-    product.id,
-    user.id,
+    productId,
+    userId,
     now(),
   );
-  if (existing) return { license: existing, created: false };
-  return { license: await createFreeLicense(env, user, product.id, product.slug), created: true };
 }
 
 export async function claimActivation(
@@ -726,22 +775,55 @@ async function claimActivationInner(
 
   const timestamp = now();
   const activationId = newId("act");
+  // Activation rows survive release (UNIQUE(license_id, installation_id)), so a released
+  // installation must be revived with an UPSERT instead of a plain INSERT. The WHERE clause
+  // re-checks the activation limit inside the same statement, which closes the
+  // check-then-insert race that let concurrent claims exceed the limit.
+  let activationResult: D1Result<unknown>;
   try {
-    await env.DB.batch([
-      env.DB.prepare(
-        `INSERT INTO activations (id, license_id, installation_id, status, activated_at, last_seen_at)
-         VALUES (?, ?, ?, 'active', ?, ?)`,
-      ).bind(activationId, license.id, installation.id, timestamp, timestamp),
-      env.DB.prepare(
-        `UPDATE installations SET license_id = ?, org_id = ?, status = 'active', updated_at = ? WHERE id = ?`,
-      ).bind(license.id, license.org_id, timestamp, installation.id),
-      env.DB.prepare(
-        `UPDATE activation_challenges SET consumed_at = ? WHERE id = ? AND consumed_at IS NULL`,
-      ).bind(timestamp, challenge.id),
-    ]);
+    activationResult = await run(
+      env.DB,
+      `INSERT INTO activations (id, license_id, installation_id, status, activated_at, last_seen_at)
+       SELECT ?, ?, ?, 'active', ?, ?
+        WHERE (SELECT COUNT(*) FROM activations
+                WHERE license_id = ? AND status = 'active' AND installation_id <> ?) < ?
+       ON CONFLICT (license_id, installation_id) DO UPDATE SET
+         status = 'active',
+         activated_at = excluded.activated_at,
+         last_seen_at = excluded.last_seen_at,
+         released_at = NULL
+       WHERE activations.status <> 'active'`,
+      activationId,
+      license.id,
+      installation.id,
+      timestamp,
+      timestamp,
+      license.id,
+      installation.id,
+      license.activation_limit,
+    );
   } catch {
     throw conflict("ไม่สามารถเปิดใช้งานได้ อาจมีการใช้รหัสนี้ไปแล้ว");
   }
+  if (affected(activationResult) === 0) {
+    const alreadyActive = await first<{ id: string }>(
+      env.DB,
+      `SELECT id FROM activations WHERE license_id = ? AND installation_id = ? AND status = 'active'`,
+      license.id,
+      installation.id,
+    );
+    if (!alreadyActive) {
+      throw conflict("ไลเซนส์นี้ใช้เซิร์ฟเวอร์ครบจำนวนแล้ว กรุณารีเซ็ตการเปิดใช้งาน");
+    }
+  }
+  await env.DB.batch([
+    env.DB.prepare(
+      `UPDATE installations SET license_id = ?, org_id = ?, status = 'active', updated_at = ? WHERE id = ?`,
+    ).bind(license.id, license.org_id, timestamp, installation.id),
+    env.DB.prepare(
+      `UPDATE activation_challenges SET consumed_at = ? WHERE id = ? AND consumed_at IS NULL`,
+    ).bind(timestamp, challenge.id),
+  ]);
 
   await recordSecurityEvent(env, {
     eventType: "activation.claimed",
@@ -850,6 +932,19 @@ export interface VerifiedRequest {
 }
 
 export async function verifySignedRequest(env: Env, request: Request): Promise<VerifiedRequest> {
+  return verifySignedBody(env, request, await request.text());
+}
+
+/**
+ * Verifies a signed request against an already-read body. Registration needs this because
+ * the body must be parsed first to know which installation it claims to be, and a
+ * re-registration is only accepted when it carries a signature by that installation's key.
+ */
+export async function verifySignedBody(
+  env: Env,
+  request: Request,
+  bodyText: string,
+): Promise<VerifiedRequest> {
   const installationUuid = request.headers.get("x-bh-installation") ?? "";
   const timestampRaw = request.headers.get("x-bh-timestamp") ?? "";
   const nonce = request.headers.get("x-bh-nonce") ?? "";
@@ -866,8 +961,9 @@ export async function verifySignedRequest(env: Env, request: Request): Promise<V
   const installation = await getInstallationByUuid(env, installationUuid);
   if (!installation) throw unauthorized("ไม่พบ installation นี้");
   if (installation.status === "revoked") throw forbidden("installation นี้ถูกเพิกถอน");
+  // A suspended installation must not keep sending telemetry or renewing leases.
+  if (installation.status === "suspended") throw forbidden("installation นี้ถูกระงับการใช้งาน");
 
-  const bodyText = await request.text();
   if (bodyText.length > 128 * 1024) throw new AppError(413, "payload_too_large", "ข้อมูลใหญ่เกินกำหนด");
   const bodyHash = await sha256Hex(new TextEncoder().encode(bodyText));
   const pathname = new URL(request.url).pathname;
@@ -1010,19 +1106,6 @@ export async function issueLease(env: Env, installation: InstallationRow): Promi
     keys: keys.map((key) => ({ key_id: key.key_id, public_key: key.public_key })),
     offline_grace_hours: graceHours,
   };
-}
-
-/* Public key discovery for clients that cache verification keys. */
-export async function publicKeyDocument(env: Env): Promise<{ keys: Array<{ key_id: string; public_key: string }> }> {
-  const keys = await activePublicKeys(env);
-  return { keys: keys.map((key) => ({ key_id: key.key_id, public_key: key.public_key })) };
-}
-
-/** Resolves an installation from a signed request without re-reading the body. */
-export async function requireInstallation(env: Env, installationUuid: string): Promise<InstallationRow> {
-  const installation = await getInstallationByUuid(env, installationUuid);
-  if (!installation) throw unauthorized("ไม่พบ installation");
-  return installation;
 }
 
 /** Utility used by tests and admin tooling. */

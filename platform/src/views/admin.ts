@@ -8,6 +8,7 @@ import type {
   CustomerRow,
 } from "../services/admin";
 import type { GuardSummary } from "../services/activation-guard";
+import type { AlertStateRow } from "../services/observability";
 import type { ProductRow, PlanRow, ReleaseRow } from "../services/catalog";
 import type { TicketMessageRow, TicketView } from "../services/support";
 import {
@@ -82,6 +83,8 @@ export function adminDashboardPage(
       ${stat("IP ถูกล็อก", stats.lockedIps, `รหัสผิด 24 ชม. ${stats.failedActivations24h} ครั้ง`)}
       ${stat("ตั๋วที่เปิดอยู่", stats.openTickets, "open + pending")}
       ${stat("Telemetry ค้าง", stats.pendingTelemetry, stats.lastTelemetryAt ? `ประมวลผลล่าสุด ${timeAgo(stats.lastTelemetryAt)}` : "ยังไม่มีข้อมูล")}
+      ${stat("Alert ที่ทำงาน", stats.alertsFiring, "ตรวจทุก 5 นาที · จาก /admin/security")}
+      ${stat("5xx (5 นาที)", `${(stats.http5xxRate5m * 100).toFixed(2)}%`, `จาก ${stats.httpRequests5m} คำขอ · เกณฑ์ 1%`)}
     </div>
 
     <div class="card" style="margin-top:1rem">
@@ -526,11 +529,18 @@ export function adminReleasesPage(
           <td class="muted">${release.channel}</td>
           <td>${badge(release.status)}</td>
           <td class="muted">${formatDate(release.released_at)}</td>
-          <td><form method="post" action="/admin/releases/${release.id}/file" enctype="multipart/form-data" class="inline-form">
-            ${csrfInput(csrf)}
-            <input class="input" type="file" name="artifact" accept=".jar,application/java-archive" required style="max-width:150px;font-size:.65rem;padding:.3rem">
-            <button class="btn btn-soft btn-sm" type="submit">${icon("download")} อัปโหลด</button>
-          </form></td>
+          <td>
+            <form method="post" action="/admin/releases/${release.id}/status" class="inline-form">
+              ${csrfInput(csrf)}
+              <input type="hidden" name="status" value="${release.status === "published" ? "draft" : "published"}">
+              <button class="btn btn-soft btn-sm" type="submit">${release.status === "published" ? "ถอนเผยแพร่" : "เผยแพร่"}</button>
+            </form>
+            <form method="post" action="/admin/releases/${release.id}/file" enctype="multipart/form-data" class="inline-form">
+              ${csrfInput(csrf)}
+              <input class="input" type="file" name="artifact" accept=".jar,application/java-archive" required style="max-width:150px;font-size:.65rem;padding:.3rem">
+              <button class="btn btn-soft btn-sm" type="submit">${icon("download")} อัปโหลด</button>
+            </form>
+          </td>
         </tr>`), "ยังไม่มีรีลีส")}
       </div>
       <div class="card">
@@ -545,6 +555,7 @@ export function adminReleasesPage(
               <div class="field"><label>เวอร์ชัน</label><input class="input" name="version" required maxlength="32" placeholder="3.3.0"></div>
               <div class="field"><label>ช่อง</label><select class="select" name="channel"><option value="stable">stable</option><option value="beta">beta</option><option value="preview">preview</option></select></div>
             </div>
+            <div class="field"><label>สถานะ</label><select class="select" name="status"><option value="draft">draft (ยังไม่เผยแพร่)</option><option value="published">published</option></select></div>
             <div class="field"><label>หมายเหตุ (Markdown)</label><textarea class="textarea" name="notes" required maxlength="8000"></textarea></div>
             <div class="field-row">
               <div class="field"><label>Minecraft (คั่นด้วย ,)</label><input class="input" name="minecraft" placeholder="1.21.4"></div>
@@ -678,8 +689,54 @@ export function adminTicketPage(
 export function adminSecurityPage(
   events: Array<{ id: string; event_type: string; severity: string; installation_name: string | null; user_email: string | null; details: string; created_at: number; ip_hash: string | null }>,
   guards: GuardSummary[] = [],
+  deadLetters: Array<{ id: string; queue: string; message_id: string; kind: string | null; event_id: string | null; installation_id: string | null; attempts: number; payload: string; failed_at: number }> = [],
+  dlq: { open: number; last24h: number; oldestFailedAt: number | null } = { open: 0, last24h: 0, oldestFailedAt: null },
+  csrf = "",
+  alerts: AlertStateRow[] = [],
 ): SafeHtml {
   return html`
+    <div class="card" style="margin-bottom:1rem">
+      <div class="card-head">
+        <h3>การแจ้งเตือนอัตโนมัติ</h3>
+        <span class="mono" style="font-size:.55rem">ตรวจทุก 5 นาที · 5xx &gt; 1% · DLQ &gt; 0</span>
+      </div>
+      <div class="card-body" style="padding:0">
+        ${table(
+          ["สถานะ", "ตัวชี้วัด", "ค่า", "เกณฑ์", "ข้อความ", "อัปเดต"],
+          alerts.map((alert) => html`<tr>
+            <td>${alert.status === "firing" ? badge("critical") : badge("info")}</td>
+            <td><code>${alert.key}</code></td>
+            <td class="num">${alert.key === "http.5xx_rate" ? `${(alert.value * 100).toFixed(2)}%` : alert.value}</td>
+            <td class="num">${alert.key === "http.5xx_rate" ? `${(alert.threshold * 100).toFixed(0)}%` : alert.threshold}</td>
+            <td class="muted">${alert.message}</td>
+            <td class="muted">${formatWhen(alert.updated_at)}</td>
+          </tr>`),
+          "ยังไม่มีการประเมิน — รอ cron รอบถัดไป (ทุก 5 นาที)",
+        )}
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:1rem">
+      <div class="card-head">
+        <h3>Dead letter queue</h3>
+        <span class="mono" style="font-size:.55rem">${dlq.open} ค้าง · ${dlq.last24h} ใน 24 ชม.${dlq.oldestFailedAt ? ` · เก่าสุด ${timeAgo(dlq.oldestFailedAt)}` : ""}</span>
+      </div>
+      <div class="card-body" style="padding:0">
+        ${table(
+          ["เวลา", "เหตุการณ์", "เซิร์ฟเวอร์", "ลอง", "payload", ""],
+          deadLetters.map((row) => html`<tr>
+            <td class="muted">${formatWhen(row.failed_at)}</td>
+            <td><code>${row.event_id ?? row.message_id}</code><div class="muted" style="font-size:.68rem">${row.kind ?? row.queue}</div></td>
+            <td class="muted"><code>${row.installation_id?.slice(0, 16) ?? "—"}</code></td>
+            <td class="num">${row.attempts}</td>
+            <td><details><summary class="muted" style="font-size:.7rem;cursor:pointer">ดู</summary><pre class="code-block" style="max-width:420px">${row.payload}</pre></details></td>
+            <td><form method="post" action="/admin/security/dlq/${row.id}/resolve" class="inline-form" data-confirm="ทำเครื่องหมายว่าข้อความนี้จัดการแล้ว?">
+              ${csrfInput(csrf)}<button class="btn btn-ghost btn-sm" type="submit">จัดการแล้ว</button>
+            </form></td>
+          </tr>`),
+          "ไม่มีข้อความตกค้างใน DLQ",
+        )}
+      </div>
+    </div>
     <div class="card" style="margin-bottom:1rem">
       <div class="card-head"><h3>การป้องกันการเดารหัสเปิดใช้งาน</h3><span class="mono" style="font-size:.55rem">ล็อก 5 นาทีเมื่อผิด 5 ครั้ง · 10 นาทีเมื่อผิด 10 ครั้ง · เพิ่มขึ้นเรื่อย ๆ</span></div>
       <div class="card-body" style="padding:0">

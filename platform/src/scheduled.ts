@@ -4,12 +4,18 @@ import { batch, run } from "./lib/db";
 import { getSetting } from "./services/audit";
 import { log, logError } from "./lib/logger";
 import { ensureSigningKey } from "./services/licensing";
+import { ALERT_CRON, evaluateAlerts, flushLogs, shipAlerts } from "./services/observability";
 
 export async function handleScheduled(
-  _controller: ScheduledController,
+  controller: ScheduledController,
   env: Env,
-  ctx: ExecutionContext,
+  _ctx: ExecutionContext,
 ): Promise<void> {
+  if (controller.cron === ALERT_CRON) {
+    await handleAlertTick(env);
+    return;
+  }
+
   const startedAt = now();
   let status: "ok" | "warn" | "error" = "ok";
   const details: Record<string, number | string> = {};
@@ -42,6 +48,23 @@ export async function handleScheduled(
            SELECT id FROM telemetry_events WHERE processed_at IS NOT NULL AND received_at < ? LIMIT 1000
          )`,
       ).bind(retentionCutoff),
+      // Bounded retention for tables that previously grew without limit.
+      env.DB.prepare(`DELETE FROM license_leases WHERE expires_at < ?`).bind(timestamp - 7 * DAY),
+      env.DB.prepare(`DELETE FROM security_events WHERE created_at < ?`).bind(retentionCutoff),
+      env.DB.prepare(`DELETE FROM job_runs WHERE COALESCE(finished_at, started_at) < ?`).bind(
+        timestamp - 90 * DAY,
+      ),
+      env.DB.prepare(`DELETE FROM email_log WHERE created_at < ?`).bind(retentionCutoff),
+      env.DB.prepare(`DELETE FROM heartbeat_latest WHERE received_at < ?`).bind(retentionCutoff),
+      env.DB.prepare(
+        `DELETE FROM activation_guard WHERE updated_at < ? AND (locked_until IS NULL OR locked_until < ?)`,
+      ).bind(timestamp - 7 * DAY, timestamp),
+      // Resolved DLQ rows are evidence history; unresolved rows stay until an operator acts.
+      env.DB.prepare(`DELETE FROM telemetry_dlq WHERE resolved_at IS NOT NULL AND failed_at < ?`).bind(
+        retentionCutoff,
+      ),
+      // Minute counters only feed the 5-minute ratio, so a week is plenty.
+      env.DB.prepare(`DELETE FROM metric_counters WHERE bucket_start < ?`).bind(timestamp - 7 * DAY),
     ]);
 
     details.sessions = results[0]?.meta?.changes ?? 0;
@@ -51,6 +74,14 @@ export async function handleScheduled(
     details.expired_licenses = results[4]?.meta?.changes ?? 0;
     details.stale_installations = results[5]?.meta?.changes ?? 0;
     details.telemetry_deleted = results[6]?.meta?.changes ?? 0;
+    details.leases_deleted = results[7]?.meta?.changes ?? 0;
+    details.security_events_deleted = results[8]?.meta?.changes ?? 0;
+    details.job_runs_deleted = results[9]?.meta?.changes ?? 0;
+    details.email_log_deleted = results[10]?.meta?.changes ?? 0;
+    details.heartbeats_deleted = results[11]?.meta?.changes ?? 0;
+    details.activation_guards_deleted = results[12]?.meta?.changes ?? 0;
+    details.dlq_deleted = results[13]?.meta?.changes ?? 0;
+    details.metrics_deleted = results[14]?.meta?.changes ?? 0;
     details.retention_days = retentionDays;
 
     try {
@@ -91,5 +122,43 @@ export async function handleScheduled(
       /* database may be unavailable */
     }
   }
-  ctx.waitUntil(Promise.resolve());
+  await flushLogs(env);
+}
+
+/**
+ * Every five minutes: evaluate both rules, forward only the transitions to the
+ * sink and record the tick in job_runs so a broken alert path is visible.
+ */
+async function handleAlertTick(env: Env): Promise<void> {
+  const startedAt = now();
+  let status: "ok" | "warn" | "error" = "ok";
+  let detail: Record<string, unknown>;
+  try {
+    const alerts = await evaluateAlerts(env);
+    const delivered = await shipAlerts(env, alerts);
+    const firing = alerts.filter((alert) => alert.status === "firing");
+    status = firing.length > 0 ? "warn" : "ok";
+    detail = { firing: firing.map((alert) => alert.key), delivered };
+    log(status === "warn" ? "warn" : "info", "alert.tick", { status, ...detail });
+  } catch (error) {
+    status = "error";
+    detail = { error: error instanceof Error ? error.message.slice(0, 500) : "unknown" };
+    logError("alert.tick_failed", error);
+  }
+  try {
+    await run(
+      env.DB,
+      `INSERT INTO job_runs (id, job, status, detail, started_at, finished_at, duration_ms)
+       VALUES (?, 'scheduled.alerts', ?, ?, ?, ?, ?)`,
+      `job_alerts_${startedAt}`,
+      status,
+      JSON.stringify(detail),
+      startedAt,
+      now(),
+      now() - startedAt,
+    );
+  } catch {
+    /* database may be unavailable */
+  }
+  await flushLogs(env);
 }

@@ -33,6 +33,13 @@ Schema: migrations/0001_init.sql. Tables are STRICT; timestamps are integer epoc
 - telemetry_events: event id, type, severity, occurred/received, payload, processed_at.
 - telemetry_rollups: 5-minute bucket with samples, TPS average, MSPT percentiles and errors.
 - security_events: auth, licence, activation and webhook security signals.
+- telemetry_dlq: poison messages moved to the dead letter queue (event id, installation, attempts,
+  raw payload, failed/resolved timestamps). Written by the DLQ consumer (migration 0007).
+- metric_counters: one row per minute with the request `total` and 5xx `errors` that feed the 5xx
+  alert; the hourly cleanup keeps the last 7 days (migration 0008).
+- alert_state: current status/value/message for `http.5xx_rate` and `queue.dlq_depth`.
+- alert_events: one row per alert transition (firing or resolved) for the history shown on
+  /admin/security (migration 0008).
 
 ## Activation guard, support, audit
 
@@ -73,3 +80,21 @@ Migrations are additive and versioned by filename. Never edit an applied product
 2. Include org_id IN (SELECT org_id FROM organization_members WHERE user_id = ?).
 3. For writes, re-check membership role (owner/member; block read_only).
 4. Never accept org_id from the request body for customer operations.
+
+## Legacy commerce tables (deprecated 2026-11-19)
+
+`wallets`, `wallet_transactions`, `topup_orders`, `payment_events`, `payment_orders`,
+`payment_webhook_events`, `payment_slips`, `products.price_cents` and `product_plans` are unused:
+the platform is free and no route or service reads or writes them. They are kept for now because
+dropping tables destroys production rows; remove them in one explicit migration after a verified
+D1 export. Do not build new features on these tables.
+
+## Retention added 2026-11-19
+
+The hourly scheduled job now also deletes:
+
+- `license_leases` whose `expires_at` is more than 7 days old,
+- `security_events` / `email_log` / `heartbeat_latest` older than `telemetry.retention_days`,
+- `job_runs` older than 90 days,
+- `activation_guard` rows untouched for 7 days that are not currently locked,
+- resolved `telemetry_dlq` rows older than `telemetry.retention_days` (unresolved rows are kept).

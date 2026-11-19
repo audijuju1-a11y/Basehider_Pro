@@ -3,6 +3,29 @@ const SECRET_KEY = /(token|secret|password|authorization|api[-_]?key|private|sig
 
 export type LogLevel = "debug" | "info" | "warn" | "error";
 
+export interface LogRecord {
+  level: LogLevel;
+  event: string;
+  ts: string;
+  [key: string]: unknown;
+}
+
+/** Bounded so an isolate cannot grow memory if nothing drains the buffer. */
+const MAX_BUFFERED_RECORDS = 50;
+let buffered: LogRecord[] = [];
+
+/**
+ * warn/error records are buffered for the observability sink. The HTTP
+ * middleware, the cron handler and the queue consumer drain them when their
+ * turn ends (see services/observability.ts).
+ */
+export function drainLogRecords(): LogRecord[] {
+  if (buffered.length === 0) return [];
+  const records = buffered;
+  buffered = [];
+  return records;
+}
+
 function redact(value: unknown, depth = 0): unknown {
   if (depth > 4) return "[depth]";
   if (value === null || value === undefined) return value;
@@ -25,7 +48,7 @@ export function log(
   event: string,
   fields: Record<string, unknown> = {},
 ): void {
-  const record = {
+  const record: LogRecord = {
     level,
     event,
     ts: new Date().toISOString(),
@@ -35,6 +58,9 @@ export function log(
   if (level === "error") console.error(line);
   else if (level === "warn") console.warn(line);
   else console.log(line);
+  if ((level === "error" || level === "warn") && buffered.length < MAX_BUFFERED_RECORDS) {
+    buffered.push(record);
+  }
 }
 
 export function logError(event: string, error: unknown, fields: Record<string, unknown> = {}): void {

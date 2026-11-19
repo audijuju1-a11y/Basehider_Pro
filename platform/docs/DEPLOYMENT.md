@@ -31,16 +31,21 @@ Non-secret vars in wrangler.jsonc:
 - EMAIL_PROVIDER=resend or gmail, MAIL_FROM, SUPPORT_EMAIL
 - PROMPTPAY_PHONE=0925789459, PROMPTPAY_NAME=BaseHider, EMAIL_OTP_TTL_MINUTES=10
 - ADMIN_EMAILS may be left empty in production (Access is the admin path)
+- OBSERVABILITY_WEBHOOK_URL (optional; empty = Workers Logs only)
 
 Secrets:
 
 ~~~bash
 npx wrangler secret put LICENSE_KEY_PEPPER
+# optional but recommended: a separate pepper for hashed IPs (production fails closed without a pepper)
+npx wrangler secret put IP_HASH_PEPPER
 npx wrangler secret put LICENSE_SIGNING_KEY
 npx wrangler secret put LICENSE_PUBLIC_KEY
 npx wrangler secret put LICENSE_SIGNING_KEY_ID
 npx wrangler secret put TURNSTILE_SECRET
 npx wrangler secret put RESEND_API_KEY
+# only when the log/alert sink requires a bearer token
+npx wrangler secret put OBSERVABILITY_WEBHOOK_TOKEN
 # only when EMAIL_PROVIDER=gmail (OAuth, not an account password)
 npx wrangler secret put GMAIL_CLIENT_ID
 npx wrangler secret put GMAIL_CLIENT_SECRET
@@ -67,9 +72,13 @@ in the admin UI.
 1. Create a Cloudflare Access application for the path /admin* on the Worker domain.
 2. Policy: allow only the developer emails; require MFA.
 3. Copy the Application Audience (AUD) tag to ACCESS_AUD and the team domain to ACCESS_TEAM_DOMAIN.
-4. Provision staff users by signing in once through the customer login, then promote the user:
+4. Provision staff users: sign up with the staff email (sign-up is email-only), follow the verification link,
+   set a password in /app/account, then promote the user:
    npx wrangler d1 execute bhcp-db --remote --command "UPDATE users SET role='super_admin' WHERE email='you@example.com'"
 5. Verify /admin returns 403 without Access and 200 with it.
+
+`/auth/dev-admin` is a development-only bootstrap and answers 404 unless `DEV_BOOTSTRAP=1` and
+`DEV_ADMIN_TOKEN` (16+ characters) are both set; it never runs when `ENVIRONMENT=production`.
 
 If Access is missing in production the admin routes return a configuration error (fail closed). There is no
 password fallback.
@@ -105,15 +114,59 @@ activation codes and licence keys are the only customer-facing secrets. Configur
 `LICENSE_SIGNING_KEY`, `LICENSE_PUBLIC_KEY` and `LICENSE_SIGNING_KEY_ID`.
 ## 7. Queues and cron
 
-wrangler.jsonc already defines the producer/consumer binding, DLQ and an hourly cron (17 * * * *).
-After deploy check that the consumer is connected:
+wrangler.jsonc already defines the producer and both consumers (telemetry and its DLQ) plus two crons:
+the hourly cleanup (17 * * * *) and the five-minute alert tick (*/5 * * * *). After deploy check that the
+consumers are connected:
 
 ~~~bash
 npx wrangler queues consumer list bhcp-telemetry
+npx wrangler queues consumer list bhcp-telemetry-dlq
 ~~~
+
+### Messages in the DLQ
+
+The `bhcp-telemetry-dlq` consumer writes every poison message to `telemetry_dlq` and acks it,
+so a message is never silently dropped. Open `/admin/security` to see open rows with their event
+id, installation, attempt count and raw payload (requires `security.write` to mark one handled).
+
+1. Search Workers logs for `queue.processing_failed` with the same event id to see the cause
+   (usually a missing R2 binding, a schema violation or an exhausted database).
+2. Fix and deploy the cause.
+3. Replay the message from the Cloudflare dashboard (Queues → `bhcp-telemetry` → Send message)
+   using the payload shown in the DLQ card, or re-run the original event from the server.
+   Nothing replays automatically; the admin action only records that an operator handled it.
+4. Mark the row resolved on `/admin/security` and confirm the open count is zero.
+
+Resolved rows are deleted by the hourly job after `telemetry.retention_days`; unresolved rows
+stay until an operator acts.
 
 The scheduled job cleans expired sessions, tokens, nonces and rate windows, expires licences, marks stale
 installations and deletes telemetry beyond retention. It records each run in job_runs and logs a JSON line.
+
+### Alerts and the log sink
+
+The five-minute cron evaluates two rules and stores the result in `alert_state`:
+
+| Rule | Fires when | Default |
+|---|---|---|
+| `http.5xx_rate` | share of requests that returned 5xx in the last 5 minutes | > 1% with at least 20 requests |
+| `queue.dlq_depth` | unresolved rows in `telemetry_dlq` | > 0 |
+
+Every transition is appended to `alert_events` and POSTed to the optional HTTP sink together with the
+warn/error log lines buffered during the same request or run. Point the sink at any collector that
+accepts JSON (a Worker, Logpush target, or a hosted logging endpoint):
+
+~~~bash
+# var in wrangler.jsonc
+OBSERVABILITY_WEBHOOK_URL=https://logs.example/ingest
+# optional bearer token (secret)
+npx wrangler secret put OBSERVABILITY_WEBHOOK_TOKEN
+~~~
+
+The Worker sends `{ source, environment, records: [...] }` with a 3-second timeout and never blocks a
+response on it. With the URL empty, logging stays in Workers Logs only and no alert is delivered out of
+band; the dashboard and `/admin/security` still show the current state. `/status` adds an alerts component
+that turns degraded while a rule is firing.
 
 ## 8. Deploy
 

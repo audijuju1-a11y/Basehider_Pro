@@ -105,8 +105,9 @@ export async function verifyAccessJwt(
 
   const aud = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
   if (!aud.includes(audience)) return null;
+  // Fail closed: an assertion without `iss` is rejected, not accepted by omission.
   const expectedIssuer = `https://${team}`;
-  if (payload.iss && payload.iss.replace(/\/$/, "") !== expectedIssuer.replace(/\/$/, "")) return null;
+  if (!payload.iss || payload.iss.replace(/\/$/, "") !== expectedIssuer.replace(/\/$/, "")) return null;
 
   const email = payload.email?.trim().toLowerCase();
   if (!email) return null;

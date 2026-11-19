@@ -88,6 +88,31 @@ export async function verifyLoginOtp(env: Env, rawEmail: string, rawCode: string
   return { ok: true, email };
 }
 
+/**
+ * Removes a password that was set before the address was proven. Without this an attacker
+ * who registered victim@example.com with their own password keeps access to the account
+ * after the real owner verifies the address through an email link or OTP.
+ *
+ * Token consumption already stamps email_verified_at, so "set before verification" is
+ * expressed as password_updated_at <= email_verified_at; a password the owner sets later
+ * from /app/account is newer and is preserved.
+ */
+export async function clearUnverifiedPassword(env: Env, userId: string): Promise<void> {
+  try {
+    await run(
+      env.DB,
+      `UPDATE users SET password_hash = NULL, password_updated_at = NULL, updated_at = ?
+        WHERE id = ?
+          AND password_hash IS NOT NULL
+          AND (email_verified_at IS NULL OR password_updated_at IS NULL OR password_updated_at <= email_verified_at)`,
+      now(),
+      userId,
+    );
+  } catch (error) {
+    logError("otp.clear_unverified_password_failed", error, { userId });
+  }
+}
+
 export async function markEmailVerified(env: Env, userId: string): Promise<void> {
   try {
     await run(

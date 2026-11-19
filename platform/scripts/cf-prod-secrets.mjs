@@ -1,4 +1,6 @@
 import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { generateKeyPairSync, randomBytes } from "node:crypto";
 
 const turnstileSecret = process.argv[2] ?? "";
@@ -13,5 +15,10 @@ const secrets = {
   OTP_PEPPER: randomBytes(32).toString("hex"),
   TURNSTILE_SECRET: turnstileSecret,
 };
-fs.writeFileSync(".prod-secrets.json", JSON.stringify(secrets, null, 2), { mode: 0o600 });
-console.log("wrote .prod-secrets.json with", Object.keys(secrets).length, "secrets");
+
+// Written to the OS temp directory, never inside the repository: this file holds the
+// licence signing private key, and a single `git add .` would publish it.
+const target = path.join(os.tmpdir(), `basehider-prod-secrets-${process.pid}.json`);
+fs.writeFileSync(target, JSON.stringify(secrets, null, 2), { mode: 0o600 });
+console.log("wrote", target, "with", Object.keys(secrets).length, "secrets");
+console.log("Upload them to Worker secrets, then delete the file.");

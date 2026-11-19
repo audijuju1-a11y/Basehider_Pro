@@ -1,6 +1,6 @@
 # BaseHider Control Platform — status
 
-Updated: 2026-11-17
+Updated: 2026-11-19
 
 > Honest verification status. The platform is now **free**: wallet, orders, Stripe, PromptPay,
 > slips and top-ups were removed. It is deployed to production (Worker `3579adc4`, D1 migration 0005,
@@ -28,9 +28,9 @@ Updated: 2026-11-17
 | TypeScript strict typecheck | Passing | `pnpm typecheck` (no errors) |
 | Email + password auth | Implemented | PBKDF2-SHA256 (Cloudflare cap: 100,000 iterations), 10-char policy, per-IP/email limits, session cookie; OTP disabled by `AUTH_OTP_ENABLED=false` |
 | Production sign-up / sign-in | Verified | browser E2E: register → `/app` with a free licence; logout → password login → `/app` |
-| Platform test suite | 21 tests passing | crypto + platform + free licensing + guard ladder + password/auth + content-type guards |
+| Platform test suite | 24 tests passing | crypto + platform + free licensing + reset/re-activation + guard ladder + password/auth + admin hierarchy/key visibility + content-type guards |
 | Java plugin client (3.6.1) | Hardened | HTTPS-only (localhost exempt), redirects disabled, response size/depth limits, 16-char codes, server-name registration, integrity pin, POSIX 0600/0700 key files |
-| Java test suite | 123 tests passing on Windows and Linux | Windows `mvn -o test`; WSL Arch Linux JDK 21 `mvn -o test` (includes POSIX permission test) |
+| Java test suite | 123 tests passing on Windows and Linux | Windows `mvn -o test`; WSL Arch Linux JDK 21 `mvn -o test`; re-run on Linux with Temurin 21.0.13 + Maven 3.9.9 after the 2026-11-19 fixes (123/123, 0 failures) |
 | Three-gap packet benchmark | Verified | A–F PASS on Paper 1.21.4; baseline jar leaks all three gaps (`docs/09-three-gap-benchmark.md` in the plugin repo) |
 | Local dev | Working | `wrangler dev`; pages, auth, admin and API exercised |
 | Production deployment | Live | https://basehider-platform.audijuju1.workers.dev — free pages 200, logo/favicon deployed, admin 503 until Access is configured |
@@ -45,6 +45,9 @@ Updated: 2026-11-17
   account owner until a domain is verified. Password sign-up does not need email; email-link recovery does.
 - **Existing passwordless accounts**: they can log in with the email link and set a password from `/app/account`.
   If the email cannot be delivered yet, they need the verified sending domain first.
+- **Existing unverified accounts**: password sign-in now requires a verified address. Accounts created before
+  2026-11-19 without verification must use the email link once (which also clears any password stored before
+  verification) before password login works. New sign-ups collect no password at all.
 - **Password hashing limit**: Cloudflare Workers rejects PBKDF2 above 100,000 iterations, so the hash uses the
   platform maximum rather than OWASP's higher recommendation. Rate limits and password policy compensate.
 - **Production admin Access**: `/admin` returns 503 until Cloudflare Access credentials are configured.
@@ -60,13 +63,25 @@ Updated: 2026-11-17
 ## Verified commands
 
 ~~~bash
+pnpm install
 pnpm typecheck
-pnpm test                 # 14 platform tests passing
+pnpm test                 # 24 platform tests passing
 node scripts/e2e-license.mjs   # requires pnpm dev on :8787
 cd ../basehider-v3-integrated && mvn test   # 123 plugin tests (Windows and Linux/WSL)
 npx wrangler d1 migrations apply bhcp-db --local
 npx wrangler d1 execute bhcp-db --local --file=./seed/seed.sql
 ~~~
+
+## Open defects
+
+A full repository audit dated 2026-11-19 is in `docs/12-security-audit-2026-11.md` (repo root).
+All functional bugs it lists (B-01 … B-20, except the deferred B-13/B-15/B-16 noted there) were fixed
+on 2026-11-19, together with the High security findings H-01 … H-05 (signed re-registration, dev-admin
+flag + token, email-verified passwords, secret file outside git, old jars removed, draft/unpublish and
+split plugin permissions). The Medium findings M-01 … M-13 were closed in the same pass (pepper separation,
+mandatory Access issuer, Turnstile hostname/freshness checks, CSRF-safe login links, one-time licence keys,
+admin hierarchy + last-admin guard, audit fallback, download limits, suspended installations, retention).
+The architecture items A-01 … A-15 remain open; they need product/design decisions rather than local code fixes.
 
 ## Next steps
 

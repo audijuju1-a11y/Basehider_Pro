@@ -59,7 +59,8 @@ plugin -> POST heartbeat/events (signed)
 
 ## Failure behaviour
 
-- Queue consumer errors retry the message. Exhausted messages go to the DLQ and are visible to operators.
+- Queue consumer errors retry the message. Exhausted messages go to the DLQ, where the second
+  consumer persists them in `telemetry_dlq`; operators see them at /admin/security.
 - Telemetry failure never blocks licence verification or the plugin's protection features.
 - The admin telemetry page shows processed batches, pending events and last processing time from D1 settings, not estimated values.
 

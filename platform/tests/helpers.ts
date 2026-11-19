@@ -24,12 +24,12 @@ export async function resetDatabase(): Promise<void> {
     "activation_guard", "payment_slips", "blacklist_entries",
     "email_otp", "payment_events", "wallet_transactions", "topup_orders", "wallets",
     "payment_webhook_events", "payment_orders", "admin_audit_events", "notifications",
-    "support_messages", "support_tickets", "security_events", "telemetry_events",
+    "support_messages", "support_tickets", "security_events", "telemetry_dlq", "telemetry_events",
     "telemetry_rollups", "heartbeat_latest", "license_leases", "activation_nonces",
     "activation_challenges", "activations", "installations", "licenses",
     "product_releases", "product_plans", "products", "email_tokens", "email_log",
     "sessions", "organization_members", "organizations", "users", "contact_messages",
-    "job_runs", "rate_limits",
+    "job_runs", "rate_limits", "metric_counters", "alert_state", "alert_events",
   ];
   await env.DB.batch(tables.map((table) => env.DB.prepare(`DELETE FROM ${table}`)));
   await env.DB.batch([
@@ -83,9 +83,9 @@ export async function seedUser(options: {
   const timestamp = now();
   await env.DB.batch([
     env.DB.prepare(
-      `INSERT INTO users (id, email, display_name, role, status, locale, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, 'th', ?, ?)`,
-    ).bind(id, options.email.toLowerCase(), options.email.split("@")[0], options.role ?? "customer", options.status ?? "active", timestamp, timestamp),
+      `INSERT INTO users (id, email, display_name, role, status, locale, email_verified_at, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, 'th', ?, ?, ?)`,
+    ).bind(id, options.email.toLowerCase(), options.email.split("@")[0], options.role ?? "customer", options.status ?? "active", timestamp, timestamp, timestamp),
     env.DB.prepare(
       `INSERT INTO organizations (id, name, slug, owner_user_id, status, created_at, updated_at)
        VALUES (?, ?, ?, ?, 'active', ?, ?)`,

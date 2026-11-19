@@ -9,7 +9,7 @@
 
 ## Actors
 
-- Anonymous internet user, customer, organisation owner, staff (support/product/security/admin), Cloudflare operator, email and payment providers, malicious plugin client, compromised customer server.
+- Anonymous internet user, customer, organisation owner, staff (support/product/security/admin), Cloudflare operator, email provider, malicious plugin client, compromised customer server.
 
 ## Trust boundaries
 
@@ -17,8 +17,7 @@
 2. Plugin to API: authenticated by Ed25519 over the canonical request; body parsed only after verification.
 3. Worker to D1/KV/R2/Queues: trusted platform bindings.
 4. Worker to Cloudflare Access: JWKS over TLS, JWT verified.
-5. Provider webhook to Worker: HMAC shared secret.
-6. Customer server to lease: plugin verifies the signature with pinned or published public keys.
+5. Customer server to lease: plugin verifies the signature with pinned or published public keys.
 
 ## STRIDE summary
 
@@ -29,12 +28,11 @@
 | Repudiation | Admin denies action | Immutable audit rows with actor and request id | Database compromise |
 | Information disclosure | Tenant A reads B licence | org-scoped queries, 404 for foreign detail | Database compromise |
 | Denial of service | Login or registration flood | Rate limits, Turnstile, Cloudflare edge | Large botnets |
-| Elevation of privilege | Customer hits /admin | Staff role and Access in production | Misconfigured Access |
+| Elevation of privilege | Customer hits /admin | Staff role and Access in production; dev bootstrap needs DEV_BOOTSTRAP + a token | Misconfigured Access |
+| Installation hijack | Re-register a known installation_uuid to get a fresh pairing code | Re-registration must be signed by the existing installation key; the pairing code is single-use | Stolen private key |
+| Account squatting | Register victim@example.com with an attacker password | Sign-up is email-only; password login requires a verified address; verifying clears pre-verification passwords | Compromised mailbox |
 | Replay | Re-send signed lease request | Single-use nonce table plus timestamp window | None known |
-| Webhook forgery | Fake order paid | HMAC, timestamp, idempotency | Secret leak |
-| Fake top-up credit | Claim PromptPay money arrived | Signed bank webhook, exact amount, staff confirmation only | Bank/provider compromise |
 | OTP brute force | Guess 6-digit code | 10-minute TTL, 5 attempts, per-IP/email rate limits, hashed codes | Large distributed attack |
-| Wallet tampering | Replay debit/top-up | Conditional debit, idempotency ledger, single-use top-up status | Code defect |
 | CSRF | Force state change | Double-submit cookie and Origin check | Same-site XSS |
 | XSS | Product description HTML | Escaped templating and escaped Markdown | Future rich-text feature |
 | SQL injection | Search query | Prepared statements and LIKE escaping | None known |
@@ -48,6 +46,5 @@
 
 - Anti-cheat or anti-tamper on the customer machine.
 - Keeping the Minecraft server itself secure (that is BaseHider's job).
-- Payment card data: the platform uses a manual provider; no card data touches it.
 - DDoS beyond Cloudflare standard protections.
 - Legal compliance beyond the published privacy and terms pages.

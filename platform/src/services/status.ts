@@ -3,6 +3,7 @@ import { first } from "../lib/db";
 import { now, timeAgo } from "../lib/time";
 import { telemetryHealth } from "./telemetry";
 import { emailProvider } from "../auth/email";
+import { listAlertStates, requestRate, type AlertStateRow, type RequestRate } from "./observability";
 
 export type ComponentStatus = "operational" | "degraded" | "down" | "no_data";
 
@@ -23,6 +24,8 @@ export interface StatusReport {
     activeLicenses: number;
     pendingTelemetry: number;
     lastTelemetryAt: number;
+    alertsFiring: number;
+    http5xxRate5m: number;
   };
 }
 
@@ -43,6 +46,17 @@ export async function getStatusReport(env: Env): Promise<StatusReport> {
   } catch {
     /* database failure is reported by the db component */
   }
+
+  let alerts: AlertStateRow[] = [];
+  let errorRate: RequestRate = { total: 0, errors: 0, rate: 0 };
+  if (dbOk) {
+    try {
+      [alerts, errorRate] = await Promise.all([listAlertStates(env), requestRate(env)]);
+    } catch {
+      /* observability tables may not exist before migration 0008 is applied */
+    }
+  }
+  const firing = alerts.filter((alert) => alert.status === "firing");
 
   let activeInstallations24h = 0;
   let publishedProducts = 0;
@@ -97,6 +111,18 @@ export async function getStatusReport(env: Env): Promise<StatusReport> {
     });
   }
 
+  if (alerts.length > 0) {
+    components.push({
+      key: "alerts",
+      name: "การแจ้งเตือนอัตโนมัติ",
+      status: firing.length > 0 ? "degraded" : "operational",
+      detail:
+        firing.length > 0
+          ? `กำลังทำงาน ${firing.length} รายการ: ${firing.map((alert) => alert.key).join(", ")}`
+          : `ปกติ · 5xx ${(errorRate.rate * 100).toFixed(2)}% ใน 5 นาที`,
+    });
+  }
+
   components.push({
     key: "email",
     name: "อีเมล transactional",
@@ -123,6 +149,8 @@ export async function getStatusReport(env: Env): Promise<StatusReport> {
       activeLicenses,
       pendingTelemetry: health.pendingEvents,
       lastTelemetryAt: health.lastProcessedAt,
+      alertsFiring: firing.length,
+      http5xxRate5m: errorRate.rate,
     },
   };
 }

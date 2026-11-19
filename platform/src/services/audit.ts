@@ -49,8 +49,20 @@ export async function recordAudit(env: Env, input: AuditInput): Promise<void> {
       now(),
     );
   } catch (error) {
-    // Auditing must never take down the request path; log loudly instead.
+    // Auditing must never take down the request path, but it must not disappear silently:
+    // fall back to the security_events trail with the same actor and target.
     logError("audit.write_failed", error, { action: input.action });
+    await recordSecurityEvent(env, {
+      eventType: `audit.write_failed:${input.action}`.slice(0, 80),
+      severity: "error",
+      userId: input.actorUserId,
+      ipHash: input.ipHash ?? null,
+      details: {
+        target_type: input.targetType,
+        target_id: input.targetId,
+        reason: input.reason ?? null,
+      },
+    });
   }
 }
 

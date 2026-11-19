@@ -95,6 +95,8 @@ export interface LayoutOptions {
   flash?: SafeHtml | null;
   noIndex?: boolean;
   noFooter?: boolean;
+  /** Public origin (APP_URL) used for absolute social-preview URLs. */
+  baseUrl?: string;
 }
 
 function brandMarkup(href: string): SafeHtml {
@@ -177,6 +179,8 @@ function footerMarkup(_lang: Lang): SafeHtml {
 
 export function layout(opts: LayoutOptions): SafeHtml {
   const desc = opts.description ?? "แพลตฟอร์มจัดการไลเซนส์และติดตามเซิร์ฟเวอร์ปลั๊กอิน Minecraft";
+  const origin = (opts.baseUrl ?? "").replace(/\/$/, "");
+  const ogImage = `${origin}/assets/img/logo-512.png`;
   return html`<!doctype html>
 <html lang="${opts.lang}" data-theme="dark" class="no-js">
 <head>
@@ -191,11 +195,11 @@ export function layout(opts: LayoutOptions): SafeHtml {
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/logo-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/logo-180.png">
-  <meta property="og:image" content="https://basehider-platform.audijuju1.workers.dev/assets/img/logo-512.png">
+  <meta property="og:image" content="${ogImage}">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:image" content="https://basehider-platform.audijuju1.workers.dev/assets/img/logo-512.png">
+  <meta name="twitter:image" content="${ogImage}">
   <script src="/assets/js/theme.js"></script>
   <link rel="stylesheet" href="/assets/css/fonts.css">
   <link rel="stylesheet" href="/assets/css/platform.css">

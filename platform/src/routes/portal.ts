@@ -72,8 +72,8 @@ function failRedirect(c: Parameters<typeof appPage>[0], path: string, error: unk
 
 portalRoutes.get("/", async (c) => {
   const user = requireUser(c);
-  // Every account gets its free BaseHider licence on first visit.
-  await ensureFreeLicenseForUser(c.env, user, "basehider");
+  // No writes on a plain page view: the free licence is provisioned on the licences page
+  // and by the activation flow (GET /app used to write D1 on every visit).
   const overview = await getPortalOverview(c.env, user);
   return appPage(c, {
     title: "ภาพรวม",
@@ -98,13 +98,20 @@ portalRoutes.get("/licenses", async (c) => {
   const user = requireUser(c);
   await ensureFreeLicenseForUser(c.env, user, "basehider");
   const licenses = await listLicensesForUser(c.env, user.id);
+  // Raw keys are a one-time display and never shown to read-only members.
+  const canSeeRawKeys = user.memberships.some((membership) => membership.role !== "read_only");
   const rawKeys: Record<string, string> = {};
-  await Promise.all(
-    licenses.map(async (license) => {
-      const rawKey = await c.env.CACHE.get(`newlic:${license.id}`);
-      if (rawKey) rawKeys[license.id] = rawKey;
-    }),
-  );
+  if (canSeeRawKeys) {
+    await Promise.all(
+      licenses.map(async (license) => {
+        const rawKey = await c.env.CACHE.get(`newlic:${license.id}`);
+        if (rawKey) {
+          rawKeys[license.id] = rawKey;
+          await c.env.CACHE.delete(`newlic:${license.id}`);
+        }
+      }),
+    );
+  }
   return appPage(c, {
     title: "ไลเซนส์",
     subtitle: "ไลเซนส์ฟรีทั้งหมดที่องค์กรของคุณถืออยู่",
@@ -124,10 +131,13 @@ portalRoutes.get("/licenses/:id", async (c) => {
       body: errorPage("ไม่พบไลเซนส์นี้", "ไลเซนส์อาจถูกย้ายหรือไม่ได้อยู่ในองค์กรของคุณ"),
     });
   }
+  const membership = user.memberships.find((item) => item.orgId === license.org_id);
+  const canSeeRawKey = Boolean(membership && membership.role !== "read_only");
   const [activations, rawKey] = await Promise.all([
     listLicenseActivations(c.env, license.id),
-    c.env.CACHE.get(`newlic:${license.id}`),
+    canSeeRawKey ? c.env.CACHE.get(`newlic:${license.id}`) : Promise.resolve(null),
   ]);
+  if (rawKey) await c.env.CACHE.delete(`newlic:${license.id}`);
   return appPage(c, {
     title: `${license.product_name} · ${license.key_prefix}…`,
     subtitle: license.plan_name ?? "ไลเซนส์ฟรี",

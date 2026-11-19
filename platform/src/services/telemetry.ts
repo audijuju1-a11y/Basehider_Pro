@@ -336,7 +336,7 @@ export async function listInstallationEvents(
     params.push(options.severity);
   }
   if (options.type) {
-    conditions.push("event_type LIKE ?");
+    conditions.push("event_type LIKE ? ESCAPE '\\'");
     params.push(`${options.type}%`);
   }
   params.push(Math.min(options.limit ?? 50, 200), options.offset ?? 0);
@@ -347,15 +347,6 @@ export async function listInstallationEvents(
       ORDER BY occurred_at DESC LIMIT ? OFFSET ?`,
     ...params,
   );
-}
-
-export async function countInstallationEvents(env: Env, installationId: string): Promise<number> {
-  const row = await first<{ count: number }>(
-    env.DB,
-    `SELECT COUNT(*) AS count FROM telemetry_events WHERE installation_id = ?`,
-    installationId,
-  );
-  return row?.count ?? 0;
 }
 
 export async function getLatestHeartbeat(

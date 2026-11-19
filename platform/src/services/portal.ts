@@ -165,24 +165,3 @@ export async function listOwnedProducts(env: Env, user: SessionUser): Promise<Ow
   }
   return [...map.values()];
 }
-
-export async function getRecentSecurityEvents(env: Env, limit = 50) {
-  return all<{
-    id: string;
-    event_type: string;
-    severity: string;
-    installation_id: string | null;
-    installation_name: string | null;
-    user_id: string | null;
-    details: string;
-    created_at: number;
-  }>(
-    env.DB,
-    `SELECT s.id, s.event_type, s.severity, s.installation_id, i.display_name AS installation_name,
-            s.user_id, s.details, s.created_at
-       FROM security_events s
-       LEFT JOIN installations i ON i.id = s.installation_id
-      ORDER BY s.created_at DESC LIMIT ?`,
-    limit,
-  );
-}
