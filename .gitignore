@@ -1,6 +1,16 @@
 # Minecraft test servers and downloaded caches
 .work/
 
-# Local JDK distributions
-.tools/jdk21/
-.tools/temurin21.zip
+# Build output and local toolchains: rebuild these, never commit them
+/dist/
+/bench/
+/.tools/
+/basehider-v3-integrated/target/
+/site/.qa/
+
+# Local secret material written by scripts/cf-prod-secrets.mjs
+.prod-secrets.json
+*.secrets.json
+
+# Local packaging output (release archives, never committed)
+/artifacts/

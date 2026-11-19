@@ -1,3 +1,0 @@
-BOT_CONNECTED {"username":"ProbeBot","host":"127.0.0.1","port":25599}
-BOT_MARKED {"username":"ProbeBot","label":"__ready__"}
-BOT_READY {"username":"ProbeBot","entityId":11,"position":{"x":8.5,"y":-60,"z":-7.5,"yaw":0,"pitch":0}}
