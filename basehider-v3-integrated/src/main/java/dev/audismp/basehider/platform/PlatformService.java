@@ -399,8 +399,10 @@ public final class PlatformService {
                 for (int i = batch.size() - 1; i >= 0; i--) {
                     eventBuffer.addFirst(batch.get(i));
                 }
+                // Same policy as recordEvent: drop the oldest event, never the newest, so a
+                // retry backlog keeps the most recent operational context.
                 while (eventBuffer.size() > current.maxBuffer()) {
-                    eventBuffer.pollLast();
+                    eventBuffer.pollFirst();
                     droppedEvents.incrementAndGet();
                 }
                 throw throwable;

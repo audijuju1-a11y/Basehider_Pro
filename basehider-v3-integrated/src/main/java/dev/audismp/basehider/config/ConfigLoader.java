@@ -198,9 +198,14 @@ public final class ConfigLoader {
             reconcileRadius = 8;
         }
 
-        if (hiddenNames.isEmpty()) {
+        if (hiddenNames.isEmpty() && blocksEnabled) {
+            // Fail closed: a block-protection section without hidden-blocks used to disable
+            // protection with only a log warning. Fall back to the built-in set instead.
+            hiddenNames = List.of(BUILTIN_HIDDEN_BLOCKS);
+            warnings.add("World '" + worldName + "': block-protection.hidden-blocks is empty; "
+                    + "using built-in defaults (add the key explicitly to choose your own set)");
+        } else if (hiddenNames.isEmpty()) {
             warnings.add("World '" + worldName + "': no hidden-blocks configured, block protection inactive");
-            blocksEnabled = false;
         }
         Set<Material> hiddenMaterials = MaterialSets.parseHiddenMaterials(hiddenNames, warnings, worldName);
         if (blocksEnabled && hiddenMaterials.isEmpty()) {

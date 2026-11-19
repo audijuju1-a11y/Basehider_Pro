@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import org.bukkit.Material;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -349,20 +351,40 @@ public final class HiddenBlockIndex {
      * to restore real blocks when protection is disabled. Not a hot path.
      */
     public long[] snapshotAllPositions() {
-        int estimated = totalBlockCount();
-        long[] result = new long[Math.max(16, estimated)];
+        long[] result = new long[16];
         int size = 0;
-        for (WorldIndex world : worlds.values()) {
-            for (ChunkView view : world.chunks.values()) {
-                long[] positions = view.positions();
-                if (size + positions.length > result.length) {
-                    result = Arrays.copyOf(result, Math.max(result.length * 2, size + positions.length));
-                }
-                System.arraycopy(positions, 0, result, size, positions.length);
-                size += positions.length;
+        for (long[] positions : snapshotByWorld().values()) {
+            if (size + positions.length > result.length) {
+                result = Arrays.copyOf(result, Math.max(result.length * 2, size + positions.length));
             }
+            System.arraycopy(positions, 0, result, size, positions.length);
+            size += positions.length;
         }
         return Arrays.copyOf(result, size);
+    }
+
+    /**
+     * Same data as {@link #snapshotAllPositions()} but keyed by world id, so callers never
+     * apply one world's positions to a player standing in another world.
+     */
+    public Map<Long, long[]> snapshotByWorld() {
+        Map<Long, long[]> result = new LinkedHashMap<>();
+        for (Map.Entry<Long, WorldIndex> entry : worlds.entrySet()) {
+            WorldIndex world = entry.getValue();
+            long[] positions = new long[Math.max(16, world.blockCount.get())];
+            int size = 0;
+            for (ChunkView view : world.chunks.values()) {
+                long[] chunkPositions = view.positions();
+                if (size + chunkPositions.length > positions.length) {
+                    positions = Arrays.copyOf(positions,
+                            Math.max(positions.length * 2, size + chunkPositions.length));
+                }
+                System.arraycopy(chunkPositions, 0, positions, size, chunkPositions.length);
+                size += chunkPositions.length;
+            }
+            result.put(entry.getKey(), Arrays.copyOf(positions, size));
+        }
+        return result;
     }
 
     /** Diagnostic: number of tracked worlds. */

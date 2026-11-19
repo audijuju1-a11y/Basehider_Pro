@@ -96,13 +96,11 @@ public final class PlatformClient {
         body.put("server_name", serverName);
         body.put("java_version", javaVersion);
 
-        HttpResponse<String> response = send(HttpRequest.newBuilder()
-                .uri(URI.create(baseUrl + "/api/v1/installations/register"))
-                .timeout(requestTimeout)
-                .header("Content-Type", "application/json")
-                .header("User-Agent", "BaseHider/" + pluginVersion)
-                .POST(HttpRequest.BodyPublishers.ofString(Json.stringify(body), StandardCharsets.UTF_8))
-                .build());
+        // Registration is signed even on first use: the platform requires proof of possession
+        // before it re-issues a pairing code for an existing installation, and signing is
+        // harmless when the installation is new.
+        HttpResponse<String> response = signedPost("/api/v1/installations/register",
+                Json.stringify(body));
         requireSuccess(response);
         Map<String, Object> data = data(response.body());
         return new Registration(

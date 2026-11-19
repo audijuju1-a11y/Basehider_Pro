@@ -22,3 +22,12 @@ permissions:
   basehider.admin:
     description: Access to /basehider administration commands
     default: op
+    children:
+      basehider.admin.license: true
+      basehider.admin.diagnostics: true
+  basehider.admin.license:
+    description: View licence state and print activation codes (/basehider license ...)
+    default: op
+  basehider.admin.diagnostics:
+    description: Run expensive diagnostics such as /basehider rescan
+    default: op

@@ -55,13 +55,22 @@ public final class BaseHiderCommand implements CommandExecutor, TabCompleter {
             case "deep" -> deep(sender);
             case "stats" -> stats(sender);
             case "verify" -> verify(sender);
-            case "rescan" -> rescan(sender);
+            case "rescan" -> requireThen(sender, "basehider.admin.diagnostics", () -> rescan(sender));
             case "reload" -> reload(sender);
-            case "license" -> license(sender, args);
+            case "license" -> requireThen(sender, "basehider.admin.license", () -> license(sender, args));
             case "help" -> help(sender);
             default -> sender.sendMessage("§cUnknown subcommand. " + usage());
         }
         return true;
+    }
+
+    /** Separate node per sensitive action so admins can grant them individually. */
+    private void requireThen(CommandSender sender, String permission, Runnable action) {
+        if (!sender.hasPermission(permission)) {
+            sender.sendMessage("§cBaseHider: no permission (" + permission + ").");
+            return;
+        }
+        action.run();
     }
 
     private String usage() {

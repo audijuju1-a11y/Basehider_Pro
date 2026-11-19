@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -261,8 +262,11 @@ public final class BaseHiderPlugin extends JavaPlugin {
                 packetGateway.drainDetectedBlockPositions();
             }
             double budgetMs = current.mainThreadBudgetMs();
-            itemShield.tick(TimeBudget.ofMillis(budgetMs * 0.40), tickCounter);
-            blockShield.tick(TimeBudget.ofMillis(budgetMs * 0.45), tickCounter);
+            // Engine budgets deliberately add up to 90% of the tick budget: the remaining
+            // 10% pays for the reconciliation slice below, so the tick never plans to
+            // spend more than its own budget.
+            itemShield.tick(TimeBudget.ofMillis(budgetMs * 0.35), tickCounter);
+            blockShield.tick(TimeBudget.ofMillis(budgetMs * 0.40), tickCounter);
             playerShield.tick(TimeBudget.ofMillis(budgetMs * 0.075));
             tunnelShield.tick(TimeBudget.ofMillis(budgetMs * 0.075));
 
@@ -581,7 +585,11 @@ public final class BaseHiderPlugin extends JavaPlugin {
         return blockProtectionActive;
     }
 
-    /** Admin rescan: re-discovers loaded chunks around players synchronously (bounded). */
+    /**
+     * Admin rescan: re-discovers loaded chunks around players on the main thread, strictly
+     * time-boxed to one tick budget. Anything left in the queue is drained by the normal
+     * per-tick reconciliation slice instead of stalling the server.
+     */
     public int rescanLoadedChunks(int maxChunks) {
         blockDiscovery.enqueueAllLoaded(getServer().getWorlds());
         for (Player player : getServer().getOnlinePlayers()) {
@@ -595,7 +603,10 @@ public final class BaseHiderPlugin extends JavaPlugin {
         }
         int processed = 0;
         int batch;
-        while (processed < maxChunks && (batch = blockDiscovery.processQueue(64)) > 0) {
+        long deadlineNanos = System.nanoTime()
+                + (long) (Math.max(1.0, config.mainThreadBudgetMs()) * 1_000_000.0);
+        while (processed < maxChunks && System.nanoTime() < deadlineNanos
+                && (batch = blockDiscovery.processQueue(64)) > 0) {
             processed += batch;
         }
         refreshGauges();
@@ -607,7 +618,7 @@ public final class BaseHiderPlugin extends JavaPlugin {
         getLogger().info("Reloading BaseHider...");
         configRevision++;
         // Snapshot the protected set so blocks that stop being protected can be un-faked.
-        long[] oldPositions = hiddenBlockIndex.snapshotAllPositions();
+        Map<Long, long[]> oldPositions = hiddenBlockIndex.snapshotByWorld();
         loadConfig(configRevision);
         raycastBudget.reset(config.raycastBudgetPerTick());
         packetGateway.reconfigure();
@@ -636,7 +647,7 @@ public final class BaseHiderPlugin extends JavaPlugin {
                         .bypassPermission()));
             }
         }
-        if (oldPositions.length > 0 && !config.anyBlockProtectionEnabled()) {
+        if (!oldPositions.isEmpty() && !config.anyBlockProtectionEnabled()) {
             // Block protection switched off entirely: restore all old blocks now.
             revealPositionsToViewers(oldPositions);
         }
@@ -644,13 +655,19 @@ public final class BaseHiderPlugin extends JavaPlugin {
                 + ", block protection " + (blockProtectionActive ? "ACTIVE" : "INACTIVE") + ")");
     }
 
-    private void revealPositionsToViewers(long[] positions) {
+    private void revealPositionsToViewers(Map<Long, long[]> positionsByWorld) {
         for (Player player : getServer().getOnlinePlayers()) {
             ViewerSession session = sessions.get(player.getUniqueId());
             if (session == null) {
                 continue;
             }
             World world = player.getWorld();
+            // Only restore positions that belong to the player's own world; positions are
+            // raw x/y/z, so applying another world's list would leak coordinates/block data.
+            long[] positions = positionsByWorld.get(WorldKeys.idOf(world));
+            if (positions == null) {
+                continue;
+            }
             int sent = 0;
             for (long pos : positions) {
                 int cx = BlockPosUtil.decodeX(pos) >> 4;
