@@ -62,7 +62,7 @@ const issue = await req("/admin/licenses", {
   body: new URLSearchParams({
     _csrf: csrf,
     email: "admin@local.test",
-    product_id: "prod_basehider",
+    product_id: "prod_aegishider",
     plan_id: "plan_bh_standard",
     activation_limit: "2",
     expires_at: "",
@@ -75,7 +75,7 @@ const licenseId = licenseLocation.split("/admin/licenses/")[1].split("?")[0];
 
 // 3. Register an installation (unsigned)
 const registerBody = JSON.stringify({
-  product: "basehider",
+  product: "aegishider",
   installation_uuid: installationUuid,
   public_key: publicKeyB64,
   fingerprint_sha256: fingerprint,
@@ -186,7 +186,7 @@ const eventBody = JSON.stringify({
       type: "runtime.startup",
       severity: "info",
       occurred_at: Math.floor(Date.now() / 1000),
-      message: "BaseHider started with packet gateway active",
+      message: "Aegishider started with packet gateway active",
       attributes: { modules: "block-protection,item-shield" },
     },
   ],

@@ -100,11 +100,11 @@ export interface LayoutOptions {
 }
 
 function brandMarkup(href: string): SafeHtml {
-  return html`<a class="brand" href="${href}" aria-label="BaseHider Control Platform">
+  return html`<a class="brand" href="${href}" aria-label="Aegishider Control Platform">
     <span class="brand-mark" aria-hidden="true">
       <img src="/assets/img/logo-192.png" width="192" height="192" alt="" loading="eager" decoding="async">
     </span>
-    <span class="brand-text"><strong>BaseHider</strong><span class="brand-ver">CONTROL</span></span>
+    <span class="brand-text"><strong>Aegishider</strong><span class="brand-ver">CONTROL</span></span>
   </a>`;
 }
 
@@ -149,7 +149,7 @@ function footerMarkup(_lang: Lang): SafeHtml {
         <div class="footer-col">
           <h3>ผลิตภัณฑ์</h3>
           <a href="/plugins">ผลิตภัณฑ์ทั้งหมด</a>
-          <a href="/plugins/basehider">BaseHider</a>
+          <a href="/plugins/aegishider">Aegishider</a>
           <a href="/pricing">ราคา</a>
           <a href="/changelog">บันทึกการอัปเดต</a>
         </div>
@@ -168,9 +168,9 @@ function footerMarkup(_lang: Lang): SafeHtml {
           <a href="/legal/privacy">นโยบายความเป็นส่วนตัว</a>
         </div>
       </div>
-      <p class="footer-notes">BaseHider ไม่ได้สังกัด Mojang Studios หรือ Microsoft · Minecraft คือเครื่องหมายการค้าของ Mojang Studios · FastUtil (Apache-2.0) ถูก bundle ในไจาร์ · PacketEvents (GPL-3.0) เป็นปลั๊กอินภายนอก</p>
+      <p class="footer-notes">Aegishider ไม่ได้สังกัด Mojang Studios หรือ Microsoft · Minecraft คือเครื่องหมายการค้าของ Mojang Studios · FastUtil (Apache-2.0) ถูก bundle ในไจาร์ · PacketEvents (GPL-3.0) เป็นปลั๊กอินภายนอก</p>
       <div class="footer-bottom">
-        <span>© 2026 BaseHider · สร้างโดย AudiSMP</span>
+        <span>© 2026 Aegishider · สร้างโดย AudiSMP</span>
         <span>Cloudflare Workers · D1 · R2 · Queues</span>
       </div>
     </div>
@@ -186,11 +186,11 @@ export function layout(opts: LayoutOptions): SafeHtml {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${opts.title} · BaseHider Control Platform</title>
+  <title>${opts.title} · Aegishider Control Platform</title>
   <meta name="description" content="${desc}">
   <meta name="color-scheme" content="dark light">
   ${opts.noIndex ? raw('<meta name="robots" content="noindex,nofollow">') : raw("")}
-  <meta property="og:title" content="${opts.title} · BaseHider">
+  <meta property="og:title" content="${opts.title} · Aegishider">
   <meta property="og:description" content="${desc}">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/logo-32.png">

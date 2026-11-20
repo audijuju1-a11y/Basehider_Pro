@@ -1,5 +1,5 @@
-﻿BaseHider 3.2.0 JAR inspection (final clean-verify artifact)
-file: D:\Basehider\dist\BaseHider-3.2.0.jar
+﻿Aegishider 3.2.0 JAR inspection (final clean-verify artifact)
+file: D:\Aegishider\dist\Aegishider-3.2.0.jar
 size: 6797780 bytes
 sha256: f2ca7a488d358d5b5db32394b9ebb787af27dd4938dcb3019dee9431e35baf79
 entries: 3503
@@ -10,28 +10,28 @@ license/notice entries:
 META-INF/THIRD-PARTY-NOTICES.txt
 
 --- plugin.yml ---
-name: BaseHider
+name: Aegishider
 version: 3.2.0
-main: dev.audismp.basehider.BaseHiderPlugin
+main: dev.audismp.aegishider.AegishiderPlugin
 api-version: '1.21'
 description: Server-side anti-ESP / anti-base-ESP / anti-storage-ESP. Packet-level container hiding and fail-closed item/entity visibility.
 authors: [AudiSMP]
-website: https://github.com/AudiSMP/BaseHider
+website: https://github.com/AudiSMP/Aegishider
 folia-supported: false
 softdepend: [packetevents]
 
 commands:
-  basehider:
-    description: BaseHider administration, status and diagnostics
-    usage: /basehider <status|diag|export|deep|stats|verify|rescan|reload|help>
-    permission: basehider.admin
-    aliases: [bh]
+  aegishider:
+    description: Aegishider administration, status and diagnostics
+    usage: /aegishider <status|diag|export|deep|stats|verify|rescan|reload|help>
+    permission: aegishider.admin
+    aliases: [ah]
 
 permissions:
-  basehider.bypass:
+  aegishider.bypass:
     description: Player may see hidden blocks and entity-shielded entities normally
     default: op
-  basehider.admin:
-    description: Access to /basehider administration commands
+  aegishider.admin:
+    description: Access to /aegishider administration commands
     default: op
 

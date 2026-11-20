@@ -6,8 +6,8 @@ const response = await fetch("https://api.cloudflare.com/client/v4/accounts/79f2
   method: "POST",
   headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
   body: JSON.stringify({
-    name: "BaseHider Control Platform",
-    domains: ["basehider-platform.audijuju1.workers.dev"],
+    name: "Aegishider Control Platform",
+    domains: ["aegishider-platform.audijuju1.workers.dev"],
     mode: "managed",
   }),
 });

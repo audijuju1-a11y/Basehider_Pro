@@ -1,6 +1,6 @@
-# BaseHider 3.6.1 — Landing Page
+# Aegishider 4.0.0 — Landing Page
 
-หน้าเว็บแนะนำและดาวน์โหลดปลั๊กอิน **BaseHider 3.6.1** สำหรับ Paper 1.21.4
+หน้าเว็บแนะนำและดาวน์โหลดปลั๊กอิน **Aegishider 4.0.0** สำหรับ Paper 1.21.1–26.3
 เป็น static site ล้วน (HTML + CSS + JS ไม่มี build step) พร้อมอัปขึ้น **Cloudflare Pages**
 ธีมหลักคือ “กลไกนาฬิกาแยกชิ้นส่วน” 38 ชั้น ซึ่งแทนสถาปัตยกรรมของปลั๊กอินจริง
 
@@ -14,7 +14,7 @@ site/
 │  ├─ site.webmanifest
 │  ├─ robots.txt
 │  ├─ download/
-│  │  └─ BaseHider-3.6.1.jar
+│  │  └─ Aegishider-4.0.0-mc1.21.11.jar
 │  └─ assets/
 │     ├─ css/style.css, fonts.css
 │     ├─ js/layers.js, main.js
@@ -41,7 +41,7 @@ site/
 | 10 | ข้อจำกัด | สิ่งที่ตั้งใจไม่ทำและยังไม่รองรับ |
 | 11 | ศัพท์ที่ควรรู้ | 10 คำอธิบายด้วยภาษาคน |
 | 12 | คำถาม | 12 คำถามพร้อมคำตอบละเอียด |
-| 13 | เปลี่ยนอะไรใน 3.6.1 | ไทม์ไลน์การปรับปรุง |
+| 13 | เปลี่ยนอะไรใน 4.0.0 | ไทม์ไลน์การปรับปรุง |
 | 14 | ดาวน์โหลด | ไฟล์, SHA-256, วิธีตรวจสอบ |
 
 ## ตรวจสอบก่อน deploy
@@ -70,15 +70,15 @@ python -m http.server 4321 --directory public
 ```bash
 cd site
 npx wrangler login
-npx wrangler pages deploy public --project-name basehider
+npx wrangler pages deploy public --project-name aegishider
 ```
 
-ได้ URL แบบ `https://basehider.pages.dev`
+ได้ URL แบบ `https://aegishider.pages.dev`
 
 ### วิธี B — อัปโหลดผ่าน Dashboard
 
 1. Cloudflare Dashboard → **Workers & Pages** → **Create** → **Pages** → **Upload assets**
-2. ตั้งชื่อโปรเจกต์ `basehider`
+2. ตั้งชื่อโปรเจกต์ `aegishider`
 3. อัปโหลด **เนื้อหาในโฟลเดอร์ `public/`** (ไม่ใช่โฟลเดอร์ `site/`)
 4. กด Deploy
 
@@ -97,18 +97,18 @@ npx wrangler pages deploy public --project-name basehider
 
 ## 3. โดเมนจริงและ OG image
 
-- หลังผูกโดเมน (`basehider.example.com`) ให้แก้ `og:image` / `twitter:image` ใน `index.html`
-  จาก path สัมพัทธ์เป็น URL เต็ม เช่น `https://basehider.example.com/assets/img/og.jpg`
+- หลังผูกโดเมน (`aegishider.example.com`) ให้แก้ `og:image` / `twitter:image` ใน `index.html`
+  จาก path สัมพัทธ์เป็น URL เต็ม เช่น `https://aegishider.example.com/assets/img/og.jpg`
   (Open Graph ต้องการ absolute URL ตามสเปก)
 - `assets/img/og.jpg` ถูกสร้างจากหน้าเว็บจริงขนาด 1200×630
 
 ## 4. อัปเดตไจาร์เวอร์ชันใหม่
 
 ```powershell
-Copy-Item ..\dist\BaseHider-3.6.1.jar .\public\download\ -Force
+Copy-Item ..\dist\Aegishider-4.0.0-mc1.21.11.jar .\public\download\ -Force
 # แก้ href / ข้อความเวอร์ชันใน index.html และ _headers (Content-Disposition)
 # อัปเดตค่า SHA-256 ใน index.html ด้วย
-Get-FileHash .\public\download\BaseHider-3.6.1.jar -Algorithm SHA256
+Get-FileHash .\public\download\Aegishider-4.0.0-mc1.21.11.jar -Algorithm SHA256
 ```
 
 ไฟล์ `public/_headers` ตั้ง `Content-Disposition: attachment` ให้กับทุกไฟล์ใน `/download/`
@@ -120,7 +120,7 @@ Get-FileHash .\public\download\BaseHider-3.6.1.jar -Algorithm SHA256
 # ตรวจว่าไฟล์ครบและไจาร์ไม่เสียหาย
 python - <<'PY'
 import hashlib, pathlib
-p = pathlib.Path("public/download/BaseHider-3.6.1.jar")
+p = pathlib.Path("public/download/Aegishider-4.0.0-mc1.21.11.jar")
 print(p.stat().st_size, hashlib.sha256(p.read_bytes()).hexdigest())
 PY
 ```

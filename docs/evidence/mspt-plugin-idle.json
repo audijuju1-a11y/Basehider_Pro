@@ -54,7 +54,7 @@
       ]
     },
     "diag": {
-      "raw": "--- BaseHider diag ---\nSecurity tick last/avg/max: 438 / 164 / 31097 us | p50/p95/p99: 100/450/1200 us | overruns: 7\nEngine time (item/block) last: 1/87 us max: 408/19954 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=0 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=1 itemChunks=0 evals=0\nBlock engine: viewers=1 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 49 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=0 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=2 blocks=0 chunks=0 indexRevision=0\n-----------------------",
+      "raw": "--- Aegishider diag ---\nSecurity tick last/avg/max: 438 / 164 / 31097 us | p50/p95/p99: 100/450/1200 us | overruns: 7\nEngine time (item/block) last: 1/87 us max: 408/19954 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=0 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=1 itemChunks=0 evals=0\nBlock engine: viewers=1 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 49 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=0 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=2 blocks=0 chunks=0 indexRevision=0\n-----------------------",
       "tickLastUs": 438,
       "tickAvgUs": 164,
       "tickMaxUs": 31097,

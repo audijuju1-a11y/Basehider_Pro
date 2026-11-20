@@ -14,16 +14,16 @@ export interface SiteContent {
 }
 
 export const DEFAULT_SITE_CONTENT: SiteContent = {
-  announcement: "",
-  heroEyebrow: "PLUGIN COMMERCE PLATFORM",
-  heroTitle: "ขายปลั๊กอิน Minecraft",
-  heroTitleAccent: "ด้วยไลเซนส์จริง",
+  announcement: "อัปเดต Aegishider 4.0.0 — รองรับ Paper 1.21.1 ถึง 26.3",
+  heroEyebrow: "AEGISHIDER CONTROL PLATFORM",
+  heroTitle: "ปลั๊กอิน Minecraft",
+  heroTitleAccent: "ฟรี พร้อมไลเซนส์จริง",
   heroLead:
-    "BaseHider Control Platform รวมหน้าร้าน พอร์ทัลลูกค้า กระเป๋าเงิน และคอนโซลผู้ดูแลไว้ในระบบเดียว — ใบอนุญาตลงลายเซ็น Ed25519 ตรวจสอบได้ทุกใบ",
+    "Aegishider Control Platform รวมหน้าร้าน พอร์ทัลเจ้าของเซิร์ฟเวอร์ และคอนโซลผู้ดูแลไว้ในระบบเดียว — ฟรี 100% ไม่มีกระเป๋าเงินหรือการชำระเงิน ใบอนุญาตลงลายเซ็น Ed25519 ตรวจสอบได้ทุกใบ",
   primaryCta: "ดูผลิตภัณฑ์",
   secondaryCta: "เริ่มต้นใช้งาน",
-  supportEmail: "support@basehider.local",
-  pricingNote: "ทุกแผนเป็นรายเดือน · ใช้ได้หลายเซิร์ฟเวอร์ตามจำนวนที่กำหนด · ยกเลิกได้ทุกเมื่อ",
+  supportEmail: "audijuju1@gmail.com",
+  pricingNote: "ทุกฟีเจอร์ฟรี · ไม่มีระบบชำระเงิน · ไม่มีวันหมดอายุ",
 };
 
 export async function getSiteContent(env: Env): Promise<SiteContent> {

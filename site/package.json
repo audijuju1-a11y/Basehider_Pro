@@ -1,11 +1,11 @@
 {
-  "name": "basehider-landing",
-  "version": "3.6.1",
+  "name": "aegishider-landing",
+  "version": "4.0.0",
   "private": true,
-  "description": "BaseHider 3.6.1 landing page — static site ready for Cloudflare Pages",
+  "description": "Aegishider 4.0.0 landing page — static site ready for Cloudflare Pages",
   "scripts": {
     "serve": "python -m http.server 4321 --directory public",
-    "deploy": "npx wrangler pages deploy public --project-name basehider",
+    "deploy": "npx wrangler pages deploy public --project-name aegishider",
     "fonts": "python scripts/fetch-fonts.py"
   }
 }

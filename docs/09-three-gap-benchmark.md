@@ -1,12 +1,12 @@
 # Three-gap public benchmark (block-entity leak, pie-ray, cache replay)
 
 Date: 2026-11-17
-Plugin under test: `BaseHider-3.6.1.jar` (sha256 `e8f8594cf9a42ca1787ff1d858cd602c9343556bc0c1a1c8f0a0eb0f7f96b7e4`)
+Plugin under test: `Aegishider-3.6.1.jar` (sha256 `e8f8594cf9a42ca1787ff1d858cd602c9343556bc0c1a1c8f0a0eb0f7f96b7e4`)
 Baseline: `3.0.0` (sha256 `8fa4c379422f8218d52dc2e70210529accbb7a39c80971c9d14900086f86cd75`)
 
 This document defines and reports a reproducible packet-level benchmark for the
 three leak classes that server-side container hiding normally misses. The harness
-is `D:\Basehider\itest` (`run-itest.ps1`, scenarios A-F). Nothing in the benchmark
+is `D:\Aegishider\itest` (`run-itest.ps1`, scenarios A-F). Nothing in the benchmark
 requires a modified client or a rendering mod: it records what the server actually
 sends to an unmodified 1.21.4 client and decides from those bytes.
 
@@ -103,10 +103,10 @@ marker without a block update leaves the real chest as the final cached state.
 
 Report: `itest\out\report-20261117-194710-000.json`
 Run dir: `itest\out\run-20261117-194119-127\`
-Command: `powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1`
+Command: `powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1`
 Overall: **PASS** (365 s, boot 38.9 s, 121 unit tests green on Windows and Linux before the run).
 This run uses the exact published jar (`e8f8594c…`), downloadable at
-`https://basehider-platform.audijuju1.workers.dev/release/rel_bh_361/download` (SHA-256 verified).
+`https://aegishider-platform.audijuju1.workers.dev/release/rel_bh_361/download` (SHA-256 verified).
 
 | Scenario | Expectation | Observed | Key evidence |
 |----------|-------------|----------|--------------|
@@ -142,20 +142,20 @@ entries into the client registry within one session.
 ```powershell
 # 1) build the plugin (unit tests + shaded jar)
 $env:JAVA_HOME = 'C:\Users\audim_r0h5i\.jdks\jdk-21.0.13+9'
-D:\Basehider\.tools\apache-maven-3.9.9\bin\mvn -B -o clean verify   # in D:\Basehider\basehider-v3-integrated
+D:\Aegishider\.tools\apache-maven-3.9.9\bin\mvn -B -o clean verify   # in D:\Aegishider\aegishider-integrated
 
-# 2) full A-F suite against the built jar (default: newest BaseHider-*.jar)
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1
+# 2) full A-F suite against the built jar (default: newest Aegishider-*.jar)
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1
 
 # 3) three-gap scenarios only
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1 -Scenarios 'D,E,F'
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1 -Scenarios 'D,E,F'
 
 # 4) detector validation against the old jar (all leaks must be detected)
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1 -Baseline
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1 -Baseline
 
 # 5) explicit jar
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1 `
-    -Jar D:\Basehider\basehider-v3-integrated\target\BaseHider-3.6.1.jar
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1 `
+    -Jar D:\Aegishider\aegishider-integrated\target\Aegishider-3.6.1.jar
 ```
 
 Exit codes: `0` PASS, `1` scenario expectation failed, `2` harness/server/fixture
@@ -188,15 +188,15 @@ error. Every run writes `itest\out\report-<timestamp>.json` and
   1.21.4 with this plugin build and these packet captures. The "DonutSMP leaks at
   140-340 blocks" observation comes from the AntiBaseESP findings and is not
   independently reproduced against DonutSMP here; what is reproduced is that the
-  legacy BaseHider jar leaks the same class of data at those distances, and that
+  legacy Aegishider jar leaks the same class of data at those distances, and that
   the new build does not.
 - **Timing.** Full A-F takes ~7 minutes (boot 60-90 s, D ~170 s, F ~113 s); the
   per-run artifacts are large (captures ~5-10 MB NDJSON plus chunk sidecars).
 
 ## 9. Artifacts
 
-- Harness: `D:\Basehider\itest\README.md`
-- This benchmark report: `D:\Basehider\docs\09-three-gap-benchmark.md`
+- Harness: `D:\Aegishider\itest\README.md`
+- This benchmark report: `D:\Aegishider\docs\09-three-gap-benchmark.md`
 - Plugin run: `itest\out\report-20261117-194710-000.json`
 - Baseline run: `itest\out\report-20261117-181855-258.json`
 - Captures and server logs: `itest\out\run-20261117-194119-127\` and

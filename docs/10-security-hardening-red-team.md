@@ -1,7 +1,7 @@
 # Security hardening and red-team review (2026-11-17)
 
-Scope: the free BaseHider Control Platform (Cloudflare Worker + D1/KV/R2) and the Paper
-plugin's platform client (`dev.audismp.basehider.platform`). The review targeted source
+Scope: the free Aegishider Control Platform (Cloudflare Worker + D1/KV/R2) and the Paper
+plugin's platform client (`dev.audismp.aegishider.platform`). The review targeted source
 exposure, memory handling, licence guessing, and Linux compatibility. It does not claim
 that a JVM process controlled by its own administrator can be made tamper-proof.
 
@@ -18,7 +18,7 @@ that a JVM process controlled by its own administrator can be made tamper-proof.
 | 7 | Attackers could rotate server names/installation UUIDs freely | Registrations record plugin slug, server name and installation IDs per hashed IP; the admin security page shows the cluster |
 | 8 | Private key file was written before permissions were narrowed (short window under a permissive umask) | POSIX temp file created with `0600` before content, directory `0700`, permissions re-asserted on load |
 | 9 | Key material stayed in temporary arrays longer than needed | Base64/file byte arrays are zero-filled after decoding; long-lived key is the required Ed25519 private key |
-| 10 | No way to detect a modified plugin jar on disk | Optional `integrity.jar-sha256` pin; mismatch logs a warning and sends `integrity.mismatch` telemetry; status shown in `/basehider license status` |
+| 10 | No way to detect a modified plugin jar on disk | Optional `integrity.jar-sha256` pin; mismatch logs a warning and sends `integrity.mismatch` telemetry; status shown in `/aegishider license status` |
 
 ## 2. Attacks considered and their outcome
 
@@ -42,7 +42,7 @@ The Java suite was executed inside WSL Arch Linux with OpenJDK 21.0.13:
 
 ```bash
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk
-cd /mnt/d/Basehider/basehider-v3-integrated
+cd /mnt/d/Aegishider/aegishider-integrated
 mvn -B -o -Dmaven.repo.local=/mnt/c/Users/audim_r0h5i/.m2/repository test
 # Tests run: 120, Failures: 0, Errors: 0 — BUILD SUCCESS
 ```
@@ -57,7 +57,7 @@ platform client or identity storage.
 Sentinel Shield protects Python artifacts; its transforms cannot be applied to Java bytecode.
 The platform adopts the transferable parts of its model:
 
-| Sentinel Shield concept | BaseHider implementation |
+| Sentinel Shield concept | Aegishider implementation |
 |---|---|
 | Signed release manifest and verified loader | Ed25519-signed leases verified every refresh; optional jar SHA-256 pin for the release artifact |
 | Release gates and integrity verification | `mvn verify` + 120 tests + `IntegrityGuard` startup check; mismatch telemetry |
@@ -95,7 +95,7 @@ Concrete attacks executed against the built jar and the deployed Worker:
 | Tamper the jar | Appended/modified a resource in a copy. With the original SHA pinned, `IntegrityGuard.verify` returns `VERIFIED` from the original and `TAMPERED` from the modified jar; with no pin it returns `UNPINNED`. |
 | Malformed pin | Found a false-positive: a non-hex pin made every start look `TAMPERED`. Fixed with `normalizePin` (ignores invalid pins and logs a warning) plus a unit test; final suite **121 tests** on Windows and Linux. |
 | Steal the installation key | On Linux the identity directory is `0700`, `private.key` is `0600`, `identity.json` is `0644`. An attacker who can read `private.key` can sign requests as that installation (demonstrated: 64-byte Ed25519 signature produced) — file access equals impersonation, which is why the key is owner-only and never leaves the server. |
-| Run a plugin command without permission | `/basehider ...` requires `basehider.admin` (default op); license subcommands are not exposed to regular players. |
+| Run a plugin command without permission | `/aegishider ...` requires `aegishider.admin` (default op); license subcommands are not exposed to regular players. |
 | Production API without a signature | `POST /api/v1/installations/lease` without headers → 401. |
 | Production admin | `/admin` → 503 until Cloudflare Access is configured (fail-closed). |
 | Production headers | HSTS, CSP, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, Referrer-Policy and Permissions-Policy present. |

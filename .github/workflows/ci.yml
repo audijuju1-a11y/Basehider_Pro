@@ -16,13 +16,13 @@ jobs:
           java-version: "21"
           cache: maven
       - name: Test and build
-        working-directory: basehider-v3-integrated
+        working-directory: aegishider-integrated
         run: mvn -B verify
       - name: Upload shaded jar
         uses: actions/upload-artifact@v4
         with:
-          name: BaseHider-jar
-          path: basehider-v3-integrated/target/BaseHider-*.jar
+          name: Aegishider-jar
+          path: aegishider-integrated/target/Aegishider-*.jar
           if-no-files-found: error
 
   platform:

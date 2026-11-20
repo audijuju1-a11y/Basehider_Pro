@@ -1,4 +1,4 @@
-# Cloudflare Pages headers for BaseHider landing page.
+# Cloudflare Pages headers for Aegishider landing page.
 # https://developers.cloudflare.com/pages/configuration/headers/
 
 /*
@@ -23,15 +23,10 @@
 /assets/js/*
   Cache-Control: public, max-age=300, must-revalidate
 
-/download/*
-  Content-Type: application/java-archive
-  Cache-Control: public, max-age=86400
+/download/SHA256SUMS
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=300
   X-Robots-Tag: noindex
-
-# Per-file download name: a wildcard rule with a fixed filename served every new jar
-# under the old version's name. Add one block per published file.
-/download/BaseHider-3.6.1.jar
-  Content-Disposition: attachment; filename="BaseHider-3.6.1.jar"
 
 /404.html
   Cache-Control: no-store

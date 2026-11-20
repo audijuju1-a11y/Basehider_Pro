@@ -1,5 +1,5 @@
 -- =============================================================================
--- BaseHider Control Platform — initial schema (D1 / SQLite)
+-- Aegishider Control Platform — initial schema (D1 / SQLite)
 --
 -- Conventions
 --   * IDs are application-generated text IDs (prefix + ULID-like suffix).

@@ -1,6 +1,6 @@
 # Copy to .dev.vars for local development. NEVER commit real secrets.
 ENVIRONMENT=development
-APP_NAME=BaseHider Control Platform
+APP_NAME=Aegishider Control Platform
 APP_URL=http://localhost:8787
 SESSION_TTL_DAYS=14
 LEASE_TTL_HOURS=24
@@ -25,7 +25,7 @@ ACCESS_AUD=
 # Transactional email: console | resend | mailchannels
 EMAIL_PROVIDER=console
 RESEND_API_KEY=
-MAIL_FROM=BaseHider <noreply@example.com>
+MAIL_FROM=Aegishider <noreply@example.com>
 SUPPORT_EMAIL=support@example.com
 
 # Development-only admin bootstrap allowlist (ignored in production).

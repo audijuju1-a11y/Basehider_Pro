@@ -1,4 +1,4 @@
-# BaseHider 3.1.0 — Dependency, License and Compatibility Report
+# Aegishider 3.1.0 — Dependency, License and Compatibility Report
 
 Build target: **Paper 1.21.4** (`paper-api 1.21.4-R0.1-SNAPSHOT`), **Java 21**,
 **Maven**.
@@ -9,17 +9,17 @@ Build target: **Paper 1.21.4** (`paper-api 1.21.4-R0.1-SNAPSHOT`), **Java 21**,
 |---|---|---|---|---|---|
 | `io.papermc.paper:paper-api` | 1.21.4-R0.1-SNAPSHOT | provided | GPL-3.0 (Paper API; Bukkit API is GPL-3.0 with some MIT-derived files) | **no** (server-provided) | Bukkit/Paper API |
 | `com.github.retrooper:packetevents-api` | 2.14.0 | provided | **GPL-3.0** | **no** | outgoing packet interception (chunk/block/entity filtering) |
-| `it.unimi.dsi:fastutil-core` | 8.5.13 | compile | Apache License 2.0 | **yes**, shaded and relocated to `dev.audismp.basehider.libs.fastutil` | primitive collections |
+| `it.unimi.dsi:fastutil-core` | 8.5.13 | compile | Apache License 2.0 | **yes**, shaded and relocated to `dev.audismp.aegishider.libs.fastutil` | primitive collections |
 | `org.junit.jupiter:junit-jupiter` | 5.11.4 | test | Eclipse Public License 2.0 | no | unit tests |
 
 ### Runtime plugin requirement: PacketEvents
 
 `plugin.yml` declares `softdepend: [packetevents]`. To get **block/container/chunk
 protection**, the server must install the PacketEvents plugin (version **2.14.0 or newer**;
-the gateway refuses to activate on older versions). PacketEvents is not shaded and BaseHider
-does not copy or redistribute its code; BaseHider only calls its public API at runtime.
+the gateway refuses to activate on older versions). PacketEvents is not shaded and Aegishider
+does not copy or redistribute its code; Aegishider only calls its public API at runtime.
 The GPL-3.0 implications of linking to a GPL-3.0 runtime library should be reviewed by the
-server owner before redistribution of a modified BaseHider build; the delivered build keeps
+server owner before redistribution of a modified Aegishider build; the delivered build keeps
 PacketEvents external precisely to avoid embedding GPL code in the plugin. (This is a
 licensing report, not legal advice.)
 
@@ -35,8 +35,8 @@ buffer layout, wrapper field order); no PacketEvents source is included.
 
 ## Plugin JAR contents (verified with `jar tf` / manifest inspection)
 
-- `dev/audismp/basehider/**` (all plugin classes)
-- `dev/audismp/basehider/libs/fastutil/**` (relocated)
+- `dev/audismp/aegishider/**` (all plugin classes)
+- `dev/audismp/aegishider/libs/fastutil/**` (relocated)
 - `plugin.yml`, `config.yml`
 - `META-INF/LICENSE` (FastUtil Apache-2.0)
 - No `packetevents`, `paper` or other server classes are bundled.
@@ -65,6 +65,6 @@ runtime plugin remains the single source of PacketEvents.
 mvn -B clean verify
 ```
 
-produces `target/BaseHider-3.1.0.jar` (shaded, relocated FastUtil) and runs the unit test
-suite. The integration test harness lives outside the Maven module in `D:\Basehider\itest`
+produces `target/Aegishider-3.1.0.jar` (shaded, relocated FastUtil) and runs the unit test
+suite. The integration test harness lives outside the Maven module in `D:\Aegishider\itest`
 (not shipped) because it requires a real Paper server and headless clients.

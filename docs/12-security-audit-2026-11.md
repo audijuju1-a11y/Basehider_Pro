@@ -1,7 +1,7 @@
-# BaseHider Pro — Security, Bug & Architecture Audit
+# Aegishider Pro — Security, Bug & Architecture Audit
 
 วันที่: 2026-11-19
-ขอบเขต: ทั้ง repository (`platform/` Cloudflare Worker, `basehider-v3-integrated/` Paper plugin,
+ขอบเขต: ทั้ง repository (`platform/` Cloudflare Worker, `aegishider-integrated/` Paper plugin,
 `site/` landing page, `bench/`, `itest/`, `docs/`, `.github/`, scripts, migrations, seed)
 
 ---
@@ -83,7 +83,7 @@ Repository นี้มีคุณภาพโค้ดโดยรวมดี
 | B-13 | Medium | Schema | ตาราง payment/wallet/topup ตกค้างโดยไม่มีโค้ดใช้งาน |
 | B-14 | Low | Bug | `rescan` และ `onChunkSwept` ทำงานหนักบน main thread |
 | B-15 | Low | Bug | `/admin/releases` บังคับ `status=published` ไม่มี draft/unpublish |
-| B-16 | Low | UX | `/basehider license link` และ `rescan` ใช้ permission เดียวกับ status |
+| B-16 | Low | UX | `/aegishider license link` และ `rescan` ใช้ permission เดียวกับ status |
 | B-17 | Low | Bug | งบเวลาต่อ tick รวมเกิน 100% แล้วยังมี reconciliation เพิ่ม |
 | B-18 | Medium | Bug | `block-protection:` ไม่มี `hidden-blocks` → ปิดการป้องกันเงียบ ๆ |
 | B-19 | Low | Bug | `og:image` hardcode workers.dev ไม่ใช้ `APP_URL` |
@@ -121,7 +121,7 @@ const challenge = await createActivationChallenge(env, existing.id);
 ```
 
 `installation_uuid` และ `public_key` ไม่ใช่ความลับ: uuid ถูกส่งในทุก request header
-(`X-BH-Installation`), ปรากฏในหน้า admin/portal, อยู่ในตั๋ว support และ `public_key` ถูกส่งใน
+(`X-AG-Installation`), ปรากฏในหน้า admin/portal, อยู่ในตั๋ว support และ `public_key` ถูกส่งใน
 registration body. ใครที่เห็นค่าเหล่านี้สามารถเรียก register ซ้ำ รับรหัสใหม่ แล้วเอาไป claim
 ในบัญชีของตน → `claimActivationInner` เขียนทับ `installations.license_id` และ `org_id`
 (`licensing.ts:737`) ทำให้เซิร์ฟเวอร์ของเหยื่อถูกผูกกับบัญชีผู้โจมตี (และเหยื่อถูกตัดสิทธิ์)
@@ -171,13 +171,13 @@ Route นี้สร้าง/ยึดบัญชีแรกใน `ADMIN_EM
 เขียนไฟล์นอก repo หรือ `os.tmpdir()` พร้อม `0o600`, และเพิ่ม pre-commit secret scan
 
 ### H-05 — เผยแพร่ไจาร์เวอร์ชันเก่า/มีช่องโหว่ และ header ผิดเวอร์ชัน
-**ไฟล์:** `platform/public/download/BaseHider-3.2.0.jar`, `.../3.6.0.jar`, `.../3.6.1.jar`,
-`dist/BaseHider-3.2.0.jar` … `3.5.0.jar`, `site/public/download/BaseHider-3.6.1.jar`,
+**ไฟล์:** `platform/public/download/Aegishider-3.2.0.jar`, `.../3.6.0.jar`, `.../3.6.1.jar`,
+`dist/Aegishider-3.2.0.jar` … `3.5.0.jar`, `site/public/download/Aegishider-3.6.1.jar`,
 `site/public/_headers:28`, `site/public/_redirects:2-5`
 
 - `docs/09-three-gap-benchmark.md` ระบุว่า baseline เวอร์ชันเก่า "leaks all three gaps" แต่ไจาร์
   เหล่านั้นยังถูกเสิร์ฟผ่าน static assets ของ Worker และ Pages
-- `_headers` ตั้ง `Content-Disposition: attachment; filename="BaseHider-3.6.1.jar"` ให้ทุกไฟล์
+- `_headers` ตั้ง `Content-Disposition: attachment; filename="Aegishider-3.6.1.jar"` ให้ทุกไฟล์
   ใต้ `/download/*` → ถ้าเพิ่ม 3.7.0 ไฟล์จะถูกบันทึกชื่อผิด
 - ปลั๊กอิน HEAD คือ 3.7.0 (`plugin.yml`) แต่เว็บยังลิงก์ 3.6.1
 
@@ -240,8 +240,8 @@ servers.filter((server) => server.customer_email === data.user.email)
 `org_id`) และแบ่งหน้า
 
 ### B-03 (Medium) — snapshot ข้ามโลก
-**ไฟล์:** `basehider-v3-integrated/.../index/HiddenBlockIndex.java:351`,
-`BaseHiderPlugin.java:610,641,647-670`
+**ไฟล์:** `aegishider-integrated/.../index/HiddenBlockIndex.java:351`,
+`AegishiderPlugin.java:610,641,647-670`
 
 `snapshotAllPositions()` รวม position ของ **ทุก world** เป็น `long[]` โดยไม่มี world id
 จากนั้น `revealPositionsToViewers` เอา position ไปใช้กับ `player.getWorld()` และ
@@ -279,7 +279,7 @@ escape `%`, `_`, `\` แต่ SQL ไม่มี `ESCAPE '\'`; SQLite ถื�
 (`pollLast`) — ควรเลือกนโยบายเดียวและนับ metric แยก
 
 ### B-09 — `_headers` ฝังชื่อไฟล์
-`site/public/_headers:28` ตั้ง `filename="BaseHider-3.6.1.jar"` ให้ทุก path ใต้ `/download/*`
+`site/public/_headers:28` ตั้ง `filename="Aegishider-3.6.1.jar"` ให้ทุก path ใต้ `/download/*`
 
 ### B-10 (High) — workspace config พัง ทำให้ CI ล้ม
 **ไฟล์:** `platform/pnpm-workspace.yaml`
@@ -318,16 +318,16 @@ verifyDepsBeforeRun: false
 อ่านเขียนแล้ว → พื้นที่โจมตี/ความเข้าใจผิด และเป็นหนี้ทางเทคนิคตอน migrate
 
 ### B-14 — งานหนักบน main thread
-- `/basehider rescan` เรียก `rescanLoadedChunks(8192)` แบบ synchronous (`BaseHiderPlugin.java:568-585`)
-- `onChunkSwept` เรียก `player.sendBlockChange` ต่อบล็อก ต่อผู้เล่น (`BaseHiderPlugin.java:404-460`)
+- `/aegishider rescan` เรียก `rescanLoadedChunks(8192)` แบบ synchronous (`AegishiderPlugin.java:568-585`)
+- `onChunkSwept` เรียก `player.sendBlockChange` ต่อบล็อก ต่อผู้เล่น (`AegishiderPlugin.java:404-460`)
 ทั้งสองเป็นคำสั่ง admin แต่บนเซิร์ฟเวอร์ใหญ่จะทำให้ tick สะดุด
 
 ### B-15 — release เผยแพร่ทันที
 `routes/admin.ts:512-540` สร้าง release ด้วย `status: "published"` เสมอ ไม่มี draft/unpublish
 
 ### B-16 — permission กว้างเกิน
-`basehider.admin` เดียวคุมทั้ง `status`, `license link` (แสดง activation code) และ `rescan`
-ควรแยก `basehider.admin.license` / `.diagnostics`
+`aegishider.admin` เดียวคุมทั้ง `status`, `license link` (แสดง activation code) และ `rescan`
+ควรแยก `aegishider.admin.license` / `.diagnostics`
 
 ### B-17 — งบเวลาเกิน 100%
 `securityTick` ให้ item 40% + block 45% + player 7.5% + tunnel 7.5% = 100% ของ budget
@@ -339,7 +339,7 @@ verifyDepsBeforeRun: false
 ขัดกับหลัก "fail closed" (ผู้ดูแลแก้ config แล้วป้องกันหายโดยไม่รู้)
 
 ### B-19 — OG image hardcode
-`platform/src/views/ui.ts:190-199` ใช้ `https://basehider-platform.audijuju1.workers.dev/...`
+`platform/src/views/ui.ts:190-199` ใช้ `https://aegishider-platform.audijuju1.workers.dev/...`
 แทน `APP_URL` → ผิดเมื่อย้ายโดเมน
 
 ### B-20 — analytics เลื่อนวัน
@@ -375,7 +375,7 @@ Worker ไฟล์เดียว 11.6k บรรทัดใน `src/`, route 
 ทดสอบได้ดีแต่ขยายยาก (ไม่มี DI, ไม่มี repository abstraction)
 
 **A-06 DLQ ไม่มี consumer**
-`wrangler.jsonc` ตั้ง `dead_letter_queue: bhcp-telemetry-dlq` แต่ `src/queue.ts` มี handler เดียว
+`wrangler.jsonc` ตั้ง `dead_letter_queue: agcp-telemetry-dlq` แต่ `src/queue.ts` มี handler เดียว
 และ `message.retry()` ไม่จำกัดด้วยตัวเอง (พึ่ง max_retries 3) → ข้อความที่ fail จะหายเข้า DLQ
 โดยไม่มีใครประมวลผล/แจ้งเตือน
 
@@ -397,7 +397,7 @@ wrangler → incident response ต้องดู log ใน dashboard เท่
 test ข้ามเวอร์ชัน MC/Java, build ของ `site/`, secret scan; และ job platform ล้มเพราะ B-10
 
 **A-11 (Medium) repo hygiene**
-commit ไฟล์ที่ควร build: `dist/*.jar` (13 ไฟล์), `basehider-v3-integrated/target/**` (class,
+commit ไฟล์ที่ควร build: `dist/*.jar` (13 ไฟล์), `aegishider-integrated/target/**` (class,
 surefire reports), `bench/**` 1,912 ไฟล์ (รวม `PlaceBot-chunks/*.bin`), `.tools/apache-maven-3.9.9/**`
 90 ไฟล์, `site/.qa/*.png` (ทั้งที่ `.gitignore` มี `.qa/`) → repo ใหญ่, ประวัติมี binary/ล็อกภายใน
 และเสี่ยงรันไจาร์เก่าโดยไม่ตั้งใจ
@@ -486,14 +486,14 @@ password + email link + OTP (ปิด) โดย recovery พึ่งอีเ
 | B-06 | แก้แล้ว | `createActivationChallenge` mark challenge เก่าที่ `consumed_at IS NULL` เป็น consumed ก่อนออกใบใหม่ |
 | B-07 | แก้แล้ว | scheduled cleanup ลบ `license_leases` (หมดอายุ > 7 วัน), `security_events`, `email_log`, `heartbeat_latest` (ตาม retention), `job_runs` (> 90 วัน), `activation_guard` (> 7 วัน และไม่ถูกล็อก) |
 | B-08 | แก้แล้ว | `PlatformService.flushEvents` เปลี่ยน `pollLast()` → `pollFirst()` ให้ตรงกับ `recordEvent` (ทิ้งเก่าสุด ไม่ทิ้งใหม่สุด) |
-| B-09 | แก้แล้ว | `site/public/_headers`: wildcard ไม่ตั้ง `Content-Disposition` อีก ใช้ block รายไฟล์ (`/download/BaseHider-3.6.1.jar`) |
+| B-09 | แก้แล้ว | `site/public/_headers`: wildcard ไม่ตั้ง `Content-Disposition` อีก ใช้ block รายไฟล์ (`/download/Aegishider-3.6.1.jar`) |
 | B-10 | แก้แล้ว | `platform/pnpm-workspace.yaml` เพิ่ม `packages: ["."]` (ทดสอบ `pnpm list` ผ่านแล้ว) |
 | B-11 | แก้แล้ว | `SECURITY.md` (หัวข้อซ้ำ, payment provider, `ESCAPE`), `THREAT-MODEL.md` (ลบ webhook/wallet/top-up), `README.md`/`STATUS.md` (คำสั่ง `pnpm install`, จำนวนเทสต์ 22) |
 | B-12 | แก้แล้ว | ลบ `pom.xml` ที่ root (0 byte) |
 | B-13 | เลื่อน (ตั้งใจ) | ตาราง payment/wallet/topup ถูก mark deprecated ใน `platform/docs/DATABASE.md` แต่ **ไม่ drop** เพราะ migration ที่ลบตารางเป็นการทำลายข้อมูลใน production แบบย้อนกลับไม่ได้ |
 | B-14 | แก้แล้วบางส่วน | `rescanLoadedChunks` จำกัดเวลาด้วย `mainThreadBudgetMs` แล้ว ที่เหลือให้ reconciliation ราย tick ดูดต่อ; `onChunkSwept` ยังส่ง `sendBlockChange` ต่อบล็อก (ต้องออกแบบ batching เพิ่ม) |
 | B-15 | เลื่อน | ต้องมี draft/unpublish flow + UI (เป็นฟีเจอร์ ไม่ใช่บัคเชิงตรรกะ) |
-| B-16 | เลื่อน | การแยก permission `basehider.admin.license`/`.diagnostics` ต้องอัปเดต `plugin.yml`, เอกสาร และ config ของผู้ใช้ |
+| B-16 | เลื่อน | การแยก permission `aegishider.admin.license`/`.diagnostics` ต้องอัปเดต `plugin.yml`, เอกสาร และ config ของผู้ใช้ |
 | B-17 | แก้แล้ว | งบ engine เหลือ 35/40/7.5/7.5 = 90% เหลือ 10% ให้ `processReconciliation` |
 | B-18 | แก้แล้ว | `block-protection:` ที่ไม่มี `hidden-blocks` ใช้ built-in default + warning แทนการปิดการป้องกันเงียบ ๆ (ถ้าตั้ง `enabled: false` ยังปิดตามที่ผู้ดูแลสั่ง) |
 | B-19 | แก้แล้ว | `layout()` รับ `baseUrl` (ส่ง `APP_URL` จาก `publicPage`/`appPage`) ใช้ทำ `og:image`/`twitter:image` |
@@ -517,15 +517,15 @@ password + email link + OTP (ปิด) โดย recovery พึ่งอีเ
 | H-02 | แก้แล้ว | `/auth/dev-admin` ตอบ 404 เว้นแต่ `ENVIRONMENT != production` **และ** `DEV_BOOTSTRAP=1` **และ** token ตรงกับ `DEV_ADMIN_TOKEN` (16+ ตัว, header `x-dev-admin-token` หรือ `?token=`) ใช้ `timingSafeEqual`; ความพยายามที่ผิดถูกบันทึกเป็น `auth.dev_admin_denied`. เพิ่มตัวแปรใน `.dev.vars.example` + README/DEPLOYMENT |
 | H-03 | แก้แล้ว | ปิด pre-account-takeover ที่ต้นทาง: `/auth/register` **ไม่รับรหัสผ่านแล้ว** (สมัครด้วยอีเมล → ยืนยันผ่านลิงก์ → ตั้งรหัสที่ `/app/account`), password login ถูกปฏิเสธเมื่อ `email_verified_at` เป็น NULL และเมื่อยืนยันอีเมลสำเร็จจะล้างรหัสผ่านที่ถูกตั้งก่อนการยืนยัน (`clearUnverifiedPassword`) → รหัสของ attacker ใช้ไม่ได้อีก |
 | H-04 | แก้แล้ว | `.gitignore` ทั้ง root และ `platform/` มี `.prod-secrets.json` + `*.secrets.json`; `scripts/cf-prod-secrets.mjs` เขียนไฟล์ไปที่ `os.tmpdir()` โหมด 0600 แทน working directory |
-| H-05 | แก้แล้ว | ลบไจาร์เก่าออกจากที่เสิร์ฟจริง: `platform/public/download/BaseHider-{3.2.0,3.6.0}.jar` และ `dist/*.jar` ทั้งหมด (เหลือ 3.6.1 ที่เป็น build ปัจจุบัน); `_headers` ตั้งชื่อไฟล์รายไฟล์แล้ว; seed SQL ไม่ลิงก์ไฟล์ที่ถูกลบ (artifact_url = NULL) |
+| H-05 | แก้แล้ว | ลบไจาร์เก่าออกจากที่เสิร์ฟจริง: `platform/public/download/Aegishider-{3.2.0,3.6.0}.jar` และ `dist/*.jar` ทั้งหมด (เหลือ 3.6.1 ที่เป็น build ปัจจุบัน); `_headers` ตั้งชื่อไฟล์รายไฟล์แล้ว; seed SQL ไม่ลิงก์ไฟล์ที่ถูกลบ (artifact_url = NULL) |
 | H-06 | แก้แล้ว | ดู B-01 (UPSERT + นับ limit ในคำสั่งเดียว) |
 
 ### 3 ข้อท้ายที่ขอเพิ่ม
 
 - **B-15 draft/unpublish**: `POST /admin/releases` รับ `status` (`draft`/`published`), เพิ่ม `POST /admin/releases/:id/status`
   พร้อม audit และปุ่ม “เผยแพร่/ถอนเผยแพร่” ในตาราง; `/release/:id/download` เสิร์ฟเฉพาะ `published` อยู่แล้ว
-- **B-16 แยก permission ปลั๊กอิน**: เพิ่ม `basehider.admin.license` (คำสั่ง `license`) และ `basehider.admin.diagnostics`
-  (`rescan`) ใน `plugin.yml` โดยเป็น child ของ `basehider.admin` (ค่าเริ่มต้นเท่าเดิม แต่ถอนรายตัวได้)
+- **B-16 แยก permission ปลั๊กอิน**: เพิ่ม `aegishider.admin.license` (คำสั่ง `license`) และ `aegishider.admin.diagnostics`
+  (`rescan`) ใน `plugin.yml` โดยเป็น child ของ `aegishider.admin` (ค่าเริ่มต้นเท่าเดิม แต่ถอนรายตัวได้)
 - **รันเทสต์ Java จริง**: Temurin 21.0.13 + Maven 3.9.9 → `BUILD SUCCESS`, 123 tests / 0 failures
 
 ### ตรวจซ้ำหลังแก้ทั้งหมด

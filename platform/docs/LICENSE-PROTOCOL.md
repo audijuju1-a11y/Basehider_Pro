@@ -8,7 +8,7 @@ Each installation generates:
 - an Ed25519 keypair;
 - fingerprint_sha256 = lowercase hex SHA-256 of the SPKI DER public key.
 
-The private key stays on the customer server (plugins/BaseHider/license/). The server stores the public key and fingerprint. A UUID registered with a different public key is rejected (409).
+The private key stays on the customer server (plugins/Aegishider/license/). The server stores the public key and fingerprint. A UUID registered with a different public key is rejected (409).
 
 ## 2. Pairing (activation)
 
@@ -30,7 +30,7 @@ canonical = METHOD + "\n" + pathname + "\n" + installation_uuid + "\n" +
 signature = Ed25519_sign(private_key, UTF8(canonical))
 ~~~
 
-Headers: X-BH-Installation, X-BH-Timestamp, X-BH-Nonce, X-BH-Signature (base64).
+Headers: X-AG-Installation, X-AG-Timestamp, X-AG-Nonce, X-AG-Signature (base64).
 
 Server verification order:
 

@@ -78,7 +78,7 @@ export function marketingHome(
   <section class="hero">
     <div class="shell hero-grid">
       <div>
-        <img class="hero-logo" src="/assets/img/logo-192.png" width="192" height="192" alt="BaseHider logo" decoding="async">
+        <img class="hero-logo" src="/assets/img/logo-192.png" width="192" height="192" alt="Aegishider logo" decoding="async">
         <p class="eyebrow">${content.heroEyebrow}</p>
         <h1>${content.heroTitle}<br><em>${content.heroTitleAccent}</em></h1>
         <p class="hero-lead">${content.heroLead}</p>
@@ -148,7 +148,7 @@ export function marketingHome(
         ${[
           ["01", "สมัครบัญชี", "ยืนยันอีเมลด้วย OTP หรือลิงก์ครั้งเดียว"],
           ["02", "รับไลเซนส์", "ระบบออกไลเซนส์ฟรีพร้อมรหัสยาวให้ทันที"],
-          ["03", "เชื่อมเซิร์ฟเวอร์", "รัน /basehider license link แล้วกรอกรหัสในพอร์ทัล"],
+          ["03", "เชื่อมเซิร์ฟเวอร์", "รัน /aegishider license link แล้วกรอกรหัสในพอร์ทัล"],
           ["04", "ติดตาม", "ดู heartbeat, TPS/MSPT และการตรวจพบเชิงลึกได้ฟรี"],
         ].map(
           (step) => html`<div class="payment-flow__step">
@@ -188,7 +188,7 @@ export function marketingHome(
         <div class="stack">
           ${[
             { n: "01", title: "สมัครและรับไลเซนส์", text: "เข้าสู่ระบบด้วยอีเมล ระบบออกไลเซนส์ฟรีพร้อมรหัสยาวให้อัตโนมัติ ไลเซนส์จะปรากฏในพอร์ทัลทันที" },
-            { n: "02", title: "เชื่อมเซิร์ฟเวอร์", text: "รัน /basehider license link บนเซิร์ฟเวอร์ แล้วนำรหัส 16 ตัวไปกรอกในพอร์ทัล" },
+            { n: "02", title: "เชื่อมเซิร์ฟเวอร์", text: "รัน /aegishider license link บนเซิร์ฟเวอร์ แล้วนำรหัส 16 ตัวไปกรอกในพอร์ทัล" },
             { n: "03", title: "ติดตาม", text: "ดู heartbeat, TPS/MSPT การตรวจพบ และเหตุการณ์ล่าสุด — ฟรี ไม่มีวันหมดอายุ" },
           ].map((step) => html`<div class="card card-pad">
             <div class="row" style="gap:.7rem;align-items:flex-start">
@@ -310,6 +310,41 @@ export function productDetail(
               </div>`
             : raw("")}
 
+          <div style="margin-top:1rem" class="card">
+            <div class="card-head"><h3>เปิดใช้งานก่อนใช้งาน</h3></div>
+            <div class="card-body">
+              <p class="muted" style="max-width:70ch">ไจาร์ 4.0.0 ถูก gate ด้วยไลเซนส์: protection จะเริ่มทำงานหลังยืนยันเซิร์ฟเวอร์บนเว็บนี้แล้วเท่านั้น (ฟรี 100%)</p>
+              <ol style="margin:.8rem 0 0;padding-left:1.2rem;display:grid;gap:.45rem;font-size:.82rem;color:var(--text-2)">
+                <li>วางไจาร์และ <code>PacketEvents</code> ใน <code>plugins/</code> แล้วรีสตาร์ท</li>
+                <li>รัน <code>/aegishider license link</code> — จะได้รหัส 16 ตัวและ URL</li>
+                <li>เข้าสู่ระบบ/สมัครฟรี แล้วไปที่ <a href="/app/activations">การเปิดใช้งาน</a> ใส่รหัส</li>
+                <li>รัน <code>/aegishider license refresh</code> แล้วตรวจ <code>/aegishider status</code> ว่า protection=ACTIVE</li>
+              </ol>
+              <p class="mono" style="margin-top:.8rem;font-size:.58rem;color:var(--muted-2)">DEFAULT enforcement=enforce · ฟรี 100% · เปลี่ยนเป็น warn หรือปิดได้ใน platform.yml</p>
+            </div>
+          </div>
+
+          <div style="margin-top:2rem" id="evidence">
+            <h2 style="font-size:1.2rem;margin-bottom:.6rem">ผลทดสอบจริง · A–F</h2>
+            <p class="muted" style="margin-bottom:1rem;max-width:72ch">ไคลเอนต์จำลองสองตัวเชื่อมต่อ Paper แล้วถอดรหัส chunk และทะเบียน block entity ฝั่งไคลเอนต์ — ตารางด้านล่างคือผลจริงบนไบล์ที่ obfuscate แล้ว</p>
+            <div class="card" style="margin-top:1rem">
+              <div class="card-body">
+                <table class="evidence-table">
+                  <thead><tr><th>สถานการณ์</th><th>BaseHider 3.0.0</th><th>Aegishider 4.0.0</th></tr></thead>
+                  <tbody>
+                    <tr><th>A · ไอเท็มไกลหลังกำแพง</th><td class="bad">LEAK · 1 spawn/client</td><td class="good">HIDDEN · 0 spawn</td></tr>
+                    <tr><th>B · ไอเท็มใกล้ 3 บล็อก</th><td class="good">VISIBLE</td><td class="good">VISIBLE · 12–35 ms</td></tr>
+                    <tr><th>C · หีบใน chunk ที่ resend</th><td class="bad">LEAK · chest states=2</td><td class="good">HIDDEN · chest states=0</td></tr>
+                    <tr><th>D · block entity 160/336 บล็อก</th><td class="bad">LEAK ทั้งสองระยะ</td><td class="good">HIDDEN ทั้งสองระยะ</td></tr>
+                    <tr><th>E · ทะเบียน block entity ฝั่งไคลเอนต์</th><td class="bad">DIRTY · hidden BEs=6</td><td class="good">CLEAN · hidden BEs=0</td></tr>
+                    <tr><th>F · cache replay (Bobby / DH)</th><td class="bad">CACHE LEAK · final=chest</td><td class="good">RE-HIDE · final=stone</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <p class="mono" style="margin-top:.8rem;font-size:.58rem;letter-spacing:.04em;color:var(--muted-2)">PAPER 1.21.4 BUILD 232 · PACKETEVENTS 2.14.0 · 2 CLIENTS · 123 UNIT TESTS · SMOKE: 1.21.1 / 1.21.5 / 1.21.11 / 26.3</p>
+          </div>
+
           <div style="margin-top:2rem" class="card">
             <div class="card-head"><h3>ความเข้ากันได้</h3></div>
             <div class="card-body">
@@ -339,11 +374,21 @@ export function productDetail(
 
           ${product.releases.length > 1
             ? html`<div style="margin-top:1rem">
-                <h2 style="font-size:1.1rem;margin-bottom:.6rem">ประวัติเวอร์ชัน</h2>
+                <h2 style="font-size:1.1rem;margin-bottom:.6rem">ไบล์ตามเวอร์ชัน</h2>
                 <div class="timeline">
-                  ${product.releases.map((release) => html`<div class="timeline-item">
-                    <time>${formatDate(release.released_at, options.lang)}</time>
-                    <b>v${release.version}</b> ${release.channel !== "stable" ? html`<span class="badge">${release.channel}</span>` : raw("")}
+                  ${product.releases.map((release) => html`<div class="timeline-item" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem">
+                    <div>
+                      <time>${formatDate(release.released_at, options.lang)}</time>
+                      <b>v${release.version}</b>
+                      ${release.channel !== "stable" ? html`<span class="badge">${release.channel}</span>` : raw("")}
+                      <div style="margin-top:.35rem;display:flex;flex-wrap:wrap;gap:.25rem">
+                        ${jsonArray<string>(release.supported_minecraft).map((version) => html`<span class="badge">MC ${version}</span>`)}
+                        ${jsonArray<string>(release.supported_java).map((version) => html`<span class="badge">Java ${version}</span>`)}
+                      </div>
+                    </div>
+                    ${release.artifact_url
+                      ? html`<a class="btn btn-soft btn-sm" href="${release.artifact_url}" download>${icon("download")} ดาวน์โหลด</a>`
+                      : raw("")}
                   </div>`)}
                 </div>
               </div>`
@@ -385,7 +430,7 @@ export function productDetail(
           <div class="card card-pad">
             <p class="mono" style="margin-bottom:.6rem">ลิงก์ที่เกี่ยวข้อง</p>
             <div class="stack" style="gap:.45rem">
-              <a class="text-2" style="font-size:.84rem" href="/docs/basehider">เอกสารการติดตั้ง ${icon("arrow")}</a>
+              <a class="text-2" style="font-size:.84rem" href="/docs/aegishider">เอกสารการติดตั้ง ${icon("arrow")}</a>
               <a class="text-2" style="font-size:.84rem" href="/changelog/${product.slug}">บันทึกการอัปเดต ${icon("arrow")}</a>
               <a class="text-2" style="font-size:.84rem" href="/support">ขอความช่วยเหลือ ${icon("arrow")}</a>
             </div>
@@ -534,7 +579,7 @@ export function docPage(doc: DocPage, _lang: Lang): SafeHtml {
       </nav>
       <article>
         <div class="prose">${renderMarkdown(doc.markdown)}</div>
-        <p class="mono" style="margin-top:1.5rem;font-size:.55rem">อัปเดต ${doc.updated} · BaseHider Control Platform</p>
+        <p class="mono" style="margin-top:1.5rem;font-size:.55rem">อัปเดต ${doc.updated} · Aegishider Control Platform</p>
       </article>
     </div>
   </section>`;
@@ -654,9 +699,9 @@ export function aboutPage(_lang: Lang): SafeHtml {
   return html`<section class="section">
     <div class="shell narrow">
       <p class="eyebrow">ABOUT</p>
-      <h1 style="font-size:clamp(1.9rem,3.5vw,2.6rem)">เกี่ยวกับ BaseHider</h1>
+      <h1 style="font-size:clamp(1.9rem,3.5vw,2.6rem)">เกี่ยวกับ Aegishider</h1>
       <div class="prose" style="margin-top:1.2rem">
-        <p>BaseHider เริ่มจากปลั๊กอินซ่อนหีบและไอเท็มสำหรับเซิร์ฟเวอร์ Paper ที่ยึดหลัก “ไม่แน่ใจ = ซ่อน” และขยายมาเป็นแพลตฟอร์มจัดการไลเซนส์สำหรับผลิตภัณฑ์หลายตัว</p>
+        <p>Aegishider เริ่มจากปลั๊กอินซ่อนหีบและไอเท็มสำหรับเซิร์ฟเวอร์ Paper ที่ยึดหลัก “ไม่แน่ใจ = ซ่อน” และขยายมาเป็นแพลตฟอร์มจัดการไลเซนส์สำหรับผลิตภัณฑ์หลายตัว</p>
         <p>เป้าหมายของแพลตฟอร์มคือทำให้การใช้งานปลั๊กอินเป็นเรื่องตรงไปตรงมา: เจ้าของเซิร์ฟเวอร์ใช้งานฟรี ผู้ดูแลเห็นสิ่งที่เกิดขึ้น และทุกฝ่ายตรวจสอบย้อนกลับได้</p>
         <h2>หลักที่ยึด</h2>
         <ul>
@@ -741,7 +786,7 @@ export function legalPage(kind: "terms" | "privacy", _lang: Lang): SafeHtml {
   return html`<section class="section">
     <div class="shell narrow">
       <div class="prose">${renderMarkdown(body)}</div>
-      <p class="mono" style="margin-top:2rem;font-size:.55rem">${title} · BaseHider Control Platform</p>
+      <p class="mono" style="margin-top:2rem;font-size:.55rem">${title} · Aegishider Control Platform</p>
     </div>
   </section>`;
 }

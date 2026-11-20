@@ -1,8 +1,8 @@
-# BaseHider 3.1.0 — Deep Audit of the Previous Code Base
+# Aegishider 3.1.0 — Deep Audit of the Previous Code Base
 
-Scope: every Java source file in `basehider-v3-integrated` (20 files), `pom.xml`,
-`plugin.yml`, `config.yml`, the built `target/BaseHider-2.0.0.jar` and the legacy
-`target/BaseHider.jar`. Baseline `mvn clean package` succeeded (compile only, zero tests:
+Scope: every Java source file in `aegishider-integrated` (20 files), `pom.xml`,
+`plugin.yml`, `config.yml`, the built `target/Aegishider-2.0.0.jar` and the legacy
+`target/Aegishider.jar`. Baseline `mvn clean package` succeeded (compile only, zero tests:
 `Tests run: No tests to run`).
 
 This document records what the code actually did — not what comments or module names
@@ -17,7 +17,7 @@ Severity: **P0** = security correctness / data leak, **P1** = thread safety/life
 
 ## A. Listener registration (P0, confirmed)
 
-`BaseHiderPlugin.onEnable()` registered exactly one listener:
+`AegishiderPlugin.onEnable()` registered exactly one listener:
 
 ```java
 pm.registerEvents(new AllListeners(this), this);
@@ -144,11 +144,11 @@ task storm. Snapshot capture of 81 chunks per move is O(1.2M blocks) copied per 
 
 ## M. Commands / status messages vs reality (P3)
 
-- `/basehider raidinfo` printed "not yet wired" although plugin.yml advertised it.
+- `/aegishider raidinfo` printed "not yet wired" although plugin.yml advertised it.
 - Startup log claimed `AntiXray: ON | RaidDetection: ON | ProtectionLayer: ON` while
   `RaidDetectionEngine.recordChunkEntry` was never called and `ChunkRiskClassifier.recordVisit`
   was never called (visitor counts always 0).
-- `basehider.bypass` was documented as "see blocks normally" but the hiding path never
+- `aegishider.bypass` was documented as "see blocks normally" but the hiding path never
   checked it; it only influenced the reveal radius. Bypass players still received fake blocks.
 - pom version `2.0.0` vs plugin.yml `3.0.0`.
 
@@ -185,7 +185,7 @@ task storm. Snapshot capture of 81 chunks per move is O(1.2M blocks) copied per 
     context and could run during shutdown; no cooldown beyond per-chunk 60 s.
 12. **World keys**: `worldName.hashCode()` is reused for every map although the outer map
     already used the string — inconsistent identity between components.
-13. **Shade**: jar produced as `BaseHider-2.0.0.jar` plus a `BaseHider.jar` replacement;
+13. **Shade**: jar produced as `Aegishider-2.0.0.jar` plus a `Aegishider.jar` replacement;
     plugin.yml inside claimed 3.0.0. Old `target/` artifacts were left in place.
 14. **`getSpawnersInWorld` array copy per world per 3 s** even when no players were near.
 15. **Everything that claimed "async" was effectively unbounded main-thread scheduling**:

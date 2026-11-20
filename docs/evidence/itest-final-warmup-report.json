@@ -1,5 +1,5 @@
 {
-  "schema": "basehider-itest/report/v1",
+  "schema": "aegishider-itest/report/v1",
   "runId": "run-20261114-120840-553",
   "startedAt": "2026-11-14T05:08:40.548Z",
   "baselineMode": false,
@@ -12,25 +12,25 @@
     "rconPort": 25598
   },
   "plugin": {
-    "jarPath": "D:\\Basehider\\basehider-v3-integrated\\target\\BaseHider-3.1.0.jar",
+    "jarPath": "D:\\Aegishider\\aegishider-integrated\\target\\Aegishider-3.1.0.jar",
     "size": 6781995,
     "sha256": "a938754a76891df628052d229ca4c9f5d9b91d40f340926c771ac2c64f231245",
-    "pluginYmlName": "BaseHider",
+    "pluginYmlName": "Aegishider",
     "pluginYmlVersion": "3.1.0",
     "packetEventsInstalled": true
   },
   "server": {
-    "dir": "D:\\Basehider\\itest\\server",
-    "jar": "D:\\Basehider\\itest\\server\\paper-1.21.4.jar",
+    "dir": "D:\\Aegishider\\itest\\server",
+    "jar": "D:\\Aegishider\\itest\\server\\paper-1.21.4.jar",
     "port": 25599,
     "rconPort": 25598,
-    "logPath": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\server-console.log",
+    "logPath": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\server-console.log",
     "bootMs": 62130,
     "versionLine": "[12:08:45 INFO]: [bootstrap] Loading Paper 1.21.4-232-ver/1.21.4@12d8fe0 (2025-06-09T10:15:42Z) for Minecraft 1.21.4",
     "rconReady": true,
     "crashDetected": false,
     "pid": 20504,
-    "pidFile": "D:\\Basehider\\itest\\out\\server.pid",
+    "pidFile": "D:\\Aegishider\\itest\\out\\server.pid",
     "stopped": {
       "cleanExit": true,
       "killedTree": false,
@@ -141,7 +141,7 @@
             "followupByType": {},
             "unknownEntityPackets": 0,
             "leaked": false,
-            "capturePath": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\TestBot.ndjson"
+            "capturePath": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\TestBot.ndjson"
           },
           "testBot2": {
             "username": "TestBot2",
@@ -153,7 +153,7 @@
             "followupByType": {},
             "unknownEntityPackets": 0,
             "leaked": false,
-            "capturePath": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\TestBot2.ndjson"
+            "capturePath": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\TestBot2.ndjson"
           }
         },
         "anyLeak": false,
@@ -258,7 +258,7 @@
             "metadataPackets": 2,
             "positionPackets": 2,
             "visible": true,
-            "capturePath": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\TestBot.ndjson"
+            "capturePath": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\TestBot.ndjson"
           },
           "testBot2": {
             "username": "TestBot2",
@@ -276,7 +276,7 @@
             "metadataPackets": 2,
             "positionPackets": 2,
             "visible": true,
-            "capturePath": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\TestBot2.ndjson"
+            "capturePath": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\TestBot2.ndjson"
           }
         },
         "targetUuid": "0c0b0a98-0cff-fff8-0df4-f5580ee9eab8",
@@ -505,21 +505,21 @@
   },
   "limitations": [],
   "artifacts": {
-    "runDir": "D:\\Basehider\\itest\\out\\run-20261114-120840-553",
+    "runDir": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553",
     "captures": {
-      "TestBot": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\TestBot.ndjson",
-      "TestBot2": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\TestBot2.ndjson"
+      "TestBot": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\TestBot.ndjson",
+      "TestBot2": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\TestBot2.ndjson"
     },
     "chunkDirs": {
-      "TestBot": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\TestBot-chunks",
-      "TestBot2": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\TestBot2-chunks"
+      "TestBot": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\TestBot-chunks",
+      "TestBot2": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\TestBot2-chunks"
     },
     "botStderrLogs": {
-      "TestBot": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\TestBot.stderr.log",
-      "TestBot2": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\TestBot2.stderr.log"
+      "TestBot": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\TestBot.stderr.log",
+      "TestBot2": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\TestBot2.stderr.log"
     },
-    "consoleLog": "D:\\Basehider\\itest\\out\\run-20261114-120840-553\\server-console.log",
-    "reportPath": "D:\\Basehider\\itest\\out\\report-20261114-121018-596.json"
+    "consoleLog": "D:\\Aegishider\\itest\\out\\run-20261114-120840-553\\server-console.log",
+    "reportPath": "D:\\Aegishider\\itest\\out\\report-20261114-121018-596.json"
   },
   "errors": [],
   "bots": {

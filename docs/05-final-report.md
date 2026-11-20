@@ -1,10 +1,10 @@
-# BaseHider 3.3.8 — Final Engineering Report
+# Aegishider 3.3.8 — Final Engineering Report
 
 > Honesty statement: every status below distinguishes **IMPLEMENTED** (code exists and is
 > wired), **TESTED** (automated tests exercise it), **VERIFIED** (evidence from a real Paper
 > 1.21.4 server / real client packets) and **PARTIAL / NOT IMPLEMENTED**. No claim here is
 > based on comments, names or "should work"; test/benchmark numbers are recorded from runs
-> performed on this machine (logs kept in `docs/evidence` and `D:\Basehider\itest\out`).
+> performed on this machine (logs kept in `docs/evidence` and `D:\Aegishider\itest\out`).
 
 ---
 
@@ -40,11 +40,11 @@ instead:
   and before/after packets: `docs/07-viaversion-hotfix.md`.
 - **3.2.0 follow-up hardening** (details: `docs/06-v3.2-improvements.md`): extended startup
   warm-up (first-join block spike ~38 ms -> ~11 ms), item spawn-storm priority lane, gateway
-  stale-activity + detected-overflow alarms, and an on-demand `/basehider export`
+  stale-activity + detected-overflow alarms, and an on-demand `/aegishider export`
   diagnostics snapshot written asynchronously.
 - Real-server packet evidence (two headless clients, decoded chunk palettes):
 
-| Scenario | Legacy v3 jar | BaseHider 3.1.0 |
+| Scenario | Legacy v3 jar | Aegishider 3.1.0 |
 |---|---|---|
 | A: dropped item 24 blocks away behind a wall | **LEAK** (2 spawn packets) | **HIDDEN** (0 spawn, 0 follow-ups) |
 | B: dropped item ~3 blocks in front | visible (~4 ms) | visible, reveal latency **22â€“63 ms** (1â€“3 ticks across runs) |
@@ -52,7 +52,7 @@ instead:
 
 - Unit tests: **75 tests, 0 failures**. Integration harness: **PASS on all scenarios**
   (and baseline mode PASS = leaks correctly detected).
-- Measured BaseHider own main-thread security work: p50 **100–200 µs**, p95 **≤0.85 ms**,
+- Measured Aegishider own main-thread security work: p50 **100–200 µs**, p95 **≤0.85 ms**,
   p99 **≤3.0 ms** per tick at 0–800 dropped items; server `/mspt` delta over baseline
   ≈ **0.5–1.4 ms** average in the single-client test (including PacketEvents overhead).
   In 3.2.0 the one-time first-evaluation class-load spike was reduced from 235 ms to a
@@ -82,8 +82,8 @@ Commands used are reproduced in `docs/03-test-plan.md` and the harness README.
 
 ## 3. Deliverables and file-level changes
 
-Project root: `D:\Basehider\basehider-v3-integrated`.
-Plugin jar: `D:\Basehider\dist\BaseHider-3.1.0.jar` (shaded, relocated FastUtil; sha256
+Project root: `D:\Aegishider\aegishider-integrated`.
+Plugin jar: `D:\Aegishider\dist\Aegishider-3.1.0.jar` (shaded, relocated FastUtil; sha256
 recorded in `docs/evidence/jar-inspection.txt`).
 
 ### New source files (main)
@@ -95,7 +95,7 @@ recorded in `docs/evidence/jar-inspection.txt`).
 | `core/BlockVisibility.java` | fail-closed reveal markers + chunk-resend bridge |
 | `core/BoundedTaskExecutor.java` | bounded async pool with explicit rejection |
 | `core/TimeBudget.java`, `RaycastBudget.java`, `VisibilityState.java` | budgeted work + policy states |
-| `config/BaseHiderConfig.java`, `WorldSettings.java`, `ConfigLoader.java` | immutable validated config |
+| `config/AegishiderConfig.java`, `WorldSettings.java`, `ConfigLoader.java` | immutable validated config |
 | `index/HiddenBlockIndex.java` | world-scoped copy-on-write protected-block registry |
 | `index/BlockDiscovery.java` | chunk-load discovery, bounded reconciliation sweep |
 | `occlusion/OcclusionEngine.java`, `PaperRayTracer.java`, `RayTracer.java` | FOV + Paper voxel ray trace with transparent continuation |
@@ -105,11 +105,11 @@ recorded in `docs/evidence/jar-inspection.txt`).
 | `listener/BlockListener.java`, `PlayerListener.java`, `ChunkListener.java`, `EntityListener.java`, `WorldListener.java` | explicitly registered event adapters |
 | `detection/MiningAnalytics.java`, `RaidAnalytics.java` | optional, non-enforcing analytics |
 | `metrics/Metrics.java` | lock-free counters + tick histogram (p50/p95/p99) |
-| `command/BaseHiderCommand.java` | status/diag/deep/stats/verify/rescan/reload/help |
+| `command/AegishiderCommand.java` | status/diag/deep/stats/verify/rescan/reload/help |
 | `util/BlockPosUtil.java`, `MaterialSets.java` | primitive encodings; material validation |
 
 ### Rewritten root class
-`BaseHiderPlugin.java` — lifecycle, per-tick budget slicing, reload, self-check, explicit
+`AegishiderPlugin.java` — lifecycle, per-tick budget slicing, reload, self-check, explicit
 listener registration (fixes audit item A).
 
 ### Deleted legacy files (replaced)
@@ -129,8 +129,8 @@ shaded/relocated, JUnit 5; shade filtered/relocated.
 
 ### Test files
 12 test classes, 60 tests (`src/test/java`), plus a test-only `RegistryAccess` provider for
-the server-less JVM. Integration harness lives outside the module (`D:\Basehider\itest`, not
-shipped) and benchmark tooling in `D:\Basehider\bench` (evidence only).
+the server-less JVM. Integration harness lives outside the module (`D:\Aegishider\itest`, not
+shipped) and benchmark tooling in `D:\Aegishider\bench` (evidence only).
 
 ---
 
@@ -138,7 +138,7 @@ shipped) and benchmark tooling in `D:\Basehider\bench` (evidence only).
 
 | Audit finding | Status in 3.1.0 |
 |---|---|
-| A. Listener registration bug (only container registered) | **FIXED + TESTED + VERIFIED**: five listeners registered individually; `/basehider verify` PASS; real place/join/move/teleport/quit paths exercised by harness. World-unload path is unit-tested/reviewed, not live-tested (PARTIAL). |
+| A. Listener registration bug (only container registered) | **FIXED + TESTED + VERIFIED**: five listeners registered individually; `/aegishider verify` PASS; real place/join/move/teleport/quit paths exercised by harness. World-unload path is unit-tested/reviewed, not live-tested (PARTIAL). |
 | B. Natural blocks never discovered | **FIXED + VERIFIED**: discovery from `Chunk#getTileEntities()` on load + reconciliation; harness places a chest and it disappears from chunk data. |
 | C. `pendingUpdates` race | **REMOVED** by architecture: no cross-thread pending map exists; packet thread only reads concurrent snapshots. |
 | D. Wrong `ChunkSnapshot` per drained batch | **REMOVED**: no chunk snapshot work items in security path; reveal decisions run main-thread. |
@@ -150,7 +150,7 @@ shipped) and benchmark tooling in `D:\Basehider\bench` (evidence only).
 | J. World/chunk key collisions | **FIXED**: world UUID interned to id; chunk keys include it; per-viewer caches are world-scoped. Tests cover cross-world/chunk keys. |
 | K. L1/L2/L3 cache cost & leaks | **REMOVED**: replaced by one primitive reveal set per viewer with cleanup; no slot-collision bitmask, no unbounded L3. |
 | L. Unbounded executors / shutdown stall | **FIXED**: bounded executor with rejection; security path not async; shutdown has a deadline. |
-| M. Commands/status inconsistency | **FIXED**: status is derived from live flags; no advertised dead feature; `/basehider raidinfo` removed rather than faked. |
+| M. Commands/status inconsistency | **FIXED**: status is derived from live flags; no advertised dead feature; `/aegishider raidinfo` removed rather than faked. |
 | Chunk unload destroyed index | **FIXED + TESTED**: index is world-data derived and not evicted on chunk unload; verified by review + unit test (`evictWorld` only). |
 | No item protection | **FIXED + VERIFIED**: scenario A/B packet evidence. |
 | No chunk-packet interception | **FIXED + VERIFIED**: scenario C packet evidence. |
@@ -171,13 +171,13 @@ shipped) and benchmark tooling in `D:\Basehider\bench` (evidence only).
 | EntityShield Engine | yes | same engine as items | items only | other entity types configurable, not in E2E matrix |
 | ChunkShield | yes | sanitizer tests | scenario C | block entities stripped |
 | PlayerVisibility Engine | **NOT IMPLEMENTED** | — | — | deliberately out of scope (breaks teams/combat); documented |
-| Bounded Async Scheduler | yes | saturation/rejection tests + maintenance exporter tests | live server: `/basehider export` wrote diagnostics.json off-thread | now does real non-security work (periodic diagnostics snapshots); security path intentionally not async |
+| Bounded Async Scheduler | yes | saturation/rejection tests + maintenance exporter tests | live server: `/aegishider export` wrote diagnostics.json off-thread | now does real non-security work (periodic diagnostics snapshots); security path intentionally not async |
 | Spatial Index | yes (world→chunk immutable views) | index tests | scenario C | no periodic full-world scan; event + reconciliation |
 | Security Analytics | yes (mining/raid) | mining tests | NOT VERIFIED on live alerts | non-enforcing, default off |
-| Metrics / Diagnostics | yes | counters exercised by tests/bench | `/basehider diag` on live server, diagnostics.json validated | tick p50/p95/p99 histogram, item-storm counters, watchdog state, async snapshot state |
+| Metrics / Diagnostics | yes | counters exercised by tests/bench | `/aegishider diag` on live server, diagnostics.json validated | tick p50/p95/p99 histogram, item-storm counters, watchdog state, async snapshot state |
 | Natural-block discovery | yes | config/material tests | scenario C (player placed) + reconciliation probe | natural structures covered by same discovery path |
 | Configuration + reload | yes | 11 config tests | reload exercised in probes | legacy format migration |
-| Commands | yes | compile/command status inspected | `/basehider verify` PASS on server | no fake subcommands |
+| Commands | yes | compile/command status inspected | `/aegishider verify` PASS on server | no fake subcommands |
 | Persistence of block index | **NOT IMPLEMENTED (by design)** | — | — | index is world-derived; reasons ADR-3 |
 | Player-vs-player hiding | **NOT IMPLEMENTED** | — | — | reason ADR-6 |
 
@@ -185,10 +185,10 @@ shipped) and benchmark tooling in `D:\Basehider\bench` (evidence only).
 
 ## 6. Integration test evidence (real Paper server + packet capture)
 
-Harness: `D:\Basehider\itest` (Paper 1.21.4 build 232, PacketEvents 2.14.0, two headless
+Harness: `D:\Aegishider\itest` (Paper 1.21.4 build 232, PacketEvents 2.14.0, two headless
 clients, RCON fixtures, raw chunk palette decoding with self-tests).
 
-### Final run (BaseHider 3.2.0, jar sha256 prefix `f2ca7a488d35`)
+### Final run (Aegishider 3.2.0, jar sha256 prefix `f2ca7a488d35`)
 
 ```
 [PASS] A hidden dropped item far away behind solid blocks
@@ -218,7 +218,7 @@ OVERALL: PASS (baseline mode expects these leaks)
 
 Reports: `docs/evidence/itest-final-warmup-report.json` (latest PASS),
 `docs/evidence/itest-final-hardened-report.json`, `docs/evidence/itest-baseline-report.json`.
-Raw captures under `D:\Basehider\itest\out\run-*` (NDJSON + raw chunk files).
+Raw captures under `D:\Aegishider\itest\out\run-*` (NDJSON + raw chunk files).
 
 Additional live probes executed during development (not part of the final harness):
 - `/summon item` behind a wall: 0 item spawn packets captured; tracked count = 1
@@ -227,7 +227,7 @@ Additional live probes executed during development (not part of the final harnes
 - console `setblock chest` (no Bukkit event) plus forced chunk resend: decoded client chunk
   contained the filler state at the chest position after the chunk-level block-entity scan
   hardening; detected positions were registered by the main thread in the same second.
-- `/basehider verify` on the live server: **PASS**.
+- `/aegishider verify` on the live server: **PASS**.
 
 ---
 
@@ -241,7 +241,7 @@ Two measurement layers:
 
 1. **Server tick time** via Paper's console `/mspt`
    (`avg/min/max` over the last 5 s, 10 s, 1 min, in ms).
-2. **BaseHider's own main-thread security work** via `/basehider diag`:
+2. **Aegishider's own main-thread security work** via `/aegishider diag`:
    cumulative tick histogram p50/p95/p99 plus per-engine last/max, evaluation and raycast
    counters.
 
@@ -250,12 +250,12 @@ Two measurement layers:
 | Mode | last 5 s avg/min/max | last 10 s avg/min/max | notes |
 |---|---|---|---|
 | A. Baseline, plugin not loaded | **3.1 / 1.5 / 6.4 ms** | 3.4 / 1.2 / 7.2 | idle, same client |
-| B. Plugin loaded, idle | **4.5 / 2.3 / 20.4 ms** | 6.2 / 2.3 / 49.3 | includes PacketEvents + BaseHider; high variance on shared machine |
+| B. Plugin loaded, idle | **4.5 / 2.3 / 20.4 ms** | 6.2 / 2.3 / 49.3 | includes PacketEvents + Aegishider; high variance on shared machine |
 | C. Baseline, 300 dropped items | **3.4 / 1.2 / 8.4 ms** | 3.5 / 1.2 / 8.4 | item entities are vanilla-visible/tracked |
 | D. Plugin, 300 dropped items | **4.0 / 1.8 / 7.1 ms** | 4.4 / 1.8 / 17.7 | items hidden/protected |
 | E. Plugin, 800 dropped items | **6.1 / 2.3 / 10.7 ms** | 5.4 / 2.0 / 10.7 | dense dropped-item field |
 
-Measured overhead of the whole BaseHider+PacketEvents stack is roughly **0.5–1.4 ms
+Measured overhead of the whole Aegishider+PacketEvents stack is roughly **0.5–1.4 ms
 average** in this single-client setting; the 1-minute max in startup windows (275–397 ms)
 is world load/GC, not steady-state security work (baseline also shows a 318 ms startup max).
 
@@ -266,7 +266,7 @@ as above. Harness `bench/load-bench.js` + `bench/load-bot.js` (capture-free head
 items summoned in one `datapack` function call so the storm lane is exercised. All runs are
 on the delivered 3.2.0 jar (sha `cf3cc53eâ€¦`).
 
-| Tier | Bots joined (final alive) | Items tracked | Join median/p95 | TPS | Server MSPT (5 s avg) med/range | BaseHider p50/p95/p99 (Âµs) | Heap used |
+| Tier | Bots joined (final alive) | Items tracked | Join median/p95 | TPS | Server MSPT (5 s avg) med/range | Aegishider p50/p95/p99 (Âµs) | Heap used |
 |---|---|---|---|---|---|---|---|
 | 10 / 200 | 10/10 | 200 | 1.44 / 1.49 s | 20.0 | 4.6 (2.9â€“6.4) | 150â€“200 / 500â€“1100 / 2650â€“3200 | 398â€“762 MB |
 | 50 / 1000 | 50/50 | 1000 | 4.81 / 5.90 s | 19.1 | 11.3 (10.6â€“14.2) | 250â€“450 / 800â€“1200 / 1650â€“2650 | 444â€“833 MB |
@@ -277,7 +277,7 @@ Honest interpretation:
 - 200 bots / 2000 items on this 8-thread desktop CPU **degrades the whole server** to
   16â€“17 TPS; the server does not crash, all 200 bots stayed alive and 2000 items were
   registered/hidden, but this is not a recommended production capacity for this hardware.
-- BaseHider's own security work stayed bounded (p99 3.05â€“3.1 ms) and is a small fraction of
+- Aegishider's own security work stayed bounded (p99 3.05â€“3.1 ms) and is a small fraction of
   the ~64 ms server tick at that tier; the dominant cost is 200 bot connections/entity/chunk
   load on a desktop CPU (PacketEvents also processes every packet).
 - The soak tier ran the full 120 s with **6/6 item churns successful** (kill 200 + summon 200
@@ -294,7 +294,7 @@ Honest interpretation:
 
 Raw: `bench/load-*.json`, `bench/README-load-test.md`.
 
-### BaseHider's own tick cost (`/basehider diag`, steady window after warm-up)
+### Aegishider's own tick cost (`/aegishider diag`, steady window after warm-up)
 
 | Mode | p50 | p95 | p99 | avg | item evals | raycasts |
 |---|---|---|---|---|---|---|
@@ -332,7 +332,7 @@ Raw data: `docs/evidence/mspt-*.json`, `docs/evidence/bench-results-initial.json
 
 Limitations of these numbers (no over-claiming):
 - Single client, flat world, no mobs, shared build machine → absolute MSPT numbers are
-  environment-specific; only the deltas and BaseHider-internal numbers are meaningful.
+  environment-specific; only the deltas and Aegishider-internal numbers are meaningful.
 - The 235 ms item-engine spike was a **one-time class-load/JIT** event, not per-tick
   behavior; it is now attacked with the startup warm-up and reported above.
 - A 200-player / 1,000–2,000-item stress test was not performed (no load fleet available).
@@ -391,19 +391,19 @@ Residual risks (honest):
 
 ## 10. JAR / plugin.yml verification
 
-Final artifact: `D:\Basehider\dist\BaseHider-3.3.8.jar` sha256
+Final artifact: `D:\Aegishider\dist\Aegishider-3.3.8.jar` sha256
 `f2ca7a488d358d5b5db32394b9ebb787af27dd4938dcb3019dee9431e35baf79`
 (6,797,780 bytes). It is the jar used for the final packet-level integration run. The load
 tests and 3.2.0 benchmark were run on the previous 3.2.0 build (`cf3cc53eâ€¦`); comparing
-plugin classes shows only 2 of 3466 class files differ (the `/basehider diag` output and a
-console color string in `BaseHiderPlugin`), so all security/engine code is identical.
+plugin classes shows only 2 of 3466 class files differ (the `/aegishider diag` output and a
+console color string in `AegishiderPlugin`), so all security/engine code is identical.
 
 `jar tf` inspection (full output `docs/evidence/jar-inspection.txt`):
 - 36 plugin classes + nested classes; 3407 relocated FastUtil classes; `plugin.yml`,
   `config.yml`, `META-INF/THIRD-PARTY-NOTICES.txt`.
 - No `packetevents`, `papermc`, `net.minecraft`, `craftbukkit`, JUnit or MockBukkit classes
-  bundled (only BaseHider's own `PacketEventsGateway*` class names match "packetevents").
-- `plugin.yml`: name BaseHider, version 3.1.0, main `dev.audismp.basehider.BaseHiderPlugin`,
+  bundled (only Aegishider's own `PacketEventsGateway*` class names match "packetevents").
+- `plugin.yml`: name Aegishider, version 3.1.0, main `dev.audismp.aegishider.AegishiderPlugin`,
   api-version 1.21, softdepend `[packetevents]`, command/permissions complete.
 - Maven `clean verify`: BUILD SUCCESS, 60 tests, jar replaced by shaded artifact.
 
@@ -424,12 +424,12 @@ console color string in `BaseHiderPlugin`), so all security/engine code is ident
    detected-position bridge (present) — extreme edge only.
 5. **Mass item spawn bursts** can cause a large single tick (observed 138 ms while 300
    entities were force-summoned in one burst); steady state is bounded (~0.3–0.9 ms
-   BaseHider work). A production server normally cannot create 3000+ spawn events per tick
+   Aegishider work). A production server normally cannot create 3000+ spawn events per tick
    without other bottlenecks.
 6. **Player-vs-player, mob ESP, storage minecarts/item frames** are configurable entities but
    only ITEM is exercised in the E2E matrix; other types share the same engine.
 7. **Whole-server MSPT under 200 players** was not benchmarked (no load fleet); only
-   BaseHider's own tick cost and a single-client server were measured.
+   Aegishider's own tick cost and a single-client server were measured.
 8. **Packet gateway behavior depends on PacketEvents 2.14.0 internals**; version is checked
    at startup and the gateway refuses older/newer-incompatible setups instead of guessing.
 
@@ -437,26 +437,26 @@ console color string in `BaseHiderPlugin`), so all security/engine code is ident
 
 ```
 # unit tests + build
-cd D:\Basehider\basehider-v3-integrated
+cd D:\Aegishider\aegishider-integrated
 mvn -B clean verify
 
 # packet-level integration (expects PASS; baseline mode must show leaks)
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1 `
-    -Jar D:\Basehider\dist\BaseHider-3.1.0.jar
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1 -Baseline
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1 `
+    -Jar D:\Aegishider\dist\Aegishider-3.1.0.jar
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1 -Baseline
 
 # real-server benchmark (requires itest server assets; see bench/run-bench.js)
-node D:\Basehider\bench\run-bench.js
+node D:\Aegishider\bench\run-bench.js
 
 # on-demand maintenance snapshot (async, non-security work)
-#   /basehider export   -> plugins/BaseHider/diagnostics.json
+#   /aegishider export   -> plugins/Aegishider/diagnostics.json
 
 # load-test harness (separate server dir/ports 25601/25600; see bench/README-load-test.md)
-node D:\Basehider\bench\load-bench.js --bots 200 --items 2000 --label max200-2000
-node D:\Basehider\bench\load-bench.js --bots 10 --items 200 --label soak10-200 --soak-seconds 120
+node D:\Aegishider\bench\load-bench.js --bots 200 --items 2000 --label max200-2000
+node D:\Aegishider\bench\load-bench.js --bots 10 --items 200 --label soak10-200 --soak-seconds 120
 ```
 
-Final jar: `D:\Basehider\dist\BaseHider-3.1.0.jar`
+Final jar: `D:\Aegishider\dist\Aegishider-3.1.0.jar`
 sha256 `59e1391cc2151459340b7c0daf372caf0c4ae258ef7116588bd93f8da51f9a0d`
 
 ---
@@ -502,5 +502,5 @@ A coverage test placing all **31** configured hidden block types in one chunk pl
 control block entities showed the client chunk contained only the two controls (all hidden
 block entities/state were stripped).
 
-The BaseHider test server was moved to port **25566** because another test server occupies
+The Aegishider test server was moved to port **25566** because another test server occupies
 25565; reconnect there to test.

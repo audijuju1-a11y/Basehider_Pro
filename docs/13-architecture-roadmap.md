@@ -27,11 +27,11 @@
 
 | รายการ | สถานะ |
 |---|---|
-| A-11 ลบ build output ออกจาก index | **เสร็จ** — `git rm --cached` `bench/`, `.tools/`, `dist/`, `basehider-v3-integrated/target/`, `site/.qa/` (≈2.2k ไฟล์) + `.gitignore` ฝั่ง root |
+| A-11 ลบ build output ออกจาก index | **เสร็จ** — `git rm --cached` `bench/`, `.tools/`, `dist/`, `aegishider-integrated/target/`, `site/.qa/` (≈2.2k ไฟล์) + `.gitignore` ฝั่ง root |
 | A-11 ล้างประวัติ git | **รออนุมัติ** — ต้อง force-push และให้ทุกคน clone ใหม่ |
 | A-10 CI | **เสร็จ** — เพิ่ม `wrangler deploy --dry-run`, job `site` (`site/scripts/check-site.mjs`), job `secrets` (`scripts/scan-secrets.mjs`) |
 | A-15 dead code | **เสร็จ** — ลบ 11 ฟังก์ชันที่ไม่มีผู้เรียก (`readJson`, `safeNextPath`, `pageCount`, `escapeLike`, `noStore`, `publicKeyDocument`, `requireInstallation`, `countInstallationEvents`, `listContactMessages`, `ticketMessagesMeta`, `getRecentSecurityEvents`) |
-| A-06 DLQ consumer | **เสร็จ** — consumer ที่สอง `bhcp-telemetry-dlq` เขียนลงตาราง `telemetry_dlq` (migration 0007) + ack, การ์ดเปิด/ปิดใน `/admin/security` (สิทธิ์ใหม่ `security.write`), retention ของแถวที่ resolved |
+| A-06 DLQ consumer | **เสร็จ** — consumer ที่สอง `agcp-telemetry-dlq` เขียนลงตาราง `telemetry_dlq` (migration 0007) + ack, การ์ดเปิด/ปิดใน `/admin/security` (สิทธิ์ใหม่ `security.write`), retention ของแถวที่ resolved |
 | A-09 observability | **เสร็จ** — sink HTTP (`OBSERVABILITY_WEBHOOK_URL`/`_TOKEN`) รับ warn/error log และ alert transition; cron ทุก 5 นาทีประเมิน `http.5xx_rate` (>1%, ≥20 คำขอ) และ `queue.dlq_depth` (>0) เก็บใน `metric_counters`/`alert_state`/`alert_events` แสดงบน /admin, /admin/security และ /status |
 | A-01 เอกสารสองชุด | ยังไม่ทำ (อยู่นอกรอบ Wave 1 ตามที่ขอ) |
 
@@ -41,16 +41,16 @@
 
 ### A-11 repo hygiene (Medium)
 
-สถานะ: track อยู่ ≈2.2k ไฟล์ใน `bench/` (1,912), `basehider-v3-integrated/target/` (280),
+สถานะ: track อยู่ ≈2.2k ไฟล์ใน `bench/` (1,912), `aegishider-integrated/target/` (280),
 `.tools/` (90), `dist/` (14) ทั้งที่ควร build ใหม่
 
-1. เพิ่ม `.gitignore`: `basehider-v3-integrated/target/`, `dist/`, `bench/`, `.tools/`, `site/.qa/`
+1. เพิ่ม `.gitignore`: `aegishider-integrated/target/`, `dist/`, `bench/`, `.tools/`, `site/.qa/`
    (`.qa/` มีอยู่แล้วในบางไฟล์ — รวมให้เหลือชุดเดียวที่ root)
 2. `git rm -r --cached` ตามรายการข้างบน (ไฟล์ยังอยู่บนดิสก์) + commit เดียวแยกชัดเจน
 3. ตรวจว่า CI/build ไม่พึ่งไฟล์ที่ถอดออก: `mvn -B verify` ต้องสร้าง `target/` เองได้,
    `site/` ต้อง build ได้จาก source, `bench/` ต้องมีสคริปต์สร้างซ้ำหรือย้ายไป release asset
 4. **ล้างประวัติ (ต้องอนุมัติ)**: `git filter-repo --path bench --path .tools --path dist
-   --path basehider-v3-integrated/target --invert-paths` แล้ว force-push
+   --path aegishider-integrated/target --invert-paths` แล้ว force-push
    → ต้องแจ้งผู้ร่วมงานให้ clone ใหม่; ถ้ายังไม่พร้อม ให้คง repo size ไว้ก่อนได้
 
 เกณฑ์ยอมรับ: `git ls-files | grep -cE '(^|/)(dist|target|bench|\.tools)/'` = 0 และ CI เขียวโดยไม่ใช้ artefact ที่ commit
@@ -98,10 +98,10 @@
 
 ### A-06 DLQ ไม่มี consumer (Medium) — แนะนำทำก่อนในรอบนี้
 
-สถานะ: `wrangler.jsonc` ตั้ง `dead_letter_queue: bhcp-telemetry-dlq` แต่ `src/queue.ts`
-มี handler เดียวสำหรับ `bhcp-telemetry`; ข้อความที่ fail 3 ครั้งจะไปกองใน DLQ โดยไม่มีใครอ่าน
+สถานะ: `wrangler.jsonc` ตั้ง `dead_letter_queue: agcp-telemetry-dlq` แต่ `src/queue.ts`
+มี handler เดียวสำหรับ `agcp-telemetry`; ข้อความที่ fail 3 ครั้งจะไปกองใน DLQ โดยไม่มีใครอ่าน
 
-1. เพิ่ม consumer ที่สองใน `wrangler.jsonc` (`queue: "bhcp-telemetry-dlq"`, `max_retries: 1`)
+1. เพิ่ม consumer ที่สองใน `wrangler.jsonc` (`queue: "agcp-telemetry-dlq"`, `max_retries: 1`)
    แล้วแยก handler ตาม `batch.queue` ใน `src/queue.ts` (`handleTelemetry` / `handleDlq`)
 2. DLQ handler: บันทึก `security_events` หรือตาราง `telemetry_dlq` (id, queue, body, attempts, received_at)
    + `logError("queue.dlq", ...)`; **ack เสมอ** เพื่อไม่ให้วนซ้ำไม่จบ
@@ -112,7 +112,7 @@
 เขียน `telemetry_dlq` แล้ว ack (retry เฉพาะเมื่อเขียน D1 ไม่สำเร็จ และจำกัด 1 ครั้ง), แสดงผลใน
 `/admin/security` พร้อมปุ่ม "จัดการแล้ว", เก็บกวาดแถวที่ resolved ตาม retention
 
-เกณฑ์ยอมรับ: เทสต์ที่จำลอง `batch.queue = "bhcp-telemetry-dlq"` แล้วได้แถวใน DB + ack; ไม่มี retry ไม่จำกัด
+เกณฑ์ยอมรับ: เทสต์ที่จำลอง `batch.queue = "agcp-telemetry-dlq"` แล้วได้แถวใน DB + ack; ไม่มี retry ไม่จำกัด
 
 ### A-09 observability (Low–Medium)
 
@@ -200,7 +200,7 @@ middleware นับ `http.total`/`http.5xx` ต่อนาทีผ่าน `
 1. เปลี่ยน `WorldKeys` ให้คืน id จาก `computeIfAbsent` แบบไม่พึ่ง index ลำดับ (เช่น map `UUID → int` + counter)
 2. ถ้าถึงเพดาน: คืน id แบบ reuse ช่องว่าง หรือ degrade เป็น `-1` พร้อม log ครั้งเดียว (ไม่ throw)
 3. เพิ่ม unit test: จำลองเพดานแล้วไม่โยน exception
-4. รัน `mvn -B test` (123 tests) ใน `basehider-v3-integrated`
+4. รัน `mvn -B test` (123 tests) ใน `aegishider-integrated`
 
 เกณฑ์ยอมรับ: ไม่มี exception จาก hot path; เทสต์ใหม่ผ่าน
 
@@ -213,7 +213,7 @@ middleware นับ `http.total`/`http.5xx` ต่อนาทีผ่าน `
 1. สคริปต์ `scripts/rotate-signing-key.mjs`: สร้างคู่คีย์ใหม่ → เพิ่ม `signing_keys` (status active)
    → คง key เก่าเป็น `deprecated` (ยัง verify lease เก่าได้) → หลัง lease TTL เปลี่ยนเป็น `retired`
 2. หน้า `/admin/security` แสดง key id/status/วันที่ + ปุ่ม rotate (super_admin เท่านั้น + audit)
-3. ฝั่ง plugin: คำสั่ง `/basehider rekey` แลก installation key ใหม่โดยไม่ต้องลบ `platform/`
+3. ฝั่ง plugin: คำสั่ง `/aegishider rekey` แลก installation key ใหม่โดยไม่ต้องลบ `platform/`
 4. runbook ใน `DEPLOYMENT.md`: rotate ก่อน suspected compromise, ผลกระทบต่อ lease
 
 เกณฑ์ยอมรับ: rotate แล้ว lease เก่ายัง verify ได้จนหมดอายุ; plugin rekey ไม่ทำให้ server หลุด pairing
@@ -236,7 +236,7 @@ middleware นับ `http.total`/`http.5xx` ต่อนาทีผ่าน `
    (ทำได้ในรอบ 1 ราคาถูก)
 2. Runtime: เมื่อ PacketEvents หาย → เปิดโหมด degrade ที่ยังกัน container break ได้บางส่วน
    (เช่น cancel `BlockBreakEvent` สำหรับ container ที่ tracked) หรือปิดคำสั่งที่พึ่ง block data
-3. เพิ่มสถานะใน `/basehider status` ว่า protection layer ไหน active/inactive
+3. เพิ่มสถานะใน `/aegishider status` ว่า protection layer ไหน active/inactive
 
 เกณฑ์ยอมรับ: ข้อความในเอกสารตรงกับพฤติกรรมจริง; ไม่มี path ที่อ้าง fail-closed แต่ปล่อยผ่าน
 

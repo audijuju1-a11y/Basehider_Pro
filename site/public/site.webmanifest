@@ -1,6 +1,6 @@
 {
-  "name": "BaseHider 3.6.1",
-  "short_name": "BaseHider",
+  "name": "Aegishider 3.6.1",
+  "short_name": "Aegishider",
   "description": "ปลั๊กอินซ่อนหีบและไอเท็มสำหรับเซิร์ฟเวอร์ Paper — ซ่อนก่อนส่ง ไม่ส่งไปก่อนแล้วค่อยแก้",
   "start_url": "./",
   "display": "standalone",

@@ -1,5 +1,6 @@
-# Convenience redirects (Cloudflare Pages _redirects)
-/jar                  /download/BaseHider-3.6.1.jar   302
-/download             /download/BaseHider-3.6.1.jar   302
-/download/            /download/BaseHider-3.6.1.jar   302
-/latest.jar           /download/BaseHider-3.6.1.jar   302
+# Convenience redirects (Cloudflare Pages _redirects).
+# JARs are served by the Aegishider Control Platform (R2), not bundled here.
+/jar        https://aegishider-platform.audijuju1.workers.dev/release/rel_ag_400_mc12111/download  302
+/download   https://aegishider-platform.audijuju1.workers.dev/release/rel_ag_400_mc12111/download  302
+/download/  https://aegishider-platform.audijuju1.workers.dev/release/rel_ag_400_mc12111/download  302
+/latest.jar https://aegishider-platform.audijuju1.workers.dev/release/rel_ag_400_mc12111/download  302

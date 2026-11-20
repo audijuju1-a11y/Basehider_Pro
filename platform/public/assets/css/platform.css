@@ -1,5 +1,5 @@
 /* =============================================================================
-   BaseHider Control Platform — design system
+   Aegishider Control Platform — design system
    Dark-first premium console aesthetic (brass / steel), with light theme.
    ========================================================================== */
 
@@ -409,3 +409,18 @@ hr{border:0;border-top:1px solid var(--line);margin:1.5rem 0}
   body{background:#fff;color:#111}
   .card,.table-wrap{border-color:#ddd}
 }
+
+/* ---------- release evidence ---------- */
+.evidence-stack{display:grid;grid-template-columns:1fr;gap:12px}
+.evidence-shot{margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#07090c}
+.evidence-shot img{display:block;width:100%;height:auto}
+.evidence-shot figcaption{padding:.7rem .9rem;font-size:.72rem;line-height:1.6;color:var(--muted);border-top:1px solid var(--line)}
+.evidence-shot figcaption b{color:var(--text-2)}
+.evidence-shot--bad{border-color:rgba(226,105,95,.3)}
+.evidence-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.evidence-table th,.evidence-table td{padding:.55rem .6rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.evidence-table thead th{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);font-weight:500}
+.evidence-table tbody th{font-weight:500;color:var(--text-2)}
+.evidence-table td.bad{color:var(--danger);font-family:var(--mono);font-size:.7rem}
+.evidence-table td.good{color:var(--ok);font-family:var(--mono);font-size:.7rem}
+@media (max-width:640px){.evidence-table{font-size:.7rem}.evidence-table th,.evidence-table td{padding:.45rem .4rem}}

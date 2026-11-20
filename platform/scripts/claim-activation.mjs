@@ -46,7 +46,7 @@ const issue = await request("/admin/licenses", {
   body: new URLSearchParams({
     _csrf: csrf,
     email: "admin@local.test",
-    product_id: "prod_basehider",
+    product_id: "prod_aegishider",
     plan_id: "plan_bh_standard",
     activation_limit: "2",
     expires_at: "",

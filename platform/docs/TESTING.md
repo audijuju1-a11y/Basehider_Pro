@@ -79,14 +79,14 @@ Each test resets mutable tables so tests are order-independent.
 ## Plugin client (Java)
 
 ~~~bash
-cd ../basehider-v3-integrated
+cd ../aegishider-integrated
 mvn test
 ~~~
 
 102 tests, including 17 platform-client tests: JSON parser/writer, canonical signing string,
 installation identity persistence and signing, lease signature/claims/expiry/tampering
 rejection, and config parsing/clamping. The live smoke used
-`dev.audismp.basehider.platform.PlatformLiveSmoke` against the local platform:
+`dev.audismp.aegishider.platform.PlatformLiveSmoke` against the local platform:
 register -> activation code -> portal claim -> signed lease verified locally -> heartbeat
 accepted.
 

@@ -119,14 +119,14 @@ export function licensesPage(
   if (licenses.length === 0) {
     return emptyState(
       "ยังไม่มีไลเซนส์ในบัญชีนี้",
-      html`<form method="post" action="/app/licenses/free">${csrfInput(csrf)}<input type="hidden" name="product_slug" value="basehider"><button class="btn btn-primary btn-sm" type="submit">รับไลเซนส์ฟรี</button></form>`,
+      html`<form method="post" action="/app/licenses/free">${csrfInput(csrf)}<input type="hidden" name="product_slug" value="aegishider"><button class="btn btn-primary btn-sm" type="submit">รับไลเซนส์ฟรี</button></form>`,
     );
   }
   return html`<div class="card card-pad" style="margin-bottom:1rem">
       <div class="spread">
         <div><h3 style="font-size:1rem">ไลเซนส์ฟรี 100%</h3><p class="muted" style="font-size:.76rem;margin-top:.25rem">ทุกผลิตภัณฑ์ฟรี ไม่มีระบบชำระเงิน — สร้างไลเซนส์เพิ่มได้ทุกเมื่อ</p>
         <p class="muted" style="font-size:.72rem;margin-top:.35rem">คีย์ใช้งานได้ถาวรจนกว่าจะมีการเปลี่ยนหรือยกเลิก — ผู้ให้บริการอาจเปลี่ยนหรือเพิกถอนได้ทุกเมื่อ</p></div>
-        <form method="post" action="/app/licenses/free">${csrfInput(csrf)}<input type="hidden" name="product_slug" value="basehider"><button class="btn btn-soft btn-sm" type="submit">${icon("plus")} สร้างไลเซนส์ฟรี</button></form>
+        <form method="post" action="/app/licenses/free">${csrfInput(csrf)}<input type="hidden" name="product_slug" value="aegishider"><button class="btn btn-soft btn-sm" type="submit">${icon("plus")} สร้างไลเซนส์ฟรี</button></form>
       </div>
     </div>
     <div class="table-wrap">
@@ -346,7 +346,7 @@ export function activationsPage(
       <div class="card">
         <div class="card-head"><h3>เชื่อมเซิร์ฟเวอร์ใหม่</h3></div>
         <div class="card-body">
-          <p class="muted" style="font-size:.82rem;line-height:1.75">รัน <code>/basehider license link</code> บนเซิร์ฟเวอร์ แล้วนำรหัส 16 ตัวที่ได้มากรอกด้านล่าง — ฟรี ไม่ต้องชำระเงิน</p>
+          <p class="muted" style="font-size:.82rem;line-height:1.75">รัน <code>/aegishider license link</code> บนเซิร์ฟเวอร์ แล้วนำรหัส 16 ตัวที่ได้มากรอกด้านล่าง — ฟรี ไม่ต้องชำระเงิน</p>
           <form class="form" method="post" action="/app/activations" style="margin-top:1rem" data-lock>
             ${csrfInput(csrf)}
             <div class="field"><label for="code">รหัสเปิดใช้งาน</label>

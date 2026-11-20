@@ -25,7 +25,7 @@
   },
   "vars": {
     "ENVIRONMENT": "production",
-    "APP_NAME": "BaseHider Control Platform",
+    "APP_NAME": "Aegishider Control Platform",
     "APP_URL": "https://basehider-platform.audijuju1.workers.dev",
     "SESSION_TTL_DAYS": "14",
     "LEASE_TTL_HOURS": "24",
@@ -34,7 +34,7 @@
     "ACCESS_TEAM_DOMAIN": "",
     "ACCESS_AUD": "",
     "EMAIL_PROVIDER": "resend",
-    "MAIL_FROM": "BaseHider <onboarding@resend.dev>",
+    "MAIL_FROM": "Aegishider <onboarding@resend.dev>",
     "SUPPORT_EMAIL": "audijuju1@gmail.com",
     "ADMIN_EMAILS": "audijuju1@gmail.com",
     "EMAIL_OTP_TTL_MINUTES": "15",

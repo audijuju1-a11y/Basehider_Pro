@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict'
 /**
- * BaseHider end-to-end scenario driver.
+ * Aegishider end-to-end scenario driver.
  *
  * Boots the dedicated Paper 1.21.4 test server (server/), connects two headless
  * capture bots (bot/capture-bot.js), creates fixtures over RCON, records all
@@ -142,7 +142,7 @@ function parseArgs (argv) {
 }
 const argv = parseArgs(process.argv.slice(2))
 const BASELINE = !!argv.baseline
-const JAR_PATH = argv.jar ? path.resolve(String(argv.jar)) : path.join(ROOT, '.cache', 'baseline-BaseHider.jar')
+const JAR_PATH = argv.jar ? path.resolve(String(argv.jar)) : path.join(ROOT, '.cache', 'baseline-Aegishider.jar')
 const BOOT_TIMEOUT_MS = parseInt(argv['boot-timeout-ms'] || '240000', 10)
 const SCENARIO_FILTER = argv.scenarios ? String(argv.scenarios).split(',') : null
 const KEEP_SERVER = !!argv['keep-server']
@@ -278,7 +278,7 @@ function killPidTree (pid, reason) {
 
 // ------------------------------------------------------------------ report bucket
 const report = {
-  schema: 'basehider-itest/report/v1',
+  schema: 'aegishider-itest/report/v1',
   runId: null,
   startedAt: nowIso(),
   baselineMode: BASELINE,
@@ -1402,7 +1402,7 @@ function printSummary (report) {
   const line = (s) => console.log(s)
   line('')
   line('================================================================================')
-  line(`BaseHider integration test  ${report.baselineMode ? '[BASELINE MODE - old jar, leaks expected]' : '[PLUGIN UNDER TEST]'}`)
+  line(`Aegishider integration test  ${report.baselineMode ? '[BASELINE MODE - old jar, leaks expected]' : '[PLUGIN UNDER TEST]'}`)
   line(`run: ${report.runId}    plugin: ${report.plugin ? path.basename(report.plugin.jarPath) : '?'} (${report.plugin ? report.plugin.sha256.slice(0, 12) : '?'})`)
   line(`server boot: ${report.server && report.server.bootMs != null ? report.server.bootMs + 'ms' : 'n/a'}    decoder self-test: ${report.decoderSelfTest && report.decoderSelfTest.ok ? 'OK' : 'FAILED'}`)
   line('--------------------------------------------------------------------------------')

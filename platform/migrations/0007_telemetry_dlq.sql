@@ -1,4 +1,4 @@
--- Durable landing zone for messages Cloudflare moved to bhcp-telemetry-dlq.
+-- Durable landing zone for messages Cloudflare moved to agcp-telemetry-dlq.
 -- The DLQ consumer in src/queue.ts writes one row per poison message so an
 -- operator can inspect and resolve it from /admin/security after a fix.
 

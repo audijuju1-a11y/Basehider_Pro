@@ -1,5 +1,5 @@
 /* =============================================================================
-   BaseHider 3.2.0 — landing page behaviour
+   Aegishider 3.2.0 — landing page behaviour
    - renders the 38-part exploded assembly (hero + interactive stage)
    - scroll-driven explosion / chapter focus
    - layer selection, chips, atlas, copy buttons, counters, nav
@@ -82,7 +82,7 @@
         '<span class="layer__edge" aria-hidden="true"></span>' +
         '<span class="part"><span class="dial"><span class="dial__ticks"></span>' +
         '<span class="hand hand--hour"></span><span class="hand hand--minute"></span>' +
-        '<span class="dial__text"><b>BASEHIDER</b><span>VISIBILITY GATE · 3.2.0</span></span></span></span>';
+        '<span class="dial__text"><b>AEGISHIDER</b><span>VISIBILITY GATE · 3.2.0</span></span></span></span>';
     } else if (kind === "crystal") {
       wrap.innerHTML = '<span class="layer__edge" aria-hidden="true"></span><span class="part"><span class="crystal"></span></span>';
     } else {

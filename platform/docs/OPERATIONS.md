@@ -37,7 +37,7 @@ request; check `observability.sink_rejected` for a receiver that answers non-2xx
 ## Runbooks
 
 ### Telemetry backlog growing / not draining
-1. Check the consumer is attached: npx wrangler queues consumer list bhcp-telemetry.
+1. Check the consumer is attached: npx wrangler queues consumer list agcp-telemetry.
 2. Check Workers logs for queue.processing_failed and R2 errors.
 3. Inspect the DLQ at /admin/security (table `telemetry_dlq`). If messages are poisoned, fix the cause,
    replay the payload from the Cloudflare dashboard, then mark the row resolved.

@@ -1,6 +1,6 @@
 # Review fixes — 2026-11-18
 
-Scope: BaseHider 3.6.1 source review (Improve.md, เอกสารปรับปรุง.markdown, ข้อมูล.md) and the
+Scope: Aegishider 3.6.1 source review (Improve.md, เอกสารปรับปรุง.markdown, ข้อมูล.md) and the
 signup/sign-in failure on the control platform. Per instruction this pass **changed source and ran
 tests only**; no plugin JAR was packaged or deployed and no obfuscation build was introduced.
 

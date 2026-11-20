@@ -21,8 +21,8 @@ async function call(method, path, body) {
 let org = await call("GET", "/access/organizations");
 if (org.status !== 200) {
   org = await call("POST", "/access/organizations", {
-    name: "BaseHider",
-    auth_domain: "basehider-audijuju1",
+    name: "Aegishider",
+    auth_domain: "aegishider-audijuju1",
   });
 }
 const teamDomain = org.json?.result?.auth_domain;
@@ -31,11 +31,11 @@ if (!teamDomain) {
   process.exit(0);
 }
 let apps = await call("GET", "/access/apps");
-let app = (apps.json?.result ?? []).find((item) => item.domain?.includes("basehider-platform"));
+let app = (apps.json?.result ?? []).find((item) => item.domain?.includes("aegishider-platform"));
 if (!app) {
   const created = await call("POST", "/access/apps", {
-    name: "BaseHider Admin",
-    domain: "basehider-platform.audijuju1.workers.dev/admin",
+    name: "Aegishider Admin",
+    domain: "aegishider-platform.audijuju1.workers.dev/admin",
     type: "self_hosted",
     session_duration: "24h",
   });

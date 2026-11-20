@@ -14,7 +14,7 @@
 - CSRF: double-submit cookie plus hidden field or header, with Origin/Referer validation, mandatory on cookie-authenticated mutations. Only `APP_URL` is an accepted origin in production (the `Host` header allowance is development-only). The emailed login link is a GET that renders a confirmation form; the session is only created by the CSRF-protected POST, which prevents login-CSRF/session fixation.
 - Admin: Cloudflare Access JWT verified server-side (RS256 against team JWKS, issuer, audience, exp/nbf). A valid assertion is not enough; the email must map to a pre-provisioned staff user.
 - Development admin bootstrap (`/auth/dev-admin`) answers 404 unless `ENVIRONMENT` is not production, `DEV_BOOTSTRAP=1` **and** the request carries a matching `DEV_ADMIN_TOKEN` (16+ characters, header or query). Deploying with the wrong environment therefore cannot expose a super_admin sign-in.
-- Plugin: Ed25519 request signatures with X-BH-Timestamp (+/- 300 seconds), single-use X-BH-Nonce and a SHA-256 body hash in the signed string. Nonces are inserted after signature verification; replay returns 409.
+- Plugin: Ed25519 request signatures with X-AG-Timestamp (+/- 300 seconds), single-use X-AG-Nonce and a SHA-256 body hash in the signed string. Nonces are inserted after signature verification; replay returns 409.
 - Registration: a first registration is unauthenticated, but every **re-registration** must carry a valid signature by the public key already bound to that installation_uuid. installation_uuid and public_key are not secrets, so without proof of possession a new pairing code (and therefore the licence slot) could be claimed by anyone who saw them.
 - Sign-up collects no password. The owner confirms the address from the emailed link and then sets a password in /app/account, so a password can never exist on an unverified mailbox. Password sign-in is refused while `email_verified_at` is null, and following an email link/OTP clears any password stored before verification.
 
@@ -28,7 +28,7 @@
 
 ## Cryptography
 
-- License keys: 240-bit random (`BH-` + 8 groups x 6 symbols from a 32-symbol alphabet), HMAC-SHA256 with a secret pepper; plaintext is never stored.
+- License keys: 240-bit random (`AG-` + 8 groups x 6 symbols from a 32-symbol alphabet), HMAC-SHA256 with a secret pepper; plaintext is never stored.
 - Activation codes: 16 characters from a 32-symbol alphabet (80 bits), HMAC-hashed, attempt-capped, 24 hour TTL.
 - Leases: Ed25519 over canonical JSON (sorted keys, integer numbers, no whitespace). Verification is over the received payload bytes, never a re-serialisation.
 - Fingerprints: SHA-256 of the SPKI DER public key, lowercase hex.

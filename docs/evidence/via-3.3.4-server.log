@@ -3,11 +3,11 @@ Starting org.bukkit.craftbukkit.Main
 [12:19:22 INFO]: [bootstrap] Running Java 21 (OpenJDK 64-Bit Server VM 21.0.13+9-LTS; Eclipse Adoptium Temurin-21.0.13+9) on Windows 11 10.0 (amd64)
 [12:19:22 INFO]: [bootstrap] Loading Paper 1.21.4-232-ver/1.21.4@12d8fe0 (2025-06-09T10:15:42Z) for Minecraft 1.21.4
 [12:19:24 INFO]: [PluginInitializerManager] Initializing plugins...
-[12:19:24 INFO]: [PluginRemapper] Remapping plugin 'plugins\BaseHider.jar'...
-[12:19:28 INFO]: [PluginRemapper] Done remapping plugin 'plugins\BaseHider.jar' in 3562ms.
+[12:19:24 INFO]: [PluginRemapper] Remapping plugin 'plugins\Aegishider.jar'...
+[12:19:28 INFO]: [PluginRemapper] Done remapping plugin 'plugins\Aegishider.jar' in 3562ms.
 [12:19:28 INFO]: [PluginInitializerManager] Initialized 3 plugins
 [12:19:28 INFO]: [PluginInitializerManager] Bukkit plugins (3):
- - BaseHider (3.3.4), ViaVersion (5.12.2), packetevents (2.14.0)
+ - Aegishider (3.3.4), ViaVersion (5.12.2), packetevents (2.14.0)
 [12:19:34 INFO]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
 [12:19:38 INFO]: Loaded 1370 recipes
 [12:19:38 INFO]: Loaded 1481 advancements
@@ -34,7 +34,7 @@ Starting org.bukkit.craftbukkit.Main
 [12:19:48 INFO]: [packetevents] Loading block mappings for V_26_3/23...
 [12:19:48 INFO]: [packetevents] Finished loading block mappings for V_26_3/23 in 466.0188ms
 [12:19:49 INFO]: [packetevents] Loaded packetevents v2.14.0
-[12:19:49 INFO]: [BaseHider] Loading server plugin BaseHider v3.3.4
+[12:19:49 INFO]: [Aegishider] Loading server plugin Aegishider v3.3.4
 [12:19:49 INFO]: Server permissions file permissions.yml is empty, ignoring it
 [12:19:49 WARN]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
 [12:19:49 WARN]: The server will make no attempt to authenticate usernames. Beware.
@@ -54,9 +54,9 @@ Starting org.bukkit.craftbukkit.Main
 [12:19:51 WARN]: [ViaVersion] The Vanilla protocol of Minecraft 1.20.5-1.21.4 is exploitable easily. Please consider updating your server to at least 1.21.5.
 [12:19:51 INFO]: [packetevents] Enabling packetevents v2.14.0
 [12:19:51 INFO]: [packetevents] Checking for updates, please wait...
-[12:19:51 INFO]: [BaseHider] Enabling BaseHider v3.3.4
-[12:19:51 INFO]: [BaseHider] Packet gateway ACTIVE: PacketEvents 2.14.0 active on V_1_21_4
-[12:19:51 INFO]: [BaseHider] BaseHider 3.3.4 enabled | worlds=0 | packet-gateway=ACTIVE (PacketEvents 2.14.0 active on V_1_21_4) | block-protection=ACTIVE | item-protection=ACTIVE | known-protected-blocks=0 | async-threads=4
+[12:19:51 INFO]: [Aegishider] Enabling Aegishider v3.3.4
+[12:19:51 INFO]: [Aegishider] Packet gateway ACTIVE: PacketEvents 2.14.0 active on V_1_21_4
+[12:19:51 INFO]: [Aegishider] Aegishider 3.3.4 enabled | worlds=0 | packet-gateway=ACTIVE (PacketEvents 2.14.0 active on V_1_21_4) | block-protection=ACTIVE | item-protection=ACTIVE | known-protected-blocks=0 | async-threads=4
 [12:19:51 INFO]: [packetevents] You are running the latest release: 2.14.0
 [12:19:51 INFO]: [spark] Starting background profiler...
 [12:19:51 INFO]: [spark] The async-profiler engine is not supported for your os/arch (windows11/amd64), so the built-in Java engine will be used instead.
@@ -68,29 +68,29 @@ Starting org.bukkit.craftbukkit.Main
 [12:19:51 INFO]: Done (34.028s)! For help, type "help"
 [12:19:51 INFO]: [ViaVersion] Finished mapping loading, shutting down loader executor.
 [12:19:52 INFO]: Thread RCON Client /127.0.0.1 started
-[12:19:53 WARN]: [BaseHider] BaseHider tick took 442584 us (budget 1500 us); visibility work is being deferred
-[12:19:53 INFO]: [BaseHider] Reloading BaseHider...
-[12:19:53 INFO]: [BaseHider] BaseHider reloaded (config revision 2, block protection ACTIVE)
+[12:19:53 WARN]: [Aegishider] Aegishider tick took 442584 us (budget 1500 us); visibility work is being deferred
+[12:19:53 INFO]: [Aegishider] Reloading Aegishider...
+[12:19:53 INFO]: [Aegishider] Aegishider reloaded (config revision 2, block protection ACTIVE)
 [12:19:53 INFO]: Thread RCON Client /127.0.0.1 shutting down
 [12:19:59 INFO]: UUID of player ViaTest is afc53a43-78b8-3d49-a229-11f4ca5bd795
-[12:20:00 INFO]: [BaseHider] Viewer ViaTest joined: client=V_26_1, world=world, bypass=false, gateway=ACTIVE (PacketEvents 2.14.0 active on V_1_21_4)
+[12:20:00 INFO]: [Aegishider] Viewer ViaTest joined: client=V_26_1, world=world, bypass=false, gateway=ACTIVE (PacketEvents 2.14.0 active on V_1_21_4)
 [12:20:00 INFO]: ViaTest joined the game
 [12:20:00 INFO]: ViaTest[/127.0.0.1:55375] logged in with entity id 11 at ([world]4.5, -60.0, 1.5)
 [12:20:01 INFO]: [packetevents] Loading block mappings for V_1_21_4/17...
 [12:20:01 INFO]: [packetevents] Finished loading block mappings for V_1_21_4/17 in 465.8252ms
-[12:20:01 INFO]: [BaseHider] Chunk sanitize: client=V_26_1 chunk=0,0 changed=1 detected=0 tileEntitiesRemoved=true
-[12:20:01 INFO]: [BaseHider] Entity spawn decision: entityId=7 typeId=28 tracked=false hiddenSpawn=false cancelled=false
-[12:20:01 INFO]: [BaseHider] Entity spawn decision: entityId=8 typeId=104 tracked=false hiddenSpawn=false cancelled=false
-[12:20:01 INFO]: [BaseHider] Entity spawn decision: entityId=9 typeId=104 tracked=false hiddenSpawn=false cancelled=false
-[12:20:01 INFO]: [BaseHider] Entity spawn decision: entityId=1 typeId=28 tracked=false hiddenSpawn=false cancelled=false
-[12:20:01 INFO]: [BaseHider] Entity spawn decision: entityId=5 typeId=28 tracked=false hiddenSpawn=false cancelled=false
-[12:20:01 INFO]: [BaseHider] Entity spawn decision: entityId=6 typeId=28 tracked=false hiddenSpawn=false cancelled=false
-[12:20:01 INFO]: [BaseHider] Entity spawn decision: entityId=2 typeId=28 tracked=false hiddenSpawn=false cancelled=false
-[12:20:01 INFO]: [BaseHider] Entity spawn decision: entityId=3 typeId=28 tracked=false hiddenSpawn=false cancelled=false
-[12:20:01 INFO]: [BaseHider] Entity spawn decision: entityId=4 typeId=104 tracked=false hiddenSpawn=false cancelled=false
-[12:20:02 INFO]: [BaseHider] Entity spawn decision: entityId=10 typeId=28 tracked=false hiddenSpawn=false cancelled=false
+[12:20:01 INFO]: [Aegishider] Chunk sanitize: client=V_26_1 chunk=0,0 changed=1 detected=0 tileEntitiesRemoved=true
+[12:20:01 INFO]: [Aegishider] Entity spawn decision: entityId=7 typeId=28 tracked=false hiddenSpawn=false cancelled=false
+[12:20:01 INFO]: [Aegishider] Entity spawn decision: entityId=8 typeId=104 tracked=false hiddenSpawn=false cancelled=false
+[12:20:01 INFO]: [Aegishider] Entity spawn decision: entityId=9 typeId=104 tracked=false hiddenSpawn=false cancelled=false
+[12:20:01 INFO]: [Aegishider] Entity spawn decision: entityId=1 typeId=28 tracked=false hiddenSpawn=false cancelled=false
+[12:20:01 INFO]: [Aegishider] Entity spawn decision: entityId=5 typeId=28 tracked=false hiddenSpawn=false cancelled=false
+[12:20:01 INFO]: [Aegishider] Entity spawn decision: entityId=6 typeId=28 tracked=false hiddenSpawn=false cancelled=false
+[12:20:01 INFO]: [Aegishider] Entity spawn decision: entityId=2 typeId=28 tracked=false hiddenSpawn=false cancelled=false
+[12:20:01 INFO]: [Aegishider] Entity spawn decision: entityId=3 typeId=28 tracked=false hiddenSpawn=false cancelled=false
+[12:20:01 INFO]: [Aegishider] Entity spawn decision: entityId=4 typeId=104 tracked=false hiddenSpawn=false cancelled=false
+[12:20:02 INFO]: [Aegishider] Entity spawn decision: entityId=10 typeId=28 tracked=false hiddenSpawn=false cancelled=false
 [12:20:03 INFO]: Thread RCON Client /127.0.0.1 started
-[12:20:04 INFO]: [BaseHider] Entity spawn decision: entityId=21 typeId=24 tracked=false hiddenSpawn=true cancelled=true
+[12:20:04 INFO]: [Aegishider] Entity spawn decision: entityId=21 typeId=24 tracked=false hiddenSpawn=true cancelled=true
 [12:20:12 INFO]: ViaTest lost connection: Disconnected
 [12:20:12 INFO]: ViaTest left the game
 [12:20:13 INFO]: Thread RCON Client /127.0.0.1 shutting down

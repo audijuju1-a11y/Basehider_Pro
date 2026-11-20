@@ -1,20 +1,20 @@
-# BaseHider end-to-end integration test harness (Paper 1.21.4)
+# Aegishider end-to-end integration test harness (Paper 1.21.4)
 
 Fully automated, reproducible end-to-end test harness that proves - at the packet
 level - what a Minecraft **Paper 1.21.4** server actually sends to connected
-clients for the BaseHider plugin.
+clients for the Aegishider plugin.
 
 Six scenarios: A hidden item, B visible item, C chunk-level chest hiding, plus the
 **three-gap benchmark** - D far-band block-entity leak (160/336 blocks), E pie-ray
 client block-entity registry, F Bobby/Distant Horizons cache replay. See
-`D:\Basehider\docs\09-three-gap-benchmark.md` for methodology, results and the
+`D:\Aegishider\docs\09-three-gap-benchmark.md` for methodology, results and the
 reproduce commands.
 
-Everything lives in `D:\Basehider\itest` and **nothing outside it is modified**:
+Everything lives in `D:\Aegishider\itest` and **nothing outside it is modified**:
 the plugin jar, Paper jar and PacketEvents jar are always *copied*, never edited.
 
 The harness is validated against the legacy plugin jar snapshot in
-`itest\.cache\baseline-BaseHider.jar` (`3.0.0`, sha256
+`itest\.cache\baseline-Aegishider.jar` (`3.0.0`, sha256
 `8fa4c379422f8218d52dc2e70210529accbb7a39c80971c9d14900086f86cd75`), which is
 **expected to leak**. In baseline mode a detected leak is a PASS: it proves the
 detector can see real leaks. In normal mode the same leak is a FAIL.
@@ -28,18 +28,18 @@ scripts require only PowerShell 5.1+.
 
 ```powershell
 # 1) Full A-F suite against the plugin under test (default: newest
-#    BaseHider-*.jar in D:\Basehider\basehider-v3-integrated\target)
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1
+#    Aegishider-*.jar in D:\Aegishider\aegishider-integrated\target)
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1
 
 # 2) Validate the harness itself against the legacy jar (leaks are EXPECTED -> PASS)
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1 -Baseline
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1 -Baseline
 
 # 3) Three-gap scenarios only
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1 -Scenarios 'D,E,F'
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1 -Scenarios 'D,E,F'
 
 # 4) Test an explicit plugin jar
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1 `
-    -Jar D:\path\to\new-BaseHider.jar
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1 `
+    -Jar D:\path\to\new-Aegishider.jar
 
 # Useful variants
 #   -KeepServer           leave the Paper server running for debugging
@@ -97,7 +97,7 @@ If the server process dies mid-run the driver aborts immediately with a clear
 ## Layout
 
 ```
-D:\Basehider\itest\
+D:\Aegishider\itest\
   run-itest.ps1              # one-command wrapper (PASS/FAIL summary, exit code)
   README.md
   scripts\
@@ -128,7 +128,7 @@ a *thin module jar* and fails on Paper with
 `NoClassDefFoundError: com/github/retrooper/packetevents/PacketEvents`. The harness
 therefore uses the **full distribution jar** from the official GitHub release
 (`packetevents-spigot-2.14.0.jar`, ~5.7 MB) - copied from
-`D:\Basehider\.work\server\PacketEvents.jar` when that file is a full jar, else
+`D:\Aegishider\.work\server\PacketEvents.jar` when that file is a full jar, else
 downloaded from
 `https://github.com/retrooper/packetevents/releases/download/v2.14.0/packetevents-spigot-2.14.0.jar`.
 It loads successfully on Paper 1.21.4 in this harness.
@@ -275,12 +275,12 @@ harness and the detectors. The wrapper prints and records the expected
 
 ```jsonc
 {
-  "schema": "basehider-itest/report/v1",
+  "schema": "aegishider-itest/report/v1",
   "runId": "run-YYYYMMDD-HHmmss-mmm",
   "startedAt": "...", "finishedAt": "...", "durationMs": 226772,
   "baselineMode": true,
   "environment": { "platform": "...", "node": "v24...", "minecraftProtocol": "1.68.0", "java": "..." },
-  "plugin": { "jarPath": "...", "size": 6696904, "sha256": "...", "pluginYmlName": "BaseHider", "pluginYmlVersion": "3.0.0", "packetEventsInstalled": true },
+  "plugin": { "jarPath": "...", "size": 6696904, "sha256": "...", "pluginYmlName": "Aegishider", "pluginYmlVersion": "3.0.0", "packetEventsInstalled": true },
   "server": { "bootMs": 159617, "versionLine": "...Loading Paper 1.21.4...", "rconReady": true, "crashDetected": false, "stopped": { "cleanExit": true, "portsFreeAfterStop": true } },
   "decoderSelfTest": { "ok": true, "checks": [ ... 10 checks ... ] },
   "scenarios": {
@@ -458,8 +458,8 @@ never treated the vanished PIDs as errors, and finished baseline PASS, exit `0`
 Once the main engineer produces the new (PacketEvents-based) jar:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File D:\Basehider\itest\run-itest.ps1 `
-    -Jar D:\Basehider\basehider-v3-integrated\target\BaseHider.jar
+powershell -NoProfile -ExecutionPolicy Bypass -File D:\Aegishider\itest\run-itest.ps1 `
+    -Jar D:\Aegishider\aegishider-integrated\target\Aegishider.jar
 ```
 
 Expected PASS = `A: expected HIDDEN observed HIDDEN` (0 leaked spawn packets on

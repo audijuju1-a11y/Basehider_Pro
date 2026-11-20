@@ -506,7 +506,7 @@ export function adminProductFormPage(
                 <div class="field"><label>จำนวนเซิร์ฟเวอร์</label><input class="input" name="activation_limit" type="number" min="1" max="1000" value="1"></div>
                 <div class="field"><label>รอบบิล</label><select class="select" name="billing_interval"><option value="one_time">ซื้อครั้งเดียว</option><option value="monthly">รายเดือน</option><option value="yearly">รายปี</option></select></div>
               </div>
-              <div class="field"><label>Entitlements (JSON array)</label><input class="input" name="entitlements" value='["basehider:block-protection"]'></div>
+              <div class="field"><label>Entitlements (JSON array)</label><input class="input" name="entitlements" value='["aegishider:block-protection"]'></div>
               <button class="btn btn-soft" type="submit">${icon("plus")} เพิ่มแพ็กเกจ</button>
             </form>
           </div>
@@ -558,11 +558,11 @@ export function adminReleasesPage(
             <div class="field"><label>สถานะ</label><select class="select" name="status"><option value="draft">draft (ยังไม่เผยแพร่)</option><option value="published">published</option></select></div>
             <div class="field"><label>หมายเหตุ (Markdown)</label><textarea class="textarea" name="notes" required maxlength="8000"></textarea></div>
             <div class="field-row">
-              <div class="field"><label>Minecraft (คั่นด้วย ,)</label><input class="input" name="minecraft" placeholder="1.21.4"></div>
+              <div class="field"><label>Minecraft (คั่นด้วย ,)</label><input class="input" name="minecraft" placeholder="1.21.11"></div>
               <div class="field"><label>Java (คั่นด้วย ,)</label><input class="input" name="java" placeholder="21"></div>
             </div>
             <div class="field"><label>แพลตฟอร์ม (คั่นด้วย ,)</label><input class="input" name="platforms" placeholder="Paper"></div>
-            <div class="field"><label>Artifact URL</label><input class="input" name="artifact_url" placeholder="/download/BaseHider-3.3.0.jar"></div>
+            <div class="field"><label>Artifact URL</label><input class="input" name="artifact_url" placeholder="/download/Aegishider-4.0.0-mc1.21.11.jar"></div>
             <div class="field"><label>SHA-256</label><input class="input" name="artifact_sha256" maxlength="64"></div>
             <button class="btn btn-primary" type="submit">${icon("package")} สร้างรีลีส</button>
           </form>

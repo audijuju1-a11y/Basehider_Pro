@@ -11,11 +11,11 @@
 ## 1. Create resources
 
 ~~~bash
-npx wrangler d1 create bhcp-db
+npx wrangler d1 create agcp-db
 npx wrangler kv namespace create CACHE
-npx wrangler r2 bucket create bhcp-archive
-npx wrangler queues create bhcp-telemetry
-npx wrangler queues create bhcp-telemetry-dlq
+npx wrangler r2 bucket create agcp-archive
+npx wrangler queues create agcp-telemetry
+npx wrangler queues create agcp-telemetry-dlq
 ~~~
 
 Copy the D1 database_id and KV namespace id into wrangler.jsonc, replacing the placeholder zeros.
@@ -29,7 +29,7 @@ Non-secret vars in wrangler.jsonc:
 - SESSION_TTL_DAYS=14, LEASE_TTL_HOURS=24, OFFLINE_GRACE_HOURS=72
 - TURNSTILE_SITE_KEY, ACCESS_TEAM_DOMAIN, ACCESS_AUD
 - EMAIL_PROVIDER=resend or gmail, MAIL_FROM, SUPPORT_EMAIL
-- PROMPTPAY_PHONE=0925789459, PROMPTPAY_NAME=BaseHider, EMAIL_OTP_TTL_MINUTES=10
+- PROMPTPAY_PHONE=0925789459, PROMPTPAY_NAME=Aegishider, EMAIL_OTP_TTL_MINUTES=10
 - ADMIN_EMAILS may be left empty in production (Access is the admin path)
 - OBSERVABILITY_WEBHOOK_URL (optional; empty = Workers Logs only)
 
@@ -58,13 +58,13 @@ as well as the Worker secret. Never commit .dev.vars.
 ## 3. Database
 
 ~~~bash
-npx wrangler d1 migrations apply bhcp-db --remote
-npx wrangler d1 execute bhcp-db --remote --file=./seed/seed.sql
+npx wrangler d1 migrations apply agcp-db --remote
+npx wrangler d1 execute agcp-db --remote --file=./seed/seed.sql
 ~~~
 
-Seeding is idempotent for the BaseHider row. The seed publishes the 3.6.1 release with its SHA-256 and the
-3.2.0 history; the jar is served from `/download/BaseHider-3.6.1.jar`. Set the real price and plans in the admin
-console after the first login. If you do not want to seed the BaseHider product, skip the seed and create products
+Seeding is idempotent for the Aegishider row. The seed publishes the 3.6.1 release with its SHA-256 and the
+3.2.0 history; the jar is served from `/download/Aegishider-3.6.1.jar`. Set the real price and plans in the admin
+console after the first login. If you do not want to seed the Aegishider product, skip the seed and create products
 in the admin UI.
 
 ## 4. Admin access
@@ -74,7 +74,7 @@ in the admin UI.
 3. Copy the Application Audience (AUD) tag to ACCESS_AUD and the team domain to ACCESS_TEAM_DOMAIN.
 4. Provision staff users: sign up with the staff email (sign-up is email-only), follow the verification link,
    set a password in /app/account, then promote the user:
-   npx wrangler d1 execute bhcp-db --remote --command "UPDATE users SET role='super_admin' WHERE email='you@example.com'"
+   npx wrangler d1 execute agcp-db --remote --command "UPDATE users SET role='super_admin' WHERE email='you@example.com'"
 5. Verify /admin returns 403 without Access and 200 with it.
 
 `/auth/dev-admin` is a development-only bootstrap and answers 404 unless `DEV_BOOTSTRAP=1` and
@@ -119,20 +119,20 @@ the hourly cleanup (17 * * * *) and the five-minute alert tick (*/5 * * * *). Af
 consumers are connected:
 
 ~~~bash
-npx wrangler queues consumer list bhcp-telemetry
-npx wrangler queues consumer list bhcp-telemetry-dlq
+npx wrangler queues consumer list agcp-telemetry
+npx wrangler queues consumer list agcp-telemetry-dlq
 ~~~
 
 ### Messages in the DLQ
 
-The `bhcp-telemetry-dlq` consumer writes every poison message to `telemetry_dlq` and acks it,
+The `agcp-telemetry-dlq` consumer writes every poison message to `telemetry_dlq` and acks it,
 so a message is never silently dropped. Open `/admin/security` to see open rows with their event
 id, installation, attempt count and raw payload (requires `security.write` to mark one handled).
 
 1. Search Workers logs for `queue.processing_failed` with the same event id to see the cause
    (usually a missing R2 binding, a schema violation or an exhausted database).
 2. Fix and deploy the cause.
-3. Replay the message from the Cloudflare dashboard (Queues → `bhcp-telemetry` → Send message)
+3. Replay the message from the Cloudflare dashboard (Queues → `agcp-telemetry` → Send message)
    using the payload shown in the DLQ card, or re-run the original event from the server.
    Nothing replays automatically; the admin action only records that an operator handled it.
 4. Mark the row resolved on `/admin/security` and confirm the open count is zero.

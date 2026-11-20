@@ -89,7 +89,7 @@ describe("authentication", () => {
     const registerPage = await request("/auth/register");
     const csrf = csrfFrom(registerPage);
     const email = "owner-password@example.com";
-    const password = "Basehider2026";
+    const password = "Aegishider2026";
 
     const registered = await request("/auth/register", {
       method: "POST",
@@ -292,7 +292,7 @@ describe("authentication", () => {
 
     const changed = await formRequest(
       "/app/account/password",
-      { new_password: "Basehider2026", confirm_password: "Basehider2026" },
+      { new_password: "Aegishider2026", confirm_password: "Aegishider2026" },
       cookie,
     );
     expect(changed.status).toBe(303);
@@ -302,7 +302,7 @@ describe("authentication", () => {
     const login = await request("/auth/login", {
       method: "POST",
       headers: { cookie: csrf.cookie, "content-type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ _csrf: csrf.token, email: "legacy@example.com", password: "Basehider2026", next: "/app" }).toString(),
+      body: new URLSearchParams({ _csrf: csrf.token, email: "legacy@example.com", password: "Aegishider2026", next: "/app" }).toString(),
     });
     expect(login.status).toBe(303);
   });
@@ -547,7 +547,7 @@ describe("free licensing and activation guard", () => {
 
     const rawKey = await env.CACHE.get(`newlic:${licence!.id}`);
     expect(rawKey).toBeTruthy();
-    expect(rawKey).toMatch(/^BH-([2-9A-HJ-NP-Z]{6}-){7}[2-9A-HJ-NP-Z]{6}$/);
+    expect(rawKey).toMatch(/^AG-([2-9A-HJ-NP-Z]{6}-){7}[2-9A-HJ-NP-Z]{6}$/);
     expect(rawKey!.replace(/-/g, "").length).toBe(50);
 
     const activation = await env.DB.prepare(
@@ -715,11 +715,11 @@ describe("admin hierarchy and licence key visibility", () => {
       .bind(readOnly.id)
       .run();
     const licenceId = await issueLicenseFor(readOnly);
-    await env.CACHE.put(`newlic:${licenceId}`, "BH-SECRET-KEY", { expirationTtl: 600 });
+    await env.CACHE.put(`newlic:${licenceId}`, "AG-SECRET-KEY", { expirationTtl: 600 });
     const page = await request("/app/licenses", { headers: { cookie: await sessionCookie(readOnly.id) } });
     expect(page.status).toBe(200);
-    expect(await page.text()).not.toContain("BH-SECRET-KEY");
-    expect(await env.CACHE.get(`newlic:${licenceId}`)).toBe("BH-SECRET-KEY");
+    expect(await page.text()).not.toContain("AG-SECRET-KEY");
+    expect(await env.CACHE.get(`newlic:${licenceId}`)).toBe("AG-SECRET-KEY");
   });
 });
 

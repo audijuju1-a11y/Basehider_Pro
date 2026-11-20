@@ -22,7 +22,7 @@ export function emailProvider(env: Env): string {
 /** Providers are adapter-based so a different transactional service can be swapped in. */
 export async function sendEmail(env: Env, options: EmailOptions): Promise<void> {
   const provider = emailProvider(env);
-  const from = env.MAIL_FROM ?? "BaseHider <noreply@localhost>";
+  const from = env.MAIL_FROM ?? "Aegishider <noreply@localhost>";
   const text = options.text;
   const html = options.html ?? renderEmailHtml(options.subject, text);
   let status: "sent" | "failed" = "failed";
@@ -65,7 +65,7 @@ export async function sendEmail(env: Env, options: EmailOptions): Promise<void> 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           personalizations: [{ to: [{ email: options.to }], dkim_domain: domain, dkim_selector: "mailchannels" }],
-          from: { email: from.match(/<([^>]+)>/)?.[1] ?? from, name: "BaseHider" },
+          from: { email: from.match(/<([^>]+)>/)?.[1] ?? from, name: "Aegishider" },
           subject: options.subject,
           content: [
             { type: "text/plain", value: text },
@@ -140,7 +140,7 @@ export async function sendLoginEmail(
   if (next) params.set("next", next);
   const link = `${env.APP_URL.replace(/\/$/, "")}/auth/verify?${params.toString()}`;
   const text = [
-    "มีคำขอเข้าสู่ระบบ BaseHider Control Platform",
+    "มีคำขอเข้าสู่ระบบ Aegishider Control Platform",
     "",
     `รหัส OTP: ${code}`,
     `รหัสนี้ใช้ได้ครั้งเดียวและหมดอายุใน ${ttlMinutes} นาที`,
@@ -154,7 +154,7 @@ export async function sendLoginEmail(
   const html = renderLoginEmailHtml(code, ttlMinutes, link, logoUrl);
   await sendEmail(env, {
     to,
-    subject: code ? `BaseHider: รหัส OTP ${code} (หมดอายุใน ${ttlMinutes} นาที)` : `BaseHider: ลิงก์เข้าใช้งาน (หมดอายุใน ${ttlMinutes} นาที)`,
+    subject: code ? `Aegishider: รหัส OTP ${code} (หมดอายุใน ${ttlMinutes} นาที)` : `Aegishider: ลิงก์เข้าใช้งาน (หมดอายุใน ${ttlMinutes} นาที)`,
     text,
     html,
     template: "auth.login",
@@ -168,11 +168,11 @@ export function renderLoginEmailHtml(code: string, ttlMinutes: number, link: str
   return `<!doctype html><html><body style="margin:0;background:#f4f5f7;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#18202a">
   <div style="max-width:560px;margin:0 auto;padding:28px 20px">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-      ${logoUrl ? `<img src="${escape(logoUrl)}" width="48" height="48" alt="BaseHider" style="border-radius:12px;display:block">` : ""}
-      <div style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8a6a22;font-weight:600">BaseHider · FREE PLATFORM</div>
+      ${logoUrl ? `<img src="${escape(logoUrl)}" width="48" height="48" alt="Aegishider" style="border-radius:12px;display:block">` : ""}
+      <div style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8a6a22;font-weight:600">Aegishider · FREE PLATFORM</div>
     </div>
     <div style="background:#fff;border:1px solid #e3e6ea;border-radius:12px;padding:28px;margin-top:12px">
-      <h1 style="font-size:20px;margin:0 0 12px">เข้าสู่ระบบ BaseHider</h1>
+      <h1 style="font-size:20px;margin:0 0 12px">เข้าสู่ระบบ Aegishider</h1>
       <p style="font-size:14px;line-height:1.7;color:#3c4652;margin:0 0 18px">${code ? "กรอกรหัส OTP ด้านล่าง หรือกดปุ่มเพื่อเข้าสู่ระบบ" : "กดปุ่มด้านล่างเพื่อเข้าสู่ระบบ"} ลิงก์ใช้ได้ครั้งเดียวและหมดอายุใน ${ttlMinutes} นาที</p>
       ${code ? `<div style="font-family:ui-monospace,Consolas,monospace;font-size:32px;letter-spacing:.24em;font-weight:700;text-align:center;background:#faf6ec;border:1px solid #eadfc2;border-radius:10px;padding:16px;color:#1b1305">${escape(code)}</div>` : ""}
       <p style="margin:24px 0 0"><a href="${escape(link)}" style="background:#e2bd6d;color:#1b1305;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:600;display:inline-block">เข้าสู่ระบบด้วยลิงก์</a></p>
@@ -283,12 +283,12 @@ export function renderEmailHtml(
       : "";
   return `<!doctype html><html><body style="margin:0;background:#f4f5f7;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#18202a">
   <div style="max-width:560px;margin:0 auto;padding:28px 20px">
-    <div style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8a6a22;font-weight:600">BaseHider</div>
+    <div style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8a6a22;font-weight:600">Aegishider</div>
     <div style="background:#fff;border:1px solid #e3e6ea;border-radius:12px;padding:28px;margin-top:12px">
       <h1 style="font-size:20px;margin:0 0 14px">${escape(title)}</h1>
       <p style="font-size:14px;line-height:1.7;color:#3c4652;margin:0">${escape(body).replace(/\n/g, "<br>")}</p>
       ${cta}
     </div>
-    <p style="font-size:11px;color:#7a8492;line-height:1.6;margin-top:16px">อีเมลนี้ส่งโดยระบบอัตโนมัติจาก BaseHider Control Platform</p>
+    <p style="font-size:11px;color:#7a8492;line-height:1.6;margin-top:16px">อีเมลนี้ส่งโดยระบบอัตโนมัติจาก Aegishider Control Platform</p>
   </div></body></html>`;
 }

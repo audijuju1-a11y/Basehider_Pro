@@ -1,4 +1,4 @@
-"""Download the self-hosted webfonts used by the BaseHider landing page.
+"""Download the self-hosted webfonts used by the Aegishider landing page.
 
 Fetches Google Fonts CSS with a modern Chrome UA (woff2 + unicode-range), keeps only
 the subsets we actually ship, stores the files next to the site and rewrites a local

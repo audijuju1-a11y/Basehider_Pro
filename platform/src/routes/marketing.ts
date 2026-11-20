@@ -41,8 +41,8 @@ marketingRoutes.get("/", async (c) => {
     getSiteContent(c.env),
   ]);
   return publicPage(c, {
-    title: "แพลตฟอร์มจำหน่ายปลั๊กอิน Minecraft",
-    description: "หน้าร้าน พอร์ทัลลูกค้า และคอนโซลผู้ดูแล พร้อมไลเซนส์ Ed25519 และ telemetry สำหรับปลั๊กอิน Minecraft บน Cloudflare",
+    title: "แพลตฟอร์มปลั๊กอิน Minecraft ฟรี",
+    description: "พอร์ทัลเจ้าของเซิร์ฟเวอร์และคอนโซลผู้ดูแล พร้อมไลเซนส์ Ed25519, telemetry และไบล์ปลั๊กอินฟรี บน Cloudflare",
     body: marketingHome(products, langOf(c), content),
   });
 });
@@ -58,7 +58,7 @@ marketingRoutes.get("/plugins", async (c) => {
   });
   return publicPage(c, {
     title: "ผลิตภัณฑ์",
-    description: "ปลั๊กอิน Minecraft ที่พร้อมใช้งาน พร้อมราคาและเงื่อนไข",
+    description: "ปลั๊กอิน Minecraft ที่พร้อมใช้งาน ฟรี พร้อมไฟล์ดาวน์โหลดและไลเซนส์จริง",
     body: pluginsIndex(products, { q, category, lang: langOf(c) }),
   });
 });
@@ -79,7 +79,7 @@ marketingRoutes.get("/release/:id/download", async (c) => {
   return new Response(object.body, {
     headers: {
       "content-type": "application/java-archive",
-      "content-disposition": `attachment; filename="BaseHider-${release.version.replace(/[^A-Za-z0-9._-]/g, "")}.jar"`,
+      "content-disposition": `attachment; filename="Aegishider-${release.version.replace(/[^A-Za-z0-9._-]/g, "")}.jar"`,
       "x-content-type-options": "nosniff",
       "content-length": object.size.toString(),
       etag: object.httpEtag,
@@ -87,6 +87,8 @@ marketingRoutes.get("/release/:id/download", async (c) => {
     },
   });
 });
+
+marketingRoutes.get("/plugins/basehider", (c) => c.redirect("/plugins/aegishider", 301));
 
 marketingRoutes.get("/plugins/:slug", async (c) => {
   const product = await getProductView(c.env, c.req.param("slug"));
@@ -204,7 +206,7 @@ marketingRoutes.get("/support", (c) => {
 marketingRoutes.get("/contact", (c) => {
   return publicPage(c, {
     title: "ติดต่อเรา",
-    description: "ติดต่อทีมงาน BaseHider เรื่องการซื้อ ปัญหาเทคนิค หรือความปลอดภัย",
+    description: "ติดต่อทีมงาน Aegishider เรื่องการซื้อ ปัญหาเทคนิค หรือความปลอดภัย",
     body: contactPage({ siteKey: c.env.TURNSTILE_SITE_KEY ?? "", csrf: c.get("csrfToken") ?? "", lang: langOf(c) }),
   });
 });
@@ -231,7 +233,7 @@ marketingRoutes.post("/contact", async (c) => {
 marketingRoutes.get("/about", (c) => {
   return publicPage(c, {
     title: "เกี่ยวกับเรา",
-    description: "เกี่ยวกับ BaseHider Control Platform",
+    description: "เกี่ยวกับ Aegishider Control Platform",
     body: aboutPage(langOf(c)),
   });
 });

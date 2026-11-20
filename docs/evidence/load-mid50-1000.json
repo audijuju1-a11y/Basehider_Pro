@@ -43,9 +43,9 @@
     "paperHeapProbe": false
   },
   "paths": {
-    "result": "D:\\Basehider\\bench\\load-mid50-1000.json",
-    "serverLog": "D:\\Basehider\\bench\\load-server-mid50-1000.log",
-    "consoleLog": "D:\\Basehider\\bench\\load-console-mid50-1000.log"
+    "result": "D:\\Aegishider\\bench\\load-mid50-1000.json",
+    "serverLog": "D:\\Aegishider\\bench\\load-server-mid50-1000.log",
+    "consoleLog": "D:\\Aegishider\\bench\\load-console-mid50-1000.log"
   },
   "status": "ok",
   "join": {
@@ -57,14 +57,14 @@
   },
   "datapack": {
     "generatedAt": "2026-11-14T05:43:35.830Z",
-    "serverDir": "D:\\Basehider\\bench\\load-server",
-    "worldDir": "D:\\Basehider\\bench\\load-server\\world",
-    "datapackDir": "D:\\Basehider\\bench\\load-server\\world\\datapacks\\bhload",
+    "serverDir": "D:\\Aegishider\\bench\\load-server",
+    "worldDir": "D:\\Aegishider\\bench\\load-server\\world",
+    "datapackDir": "D:\\Aegishider\\bench\\load-server\\world\\datapacks\\bhload",
     "datapackName": "bhload",
     "packFormat": 57,
     "functionId": "bhload:summon_items",
-    "packMcmetaPath": "D:\\Basehider\\bench\\load-server\\world\\datapacks\\bhload\\pack.mcmeta",
-    "functionPath": "D:\\Basehider\\bench\\load-server\\world\\datapacks\\bhload\\data\\bhload\\function\\summon_items.mcfunction",
+    "packMcmetaPath": "D:\\Aegishider\\bench\\load-server\\world\\datapacks\\bhload\\pack.mcmeta",
+    "functionPath": "D:\\Aegishider\\bench\\load-server\\world\\datapacks\\bhload\\data\\bhload\\function\\summon_items.mcfunction",
     "commandCount": 1000,
     "layout": {
       "cols": 23,
@@ -140,7 +140,7 @@
     "entityCountFromExecuteIf": 1000,
     "entityCountMatchesRequested": true,
     "expectedItems": 1000,
-    "note": "entity count verified by /basehider diag trackedItems after bots connect; /execute if entity proves existence"
+    "note": "entity count verified by /aegishider diag trackedItems after bots connect; /execute if entity proves existence"
   },
   "bots": {
     "requested": 50,
@@ -1217,16 +1217,16 @@
           "raw": "§6TPS from last 1m, 5m, 15m: §a19.1§r, §a19.81§r, §a19.94\n",
           "latencyMs": 129
         },
-        "basehider diag": {
+        "aegishider diag": {
           "ok": true,
-          "command": "basehider diag",
-          "raw": "§6§l--- BaseHider diag ---\n§7Security tick last/avg/max: §f180 / 601 / 22357 us §7| p50/p95/p99: §f450/1200/2650 us §7| overruns: §f12\n§7Engine time (item/block) last: §f126/37 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f99 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=0 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f1 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
+          "command": "aegishider diag",
+          "raw": "§6§l--- Aegishider diag ---\n§7Security tick last/avg/max: §f180 / 601 / 22357 us §7| p50/p95/p99: §f450/1200/2650 us §7| overruns: §f12\n§7Engine time (item/block) last: §f126/37 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f99 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=0 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f1 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
           "latencyMs": 135
         },
-        "basehider export": {
+        "aegishider export": {
           "ok": true,
-          "command": "basehider export",
-          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\BaseHider\\diagnostics.json\n",
+          "command": "aegishider export",
+          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\Aegishider\\diagnostics.json\n",
           "latencyMs": 126
         }
       },
@@ -1264,7 +1264,7 @@
         ]
       },
       "diag": {
-        "raw": "--- BaseHider diag ---\nSecurity tick last/avg/max: 180 / 601 / 22357 us | p50/p95/p99: 450/1200/2650 us | overruns: 12\nEngine time (item/block) last: 126/37 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 99 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=0 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=1 blocks=0 chunks=0 indexRevision=0\n-----------------------",
+        "raw": "--- Aegishider diag ---\nSecurity tick last/avg/max: 180 / 601 / 22357 us | p50/p95/p99: 450/1200/2650 us | overruns: 12\nEngine time (item/block) last: 126/37 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 99 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=0 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=1 blocks=0 chunks=0 indexRevision=0\n-----------------------",
         "available": true,
         "tickLastUs": 180,
         "tickAvgUs": 601,
@@ -2358,7 +2358,7 @@
         "note": "not sampled: /spark health answers asynchronously and the RCON helper would drop the delayed reply"
       },
       "diagnosticsFile": {
-        "path": "D:\\Basehider\\bench\\load-server\\plugins\\BaseHider\\diagnostics.json",
+        "path": "D:\\Aegishider\\bench\\load-server\\plugins\\Aegishider\\diagnostics.json",
         "mtimeMs": 1794635060127.3372,
         "sizeBytes": 843,
         "ageMs": 533.662841796875,
@@ -2471,16 +2471,16 @@
           "raw": "§6TPS from last 1m, 5m, 15m: §a19.1§r, §a19.81§r, §a19.94\n",
           "latencyMs": 137
         },
-        "basehider diag": {
+        "aegishider diag": {
           "ok": true,
-          "command": "basehider diag",
-          "raw": "§6§l--- BaseHider diag ---\n§7Security tick last/avg/max: §f386 / 564 / 22357 us §7| p50/p95/p99: §f450/1150/2650 us §7| overruns: §f12\n§7Engine time (item/block) last: §f269/79 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f95 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=1 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f1 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
+          "command": "aegishider diag",
+          "raw": "§6§l--- Aegishider diag ---\n§7Security tick last/avg/max: §f386 / 564 / 22357 us §7| p50/p95/p99: §f450/1150/2650 us §7| overruns: §f12\n§7Engine time (item/block) last: §f269/79 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f95 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=1 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f1 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
           "latencyMs": 122
         },
-        "basehider export": {
+        "aegishider export": {
           "ok": true,
-          "command": "basehider export",
-          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\BaseHider\\diagnostics.json\n",
+          "command": "aegishider export",
+          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\Aegishider\\diagnostics.json\n",
           "latencyMs": 127
         }
       },
@@ -2518,7 +2518,7 @@
         ]
       },
       "diag": {
-        "raw": "--- BaseHider diag ---\nSecurity tick last/avg/max: 386 / 564 / 22357 us | p50/p95/p99: 450/1150/2650 us | overruns: 12\nEngine time (item/block) last: 269/79 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 95 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=1 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=1 blocks=0 chunks=0 indexRevision=0\n-----------------------",
+        "raw": "--- Aegishider diag ---\nSecurity tick last/avg/max: 386 / 564 / 22357 us | p50/p95/p99: 450/1150/2650 us | overruns: 12\nEngine time (item/block) last: 269/79 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 95 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=1 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=1 blocks=0 chunks=0 indexRevision=0\n-----------------------",
         "available": true,
         "tickLastUs": 386,
         "tickAvgUs": 564,
@@ -3612,7 +3612,7 @@
         "note": "not sampled: /spark health answers asynchronously and the RCON helper would drop the delayed reply"
       },
       "diagnosticsFile": {
-        "path": "D:\\Basehider\\bench\\load-server\\plugins\\BaseHider\\diagnostics.json",
+        "path": "D:\\Aegishider\\bench\\load-server\\plugins\\Aegishider\\diagnostics.json",
         "mtimeMs": 1794635061920.5784,
         "sizeBytes": 843,
         "ageMs": 528.421630859375,
@@ -3725,16 +3725,16 @@
           "raw": "§6TPS from last 1m, 5m, 15m: §a19.1§r, §a19.81§r, §a19.94\n",
           "latencyMs": 121
         },
-        "basehider diag": {
+        "aegishider diag": {
           "ok": true,
-          "command": "basehider diag",
-          "raw": "§6§l--- BaseHider diag ---\n§7Security tick last/avg/max: §f130 / 466 / 22357 us §7| p50/p95/p99: §f350/950/2150 us §7| overruns: §f12\n§7Engine time (item/block) last: §f85/36 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f81 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=2 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f2 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
+          "command": "aegishider diag",
+          "raw": "§6§l--- Aegishider diag ---\n§7Security tick last/avg/max: §f130 / 466 / 22357 us §7| p50/p95/p99: §f350/950/2150 us §7| overruns: §f12\n§7Engine time (item/block) last: §f85/36 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f81 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=2 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f2 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
           "latencyMs": 121
         },
-        "basehider export": {
+        "aegishider export": {
           "ok": true,
-          "command": "basehider export",
-          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\BaseHider\\diagnostics.json\n",
+          "command": "aegishider export",
+          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\Aegishider\\diagnostics.json\n",
           "latencyMs": 122
         }
       },
@@ -3772,7 +3772,7 @@
         ]
       },
       "diag": {
-        "raw": "--- BaseHider diag ---\nSecurity tick last/avg/max: 130 / 466 / 22357 us | p50/p95/p99: 350/950/2150 us | overruns: 12\nEngine time (item/block) last: 85/36 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 81 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=2 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=2 blocks=0 chunks=0 indexRevision=0\n-----------------------",
+        "raw": "--- Aegishider diag ---\nSecurity tick last/avg/max: 130 / 466 / 22357 us | p50/p95/p99: 350/950/2150 us | overruns: 12\nEngine time (item/block) last: 85/36 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 81 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=2 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=2 blocks=0 chunks=0 indexRevision=0\n-----------------------",
         "available": true,
         "tickLastUs": 130,
         "tickAvgUs": 466,
@@ -4866,7 +4866,7 @@
         "note": "not sampled: /spark health answers asynchronously and the RCON helper would drop the delayed reply"
       },
       "diagnosticsFile": {
-        "path": "D:\\Basehider\\bench\\load-server\\plugins\\BaseHider\\diagnostics.json",
+        "path": "D:\\Aegishider\\bench\\load-server\\plugins\\Aegishider\\diagnostics.json",
         "mtimeMs": 1794635069337.4539,
         "sizeBytes": 842,
         "ageMs": 527.546142578125,
@@ -4979,16 +4979,16 @@
           "raw": "§6TPS from last 1m, 5m, 15m: §a19.1§r, §a19.81§r, §a19.94\n",
           "latencyMs": 128
         },
-        "basehider diag": {
+        "aegishider diag": {
           "ok": true,
-          "command": "basehider diag",
-          "raw": "§6§l--- BaseHider diag ---\n§7Security tick last/avg/max: §f120 / 400 / 22357 us §7| p50/p95/p99: §f250/900/2050 us §7| overruns: §f13\n§7Engine time (item/block) last: §f88/23 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f79 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=3 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f2 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
+          "command": "aegishider diag",
+          "raw": "§6§l--- Aegishider diag ---\n§7Security tick last/avg/max: §f120 / 400 / 22357 us §7| p50/p95/p99: §f250/900/2050 us §7| overruns: §f13\n§7Engine time (item/block) last: §f88/23 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f79 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=3 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f2 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
           "latencyMs": 127
         },
-        "basehider export": {
+        "aegishider export": {
           "ok": true,
-          "command": "basehider export",
-          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\BaseHider\\diagnostics.json\n",
+          "command": "aegishider export",
+          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\Aegishider\\diagnostics.json\n",
           "latencyMs": 128
         }
       },
@@ -5026,7 +5026,7 @@
         ]
       },
       "diag": {
-        "raw": "--- BaseHider diag ---\nSecurity tick last/avg/max: 120 / 400 / 22357 us | p50/p95/p99: 250/900/2050 us | overruns: 13\nEngine time (item/block) last: 88/23 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 79 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=3 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=2 blocks=0 chunks=0 indexRevision=0\n-----------------------",
+        "raw": "--- Aegishider diag ---\nSecurity tick last/avg/max: 120 / 400 / 22357 us | p50/p95/p99: 250/900/2050 us | overruns: 13\nEngine time (item/block) last: 88/23 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 79 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=3 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=2 blocks=0 chunks=0 indexRevision=0\n-----------------------",
         "available": true,
         "tickLastUs": 120,
         "tickAvgUs": 400,
@@ -6120,7 +6120,7 @@
         "note": "not sampled: /spark health answers asynchronously and the RCON helper would drop the delayed reply"
       },
       "diagnosticsFile": {
-        "path": "D:\\Basehider\\bench\\load-server\\plugins\\BaseHider\\diagnostics.json",
+        "path": "D:\\Aegishider\\bench\\load-server\\plugins\\Aegishider\\diagnostics.json",
         "mtimeMs": 1794635079379.2385,
         "sizeBytes": 842,
         "ageMs": 564.761474609375,
@@ -6233,16 +6233,16 @@
           "raw": "§6TPS from last 1m, 5m, 15m: §a19.1§r, §a19.81§r, §a19.94\n",
           "latencyMs": 127
         },
-        "basehider diag": {
+        "aegishider diag": {
           "ok": true,
-          "command": "basehider diag",
-          "raw": "§6§l--- BaseHider diag ---\n§7Security tick last/avg/max: §f520 / 362 / 22357 us §7| p50/p95/p99: §f250/850/1950 us §7| overruns: §f13\n§7Engine time (item/block) last: §f136/28 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f63 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=4 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f2 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
+          "command": "aegishider diag",
+          "raw": "§6§l--- Aegishider diag ---\n§7Security tick last/avg/max: §f520 / 362 / 22357 us §7| p50/p95/p99: §f250/850/1950 us §7| overruns: §f13\n§7Engine time (item/block) last: §f136/28 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f63 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=4 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f2 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
           "latencyMs": 128
         },
-        "basehider export": {
+        "aegishider export": {
           "ok": true,
-          "command": "basehider export",
-          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\BaseHider\\diagnostics.json\n",
+          "command": "aegishider export",
+          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\Aegishider\\diagnostics.json\n",
           "latencyMs": 127
         }
       },
@@ -6280,7 +6280,7 @@
         ]
       },
       "diag": {
-        "raw": "--- BaseHider diag ---\nSecurity tick last/avg/max: 520 / 362 / 22357 us | p50/p95/p99: 250/850/1950 us | overruns: 13\nEngine time (item/block) last: 136/28 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 63 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=4 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=2 blocks=0 chunks=0 indexRevision=0\n-----------------------",
+        "raw": "--- Aegishider diag ---\nSecurity tick last/avg/max: 520 / 362 / 22357 us | p50/p95/p99: 250/850/1950 us | overruns: 13\nEngine time (item/block) last: 136/28 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 63 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=4 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=2 blocks=0 chunks=0 indexRevision=0\n-----------------------",
         "available": true,
         "tickLastUs": 520,
         "tickAvgUs": 362,
@@ -7374,7 +7374,7 @@
         "note": "not sampled: /spark health answers asynchronously and the RCON helper would drop the delayed reply"
       },
       "diagnosticsFile": {
-        "path": "D:\\Basehider\\bench\\load-server\\plugins\\BaseHider\\diagnostics.json",
+        "path": "D:\\Aegishider\\bench\\load-server\\plugins\\Aegishider\\diagnostics.json",
         "mtimeMs": 1794635089528.8137,
         "sizeBytes": 842,
         "ageMs": 562.186279296875,
@@ -7487,16 +7487,16 @@
           "raw": "§6TPS from last 1m, 5m, 15m: §a19.1§r, §a19.81§r, §a19.94\n",
           "latencyMs": 124
         },
-        "basehider diag": {
+        "aegishider diag": {
           "ok": true,
-          "command": "basehider diag",
-          "raw": "§6§l--- BaseHider diag ---\n§7Security tick last/avg/max: §f174 / 337 / 22357 us §7| p50/p95/p99: §f250/800/1650 us §7| overruns: §f13\n§7Engine time (item/block) last: §f128/34 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f64 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=5 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f2 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
+          "command": "aegishider diag",
+          "raw": "§6§l--- Aegishider diag ---\n§7Security tick last/avg/max: §f174 / 337 / 22357 us §7| p50/p95/p99: §f250/800/1650 us §7| overruns: §f13\n§7Engine time (item/block) last: §f128/34 us §7max: §f3566/21096 us\n§7Raycasts: §f0 §7| deferred by budget: §f0 §7| budget remaining: §f300/300\n§7Item engine: §ftracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\n§7Block engine: §fviewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\n§7Discovery queue: §f64 §7| resync pending: §f0 §7| occlusion rev: §f0\n§7Async: §fsubmitted=5 rejected=0 queue=0/512 threads=4\n§7Errors/config warnings: §f0/0\n§7Gateway: §fstate=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\n§7Index: §fw=§f2 blocks=0 chunks=0 indexRevision=0\n§6§l-----------------------\n",
           "latencyMs": 127
         },
-        "basehider export": {
+        "aegishider export": {
           "ok": true,
-          "command": "basehider export",
-          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\BaseHider\\diagnostics.json\n",
+          "command": "aegishider export",
+          "raw": "Â§7Diagnostics snapshot scheduled asynchronously: Â§fplugins\\Aegishider\\diagnostics.json\n",
           "latencyMs": 126
         }
       },
@@ -7534,7 +7534,7 @@
         ]
       },
       "diag": {
-        "raw": "--- BaseHider diag ---\nSecurity tick last/avg/max: 174 / 337 / 22357 us | p50/p95/p99: 250/800/1650 us | overruns: 13\nEngine time (item/block) last: 128/34 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 64 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=5 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=2 blocks=0 chunks=0 indexRevision=0\n-----------------------",
+        "raw": "--- Aegishider diag ---\nSecurity tick last/avg/max: 174 / 337 / 22357 us | p50/p95/p99: 250/800/1650 us | overruns: 13\nEngine time (item/block) last: 128/34 us max: 3566/21096 us\nRaycasts: 0 | deferred by budget: 0 | budget remaining: 300/300\nItem engine: tracked=1000 revealedPairs=0 dirtyQueue=0 viewerIndexChunks=4 itemChunks=4 evals=0\nBlock engine: viewers=50 revealedMarkers=0 pendingCandidates=0 occlusionRevision=0 evals=0\nDiscovery queue: 64 | resync pending: 0 | occlusion rev: 0\nAsync: submitted=5 rejected=0 queue=0/512 threads=4\nErrors/config warnings: 0/0\nGateway: state=ACTIVE chunkSanitized=0 chunkFailClosed=0 blockFaked=0 itemSpawnBlocked=0 entityChosenPacketsCancelled=0 errors=0 packetDetectedBlocks=0 packetDetectedOverflow=0\nIndex: w=2 blocks=0 chunks=0 indexRevision=0\n-----------------------",
         "available": true,
         "tickLastUs": 174,
         "tickAvgUs": 337,
@@ -8628,7 +8628,7 @@
         "note": "not sampled: /spark health answers asynchronously and the RCON helper would drop the delayed reply"
       },
       "diagnosticsFile": {
-        "path": "D:\\Basehider\\bench\\load-server\\plugins\\BaseHider\\diagnostics.json",
+        "path": "D:\\Aegishider\\bench\\load-server\\plugins\\Aegishider\\diagnostics.json",
         "mtimeMs": 1794635099928.2654,
         "sizeBytes": 842,
         "ageMs": 535.734619140625,
@@ -8791,7 +8791,7 @@
       "max": 19.1,
       "avg": 19.1
     },
-    "basehider": {
+    "aegishider": {
       "tickLastUs": {
         "count": 6,
         "min": 120,
@@ -9028,30 +9028,30 @@
   },
   "limitations": [],
   "server": {
-    "serverDir": "D:\\Basehider\\bench\\load-server",
-    "paperJar": "D:\\Basehider\\bench\\load-server\\paper-1.21.4.jar",
+    "serverDir": "D:\\Aegishider\\bench\\load-server",
+    "paperJar": "D:\\Aegishider\\bench\\load-server\\paper-1.21.4.jar",
     "paperJarSizeBytes": 51437498,
-    "baseHider": {
-      "source": "D:\\Basehider\\dist\\BaseHider-3.2.0.jar",
-      "sourceName": "BaseHider-3.2.0.jar",
+    "aegishider": {
+      "source": "D:\\Aegishider\\dist\\Aegishider-3.2.0.jar",
+      "sourceName": "Aegishider-3.2.0.jar",
       "selectionPolicy": "preferred-final-3.2.0",
-      "target": "D:\\Basehider\\bench\\load-server\\plugins\\BaseHider.jar",
+      "target": "D:\\Aegishider\\bench\\load-server\\plugins\\Aegishider.jar",
       "sourceSha256": "cf3cc53e7529e35b7dbc801773eba3bf8c8d02dc7e0028cf89bbe3aa1191808c",
       "targetSha256": "cf3cc53e7529e35b7dbc801773eba3bf8c8d02dc7e0028cf89bbe3aa1191808c",
       "sizeBytes": 6797418
     },
-    "baseHiderConfig": {
-      "path": "D:\\Basehider\\bench\\load-server\\plugins\\BaseHider\\config.yml",
+    "aegishiderConfig": {
+      "path": "D:\\Aegishider\\bench\\load-server\\plugins\\Aegishider\\config.yml",
       "sha256": "20c39d951d4483ccacdf8bd42d11e9a1d96d7ed32e640cafd66588e5fd0b4925",
-      "text": "# ---------------------------------------------------------------------------\n# BaseHider 3.1.0 - server-side anti-ESP visibility control\n#\n# Security model: FAIL-CLOSED.\n#   * A protected block/entity is hidden from a viewer unless the visibility\n#     policy explicitly proves it is allowed to be sent.\n#   * Unknown state, disabled module, missing packet gateway, timeout, error\n#     and queue pressure all keep data hidden - never the opposite.\n#\n# Packet gateway requirement:\n#   Block/container/chunk protection is only possible by rewriting outgoing\n#   packets. That requires the PacketEvents plugin to be installed. If it is\n#   absent, BaseHider disables block protection entirely (and says so in logs\n#   and /basehider status) instead of sending data first and patching later.\n#   Entity/item protection uses Paper's native per-player entity visibility\n#   API and works without PacketEvents (packet-level checks are added when the\n#   gateway is active).\n# ---------------------------------------------------------------------------\n\nsecurity:\n  # Keep true in production. There is no \"fast but unsafe\" mode.\n  fail-closed: true\n  packet-gateway:\n    # Minimum PacketEvents version that is known to expose the APIs BaseHider\n    # uses (chunk column / block state rewriting, packet cancellation).\n    minimum-version: \"2.14.0\"\n  # Global per-tick time budget for BaseHider's main-thread security work.\n  # Work is sliced and deferred when the budget is exceeded; visibility\n  # decisions are never skipped, only delayed by at most a few ticks.\n  main-thread-budget-ms: 1.5\n  # Shared raycast budget per tick for block occlusion + entity occlusion.\n  # Raise for large storage bases if visible-blocks reveal feels slow; lower to\n  # reduce CPU. 0 = no raycasts (everything stays hidden - fail-closed).\n  raycast-budget-per-tick: 300\n\nworlds:\n  # Settings under \"default\" apply to every world that is not explicitly\n  # listed below. Add e.g. \"world_nether:\" with the same structure to override.\n  default:\n    enabled: true\n    bypass-permission: basehider.bypass\n\n    block-protection:\n      enabled: true\n      # These blocks are hidden at packet level. They are discovered from real\n      # block-entity data (natural structures included) and tracked on place/\n      # break/explosion/piston events plus a background reconciliation sweep.\n      # Only tile-entity backed materials are supported; unsupported entries\n      # are rejected with a console warning instead of being silently ignored.\n      hidden-blocks:\n        - CHEST\n        - TRAPPED_CHEST\n        - ENDER_CHEST\n        - BARREL\n        - SHULKER_BOX\n        - WHITE_SHULKER_BOX\n        - ORANGE_SHULKER_BOX\n        - MAGENTA_SHULKER_BOX\n        - LIGHT_BLUE_SHULKER_BOX\n        - YELLOW_SHULKER_BOX\n        - LIME_SHULKER_BOX\n        - PINK_SHULKER_BOX\n        - GRAY_SHULKER_BOX\n        - LIGHT_GRAY_SHULKER_BOX\n        - CYAN_SHULKER_BOX\n        - PURPLE_SHULKER_BOX\n        - BLUE_SHULKER_BOX\n        - BROWN_SHULKER_BOX\n        - GREEN_SHULKER_BOX\n        - RED_SHULKER_BOX\n        - BLACK_SHULKER_BOX\n        - HOPPER\n        - DROPPER\n        - DISPENSER\n        - FURNACE\n        - BLAST_FURNACE\n        - SMOKER\n        - BREWING_STAND\n        - SPAWNER\n        - TRIAL_SPAWNER\n        - VAULT\n      replace-with: STONE\n\n      # Blocks become visible to a viewer only when they are close, inside the\n      # field of view and not occluded. Once seen, they stay visible while the\n      # viewer remains close (prevents flicker); they are hidden again when the\n      # viewer leaves, the chunk is resent, or the world changes.\n      reveal:\n        max-distance: 12.0\n        fov-degrees: 120.0\n        keep-distance-factor: 1.6\n        # Re-raycast revealed blocks when the viewer moved this far (blocks).\n        recheck-move-blocks: 4\n      # Background reconciliation sweep: catches blocks changed by plugins,\n      # commands or mechanics that do not fire a Bukkit block event.\n      reconcile:\n        enabled: true\n        chunks-per-second: 40\n        # Only chunks within this many chunks of a player are reconciled.\n        player-radius-chunks: 8\n\n    item-protection:\n      enabled: true\n      # Entity types that are hidden by default and only revealed through the\n      # same distance/FOV/occlusion policy. ITEM covers every dropped item\n      # (player, mob, block, natural, custom, enchanted, shulker contents...).\n      # Additional safe candidates: ITEM_FRAME, GLOW_ITEM_FRAME, ARMOR_STAND,\n      # CHEST_MINECART, HOPPER_MINECART. Player entities are intentionally not\n      # supported (would break team/combat gameplay; see README).\n      hidden-entity-types:\n        - ITEM\n      reveal:\n        max-distance: 32.0\n        fov-degrees: 130.0\n        # The player who threw/dropped an item sees it immediately.\n        owner-grace: true\n      # Re-evaluate item visibility every N ticks.\n      update-interval-ticks: 2\n\n# Optional, non-enforcing analytics. They never alter visibility decisions and\n# never ban/kick automatically. Alerts go to players with basehider.admin.\nanalytics:\n  mining:\n    enabled: false\n    xray-ore-rate-threshold-percent: 5.0\n    min-samples: 200\n    tunnel-streak-blocks: 24\n    alert-cooldown-seconds: 120\n  raid:\n    enabled: false\n    alert-cooldown-seconds: 300\n\ndebug:\n  # Log one line per blocked packet category (rate limited). Keep false in prod.\n  log-blocked-packets: false\n  # Log a warning when the per-tick budget is exceeded (rate limited).\n  log-budget-overruns: true\n  # Dump stack traces for internal security errors. Always logged at SEVERE.\n  verbose-errors: false\n"
+      "text": "# ---------------------------------------------------------------------------\n# Aegishider 3.1.0 - server-side anti-ESP visibility control\n#\n# Security model: FAIL-CLOSED.\n#   * A protected block/entity is hidden from a viewer unless the visibility\n#     policy explicitly proves it is allowed to be sent.\n#   * Unknown state, disabled module, missing packet gateway, timeout, error\n#     and queue pressure all keep data hidden - never the opposite.\n#\n# Packet gateway requirement:\n#   Block/container/chunk protection is only possible by rewriting outgoing\n#   packets. That requires the PacketEvents plugin to be installed. If it is\n#   absent, Aegishider disables block protection entirely (and says so in logs\n#   and /aegishider status) instead of sending data first and patching later.\n#   Entity/item protection uses Paper's native per-player entity visibility\n#   API and works without PacketEvents (packet-level checks are added when the\n#   gateway is active).\n# ---------------------------------------------------------------------------\n\nsecurity:\n  # Keep true in production. There is no \"fast but unsafe\" mode.\n  fail-closed: true\n  packet-gateway:\n    # Minimum PacketEvents version that is known to expose the APIs Aegishider\n    # uses (chunk column / block state rewriting, packet cancellation).\n    minimum-version: \"2.14.0\"\n  # Global per-tick time budget for Aegishider's main-thread security work.\n  # Work is sliced and deferred when the budget is exceeded; visibility\n  # decisions are never skipped, only delayed by at most a few ticks.\n  main-thread-budget-ms: 1.5\n  # Shared raycast budget per tick for block occlusion + entity occlusion.\n  # Raise for large storage bases if visible-blocks reveal feels slow; lower to\n  # reduce CPU. 0 = no raycasts (everything stays hidden - fail-closed).\n  raycast-budget-per-tick: 300\n\nworlds:\n  # Settings under \"default\" apply to every world that is not explicitly\n  # listed below. Add e.g. \"world_nether:\" with the same structure to override.\n  default:\n    enabled: true\n    bypass-permission: aegishider.bypass\n\n    block-protection:\n      enabled: true\n      # These blocks are hidden at packet level. They are discovered from real\n      # block-entity data (natural structures included) and tracked on place/\n      # break/explosion/piston events plus a background reconciliation sweep.\n      # Only tile-entity backed materials are supported; unsupported entries\n      # are rejected with a console warning instead of being silently ignored.\n      hidden-blocks:\n        - CHEST\n        - TRAPPED_CHEST\n        - ENDER_CHEST\n        - BARREL\n        - SHULKER_BOX\n        - WHITE_SHULKER_BOX\n        - ORANGE_SHULKER_BOX\n        - MAGENTA_SHULKER_BOX\n        - LIGHT_BLUE_SHULKER_BOX\n        - YELLOW_SHULKER_BOX\n        - LIME_SHULKER_BOX\n        - PINK_SHULKER_BOX\n        - GRAY_SHULKER_BOX\n        - LIGHT_GRAY_SHULKER_BOX\n        - CYAN_SHULKER_BOX\n        - PURPLE_SHULKER_BOX\n        - BLUE_SHULKER_BOX\n        - BROWN_SHULKER_BOX\n        - GREEN_SHULKER_BOX\n        - RED_SHULKER_BOX\n        - BLACK_SHULKER_BOX\n        - HOPPER\n        - DROPPER\n        - DISPENSER\n        - FURNACE\n        - BLAST_FURNACE\n        - SMOKER\n        - BREWING_STAND\n        - SPAWNER\n        - TRIAL_SPAWNER\n        - VAULT\n      replace-with: STONE\n\n      # Blocks become visible to a viewer only when they are close, inside the\n      # field of view and not occluded. Once seen, they stay visible while the\n      # viewer remains close (prevents flicker); they are hidden again when the\n      # viewer leaves, the chunk is resent, or the world changes.\n      reveal:\n        max-distance: 12.0\n        fov-degrees: 120.0\n        keep-distance-factor: 1.6\n        # Re-raycast revealed blocks when the viewer moved this far (blocks).\n        recheck-move-blocks: 4\n      # Background reconciliation sweep: catches blocks changed by plugins,\n      # commands or mechanics that do not fire a Bukkit block event.\n      reconcile:\n        enabled: true\n        chunks-per-second: 40\n        # Only chunks within this many chunks of a player are reconciled.\n        player-radius-chunks: 8\n\n    item-protection:\n      enabled: true\n      # Entity types that are hidden by default and only revealed through the\n      # same distance/FOV/occlusion policy. ITEM covers every dropped item\n      # (player, mob, block, natural, custom, enchanted, shulker contents...).\n      # Additional safe candidates: ITEM_FRAME, GLOW_ITEM_FRAME, ARMOR_STAND,\n      # CHEST_MINECART, HOPPER_MINECART. Player entities are intentionally not\n      # supported (would break team/combat gameplay; see README).\n      hidden-entity-types:\n        - ITEM\n      reveal:\n        max-distance: 32.0\n        fov-degrees: 130.0\n        # The player who threw/dropped an item sees it immediately.\n        owner-grace: true\n      # Re-evaluate item visibility every N ticks.\n      update-interval-ticks: 2\n\n# Optional, non-enforcing analytics. They never alter visibility decisions and\n# never ban/kick automatically. Alerts go to players with aegishider.admin.\nanalytics:\n  mining:\n    enabled: false\n    xray-ore-rate-threshold-percent: 5.0\n    min-samples: 200\n    tunnel-streak-blocks: 24\n    alert-cooldown-seconds: 120\n  raid:\n    enabled: false\n    alert-cooldown-seconds: 300\n\ndebug:\n  # Log one line per blocked packet category (rate limited). Keep false in prod.\n  log-blocked-packets: false\n  # Log a warning when the per-tick budget is exceeded (rate limited).\n  log-budget-overruns: true\n  # Dump stack traces for internal security errors. Always logged at SEVERE.\n  verbose-errors: false\n"
     },
     "packetEvents": {
-      "target": "D:\\Basehider\\bench\\load-server\\plugins\\PacketEvents.jar",
+      "target": "D:\\Aegishider\\bench\\load-server\\plugins\\PacketEvents.jar",
       "source": "existing",
       "sizeBytes": 5723413
     },
-    "serverPropertiesPath": "D:\\Basehider\\bench\\load-server\\server.properties",
-    "propertiesBefore": "#Minecraft server properties\r\n#Sat Nov 14 12:37:30 ICT 2026\r\naccepts-transfers=false\r\nallow-end=false\r\nallow-flight=true\r\nallow-nether=false\r\nbroadcast-console-to-ops=true\r\nbroadcast-rcon-to-ops=true\r\nbug-report-link=\r\ndebug=false\r\ndifficulty=peaceful\r\nenable-command-block=false\r\nenable-jmx-monitoring=false\r\nenable-query=false\r\nenable-rcon=true\r\nenable-status=true\r\nenforce-secure-profile=false\r\nenforce-whitelist=false\r\nentity-broadcast-range-percentage=100\r\nforce-gamemode=false\r\nfunction-permission-level=2\r\ngamemode=survival\r\ngenerate-structures=false\r\ngenerator-settings={\"layers\"\\:[{\"block\"\\:\"minecraft\\:bedrock\",\"height\"\\:1},{\"block\"\\:\"minecraft\\:dirt\",\"height\"\\:2},{\"block\"\\:\"minecraft\\:grass_block\",\"height\"\\:1}],\"biome\"\\:\"minecraft\\:plains\"}\r\nhardcore=false\r\nhide-online-players=false\r\ninitial-disabled-packs=\r\ninitial-enabled-packs=vanilla\r\nlevel-name=world\r\nlevel-seed=123456789\r\nlevel-type=minecraft\\:flat\r\nlog-ips=true\r\nmax-chained-neighbor-updates=1000000\r\nmax-players=20\r\nmax-tick-time=60000\r\nmax-world-size=29999984\r\nmotd=BaseHider load test smoke10-200\r\nnetwork-compression-threshold=-1\r\nonline-mode=false\r\nop-permission-level=4\r\npause-when-empty-seconds=-1\r\nplayer-idle-timeout=0\r\nprevent-proxy-connections=false\r\npvp=false\r\nquery.port=25565\r\nrate-limit=0\r\nrcon.password=itest-rcon-pass\r\nrcon.port=25600\r\nregion-file-compression=deflate\r\nrequire-resource-pack=false\r\nresource-pack=\r\nresource-pack-id=\r\nresource-pack-prompt=\r\nresource-pack-sha1=\r\nserver-ip=127.0.0.1\r\nserver-port=25601\r\nsimulation-distance=4\r\nspawn-animals=false\r\nspawn-monsters=false\r\nspawn-npcs=false\r\nspawn-protection=0\r\nsync-chunk-writes=false\r\ntext-filtering-config=\r\ntext-filtering-version=0\r\nuse-native-transport=true\r\nview-distance=4\r\nwhite-list=false\r\n",
+    "serverPropertiesPath": "D:\\Aegishider\\bench\\load-server\\server.properties",
+    "propertiesBefore": "#Minecraft server properties\r\n#Sat Nov 14 12:37:30 ICT 2026\r\naccepts-transfers=false\r\nallow-end=false\r\nallow-flight=true\r\nallow-nether=false\r\nbroadcast-console-to-ops=true\r\nbroadcast-rcon-to-ops=true\r\nbug-report-link=\r\ndebug=false\r\ndifficulty=peaceful\r\nenable-command-block=false\r\nenable-jmx-monitoring=false\r\nenable-query=false\r\nenable-rcon=true\r\nenable-status=true\r\nenforce-secure-profile=false\r\nenforce-whitelist=false\r\nentity-broadcast-range-percentage=100\r\nforce-gamemode=false\r\nfunction-permission-level=2\r\ngamemode=survival\r\ngenerate-structures=false\r\ngenerator-settings={\"layers\"\\:[{\"block\"\\:\"minecraft\\:bedrock\",\"height\"\\:1},{\"block\"\\:\"minecraft\\:dirt\",\"height\"\\:2},{\"block\"\\:\"minecraft\\:grass_block\",\"height\"\\:1}],\"biome\"\\:\"minecraft\\:plains\"}\r\nhardcore=false\r\nhide-online-players=false\r\ninitial-disabled-packs=\r\ninitial-enabled-packs=vanilla\r\nlevel-name=world\r\nlevel-seed=123456789\r\nlevel-type=minecraft\\:flat\r\nlog-ips=true\r\nmax-chained-neighbor-updates=1000000\r\nmax-players=20\r\nmax-tick-time=60000\r\nmax-world-size=29999984\r\nmotd=Aegishider load test smoke10-200\r\nnetwork-compression-threshold=-1\r\nonline-mode=false\r\nop-permission-level=4\r\npause-when-empty-seconds=-1\r\nplayer-idle-timeout=0\r\nprevent-proxy-connections=false\r\npvp=false\r\nquery.port=25565\r\nrate-limit=0\r\nrcon.password=itest-rcon-pass\r\nrcon.port=25600\r\nregion-file-compression=deflate\r\nrequire-resource-pack=false\r\nresource-pack=\r\nresource-pack-id=\r\nresource-pack-prompt=\r\nresource-pack-sha1=\r\nserver-ip=127.0.0.1\r\nserver-port=25601\r\nsimulation-distance=4\r\nspawn-animals=false\r\nspawn-monsters=false\r\nspawn-npcs=false\r\nspawn-protection=0\r\nsync-chunk-writes=false\r\ntext-filtering-config=\r\ntext-filtering-version=0\r\nuse-native-transport=true\r\nview-distance=4\r\nwhite-list=false\r\n",
     "propertiesApplied": {
       "accepts-transfers": "false",
       "allow-end": "false",
@@ -9087,7 +9087,7 @@
       "max-players": "60",
       "max-tick-time": "60000",
       "max-world-size": "29999984",
-      "motd": "BaseHider load test mid50-1000",
+      "motd": "Aegishider load test mid50-1000",
       "network-compression-threshold": "-1",
       "online-mode": "false",
       "op-permission-level": "4",
@@ -9130,16 +9130,16 @@
     ],
     "startedAt": "2026-11-14T05:43:35.840Z",
     "startupMs": 25106,
-    "logPath": "D:\\Basehider\\bench\\load-server-mid50-1000.log",
+    "logPath": "D:\\Aegishider\\bench\\load-server-mid50-1000.log",
     "pid": 22596,
     "pluginStartupLines": [
       "[12:43:53 INFO]: [packetevents] Loading server plugin packetevents v2.14.0",
       "[12:43:57 INFO]: [packetevents] Loaded packetevents v2.14.0",
-      "[12:43:57 INFO]: [BaseHider] Loading server plugin BaseHider v3.2.0",
+      "[12:43:57 INFO]: [Aegishider] Loading server plugin Aegishider v3.2.0",
       "[12:43:59 INFO]: [packetevents] Enabling packetevents v2.14.0",
-      "[12:43:59 INFO]: [BaseHider] Enabling BaseHider v3.2.0",
-      "[12:44:00 INFO]: [BaseHider] Packet gateway ACTIVE: PacketEvents 2.14.0 active on V_1_21_4",
-      "[12:44:00 INFO]: [BaseHider] BaseHider 3.2.0 enabled | worlds=0 | packet-gateway=ACTIVE (PacketEvents 2.14.0 active on V_1_21_4) | block-protection=ACTIVE | item-protection=ACTIVE | known-protected-blocks=0 | async-threads=4",
+      "[12:43:59 INFO]: [Aegishider] Enabling Aegishider v3.2.0",
+      "[12:44:00 INFO]: [Aegishider] Packet gateway ACTIVE: PacketEvents 2.14.0 active on V_1_21_4",
+      "[12:44:00 INFO]: [Aegishider] Aegishider 3.2.0 enabled | worlds=0 | packet-gateway=ACTIVE (PacketEvents 2.14.0 active on V_1_21_4) | block-protection=ACTIVE | item-protection=ACTIVE | known-protected-blocks=0 | async-threads=4",
       "[12:44:00 INFO]: Done (23.725s)! For help, type \"help\""
     ],
     "packetEventsVersion": "2.14.0",

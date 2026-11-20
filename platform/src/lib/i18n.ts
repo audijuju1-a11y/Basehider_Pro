@@ -3,7 +3,7 @@ export type Lang = "th" | "en";
 type Dict = Record<string, string>;
 
 const th: Dict = {
-  "brand.name": "BaseHider",
+  "brand.name": "Aegishider",
   "brand.platform": "Control Platform",
   "nav.products": "ผลิตภัณฑ์",
   "nav.pricing": "ราคา",
@@ -133,7 +133,7 @@ const th: Dict = {
 };
 
 const en: Dict = {
-  "brand.name": "BaseHider",
+  "brand.name": "Aegishider",
   "brand.platform": "Control Platform",
   "nav.products": "Products",
   "nav.pricing": "Pricing",

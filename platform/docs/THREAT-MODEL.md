@@ -45,6 +45,6 @@
 ## Out of scope
 
 - Anti-cheat or anti-tamper on the customer machine.
-- Keeping the Minecraft server itself secure (that is BaseHider's job).
+- Keeping the Minecraft server itself secure (that is Aegishider's job).
 - DDoS beyond Cloudflare standard protections.
 - Legal compliance beyond the published privacy and terms pages.

@@ -1,4 +1,4 @@
-/* BaseHider landing page — exploded-assembly data.
+/* Aegishider landing page — exploded-assembly data.
    38 parts in 4 groups. Titles and descriptions are written in everyday Thai;
    the technical identifiers stay visible for credibility. Every factual claim
    below is taken from docs/01-audit.md … docs/06-v3.2-improvements.md. */
@@ -126,7 +126,7 @@
       "สร้างรายงานสุขภาพระบบ 38 ค่าเป็นไฟล์ JSON ตามคำสั่ง โดยเขียนไฟล์เบื้องหลังเพื่อไม่ให้เซิร์ฟเวอร์สะดุด"],
     [37, "assurance", "SELF_VERIFY", "ผ่านการทดสอบจริง", "75 tests · 0 fail", "gear", 56, "ruby",
       "มีเทสต์ 75 ตัวผ่านทั้งหมด รวมถึงการทดสอบด้วยเกมจริงบน Paper 1.21.4 ที่ถอดรหัสข้อมูลแผนที่มาตรวจ"],
-    [38, "assurance", "BYPASS", "สิทธิ์ผู้ดูแล", "basehider.bypass", "ring", 48, "steel",
+    [38, "assurance", "BYPASS", "สิทธิ์ผู้ดูแล", "aegishider.bypass", "ring", 48, "steel",
       "แอดมินที่ได้รับสิทธิ์ยังเห็นทุกอย่างตามปกติ ใช้ตรวจงานและแก้ปัญหาได้โดยไม่ต้องปิดปลั๊กอินทั้งตัว"],
   ];
 

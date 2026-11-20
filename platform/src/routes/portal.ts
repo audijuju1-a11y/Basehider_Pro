@@ -96,7 +96,7 @@ portalRoutes.get("/products", async (c) => {
 
 portalRoutes.get("/licenses", async (c) => {
   const user = requireUser(c);
-  await ensureFreeLicenseForUser(c.env, user, "basehider");
+  await ensureFreeLicenseForUser(c.env, user, "aegishider");
   const licenses = await listLicensesForUser(c.env, user.id);
   // Raw keys are a one-time display and never shown to read-only members.
   const canSeeRawKeys = user.memberships.some((membership) => membership.role !== "read_only");
@@ -210,7 +210,7 @@ portalRoutes.get("/servers/:id", async (c) => {
 
 portalRoutes.get("/activations", async (c) => {
   const user = requireUser(c);
-  await ensureFreeLicenseForUser(c.env, user, "basehider");
+  await ensureFreeLicenseForUser(c.env, user, "aegishider");
   const [servers, licenses] = await Promise.all([
     listInstallationsForUser(c.env, user.id),
     listLicensesForUser(c.env, user.id),
@@ -247,7 +247,7 @@ portalRoutes.post("/activations", async (c) => {
 portalRoutes.post("/licenses/free", async (c) => {
   const user = requireUser(c);
   const values = await readForm(c);
-  const productSlug = formValue(values, "product_slug", 80) || "basehider";
+  const productSlug = formValue(values, "product_slug", 80) || "aegishider";
   try {
     const result = await ensureFreeLicenseForUser(c.env, user, productSlug);
     if (!result.license) return failRedirect(c, "/app/licenses", badRequest("ไม่พบผลิตภัณฑ์นี้"));

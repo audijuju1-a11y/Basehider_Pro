@@ -61,7 +61,7 @@ Schema: migrations/0001_init.sql. Tables are STRICT; timestamps are integer epoc
 
 ~~~bash
 pnpm db:migrate:local
-npx wrangler d1 migrations apply bhcp-db --remote
+npx wrangler d1 migrations apply agcp-db --remote
 ~~~
 
 Migrations are additive and versioned by filename. Never edit an applied production migration; add a new one. Back up first (see BACKUP-RECOVERY.md).

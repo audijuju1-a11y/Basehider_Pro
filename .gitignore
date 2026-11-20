@@ -5,7 +5,7 @@
 /dist/
 /bench/
 /.tools/
-/basehider-v3-integrated/target/
+/aegishider-integrated/target/
 /site/.qa/
 
 # Local secret material written by scripts/cf-prod-secrets.mjs
@@ -14,3 +14,8 @@
 
 # Local packaging output (release archives, never committed)
 /artifacts/
+.release/
+
+# Local wrangler state and compiled helper classes
+.wrangler/
+/tools/stringcrypt/classes/

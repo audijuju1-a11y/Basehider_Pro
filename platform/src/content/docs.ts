@@ -15,7 +15,7 @@ export const docs: DocPage[] = [
     category: "เริ่มต้น",
     updated: "2026-11",
     markdown: `
-# เริ่มต้นใช้งาน BaseHider Control Platform
+# เริ่มต้นใช้งาน Aegishider Control Platform
 
 แพลตฟอร์มนี้ใช้สำหรับรับไลเซนส์ฟรี เปิดใช้งานบนเซิร์ฟเวอร์ และติดตามสุขภาพของเซิร์ฟเวอร์ที่เชื่อมต่อ — ไม่มีระบบชำระเงิน
 
@@ -36,8 +36,8 @@ OTP ถูกปิดชั่วคราว — บัญชีเดิม�
 
 ## 3. เชื่อมเซิร์ฟเวอร์
 
-1. ติดตั้งปลั๊กอิน BaseHider และ PacketEvents บนเซิร์ฟเวอร์ Paper 1.21.4
-2. รันคำสั่ง \`/basehider license link\`
+1. ติดตั้งปลั๊กอิน Aegishider และ PacketEvents บนเซิร์ฟเวอร์ Paper 1.21.1 – 26.3
+2. รันคำสั่ง \`/aegishider license link\`
 3. ปลั๊กอินจะแสดง **รหัสเปิดใช้งาน 16 ตัวอักษร** และที่อยู่พอร์ทัล
 4. เปิดพอร์ทัล → **การเปิดใช้งาน** → กรอกรหัส (ระบบจะออกไลเซนส์ฟรีให้ถ้ายังไม่มี)
 5. กลับไปที่เซิร์ฟเวอร์ รอให้ปลั๊กอินต่ออายุใบอนุญาต (ปกติภายใน 1–5 นาที)
@@ -55,44 +55,50 @@ OTP ถูกปิดชั่วคราว — บัญชีเดิม�
 `.trim(),
   },
   {
-    slug: "basehider",
-    title: "ติดตั้ง BaseHider บนเซิร์ฟเวอร์",
+    slug: "aegishider",
+    title: "ติดตั้ง Aegishider บนเซิร์ฟเวอร์",
     summary: "สิ่งที่ต้องมี วิธีติดตั้ง และคำสั่งที่ใช้บ่อย",
     category: "ผลิตภัณฑ์",
     updated: "2026-11",
     markdown: `
-# ติดตั้ง BaseHider 3.6.1
+# ติดตั้ง Aegishider 4.0.0
 
 ## สิ่งที่ต้องมี
 
 | รายการ | ต้องมี |
 |---|---|
-| เซิร์ฟเวอร์ | Paper 1.21.4 |
-| Java | 21 |
+| เซิร์ฟเวอร์ | Paper 1.21.1 – 26.3 |
+| Java | 21 (Paper 26.x รันด้วย Java 25) |
 | PacketEvents | 2.14.0 ขึ้นไป (สำหรับซ่อนบล็อก) |
 | Folia | ไม่รองรับ |
 
+> เลือกไบล์ให้ตรงรุ่น: 1.21.1–1.21.4, 1.21.5–1.21.8, 1.21.9–1.21.11, 26.1.x, 26.2–26.3
+
 ## ขั้นตอน
 
-1. ดาวน์โหลด \`BaseHider-3.6.1.jar\` จากหน้าผลิตภัณฑ์
+1. ดาวน์โหลดไบล์ที่ตรงกับเวอร์ชันเซิร์ฟเวอร์ (1.21.1 – 26.3) จากหน้าผลิตภัณฑ์
 2. วางในโฟลเดอร์ \`plugins/\`
 3. ดาวน์โหลด PacketEvents 2.14.0 ขึ้นไป แล้ววางใน \`plugins/\` เช่นกัน
 4. รีสตาร์ทเซิร์ฟเวอร์
-5. รัน \`/basehider status\` และตรวจว่า block protection ขึ้น **ACTIVE**
+5. รัน \`/aegishider license link\` แล้วนำรหัส 16 ตัวไปกรอกที่หน้า การเปิดใช้งาน บนเว็บ
+6. รัน \`/aegishider license refresh\` เพื่อรับ lease ที่เซ็นชื่อ
+7. รัน \`/aegishider status\` และตรวจว่า protection ขึ้น **ACTIVE**
+
+> 4.0.0 บังคับ enforcement=enforce: ถ้ายังไม่ activate, protection จะไม่เริ่มทำงาน (เปลี่ยนเป็น warn/ปิดได้ใน platform.yml)
 
 ## คำสั่ง
 
-- \`/basehider status\` — ภาพรวมทุกโมดูล
-- \`/basehider diag\` — ตัวเลขละเอียดและ watchdog
-- \`/basehider stats\` — p50/p95/p99
-- \`/basehider verify\` — เทียบดัชนีกับโลกจริง
-- \`/basehider rescan\` — ค้นหาของที่ต้องซ่อนใหม่
-- \`/basehider export\` — สร้าง diagnostics.json
-- \`/basehider reload\` — โหลดคอนฟิกใหม่
-- \`/basehider viewer [player]\` — ตรวจว่าทำไมบล็อกหนึ่งถูกซ่อน/เปิดเผย
-- \`/basehider deep\` — สถิติเชิงลึก
-- \`/basehider license link|status|refresh|verify\` — เชื่อม/ตรวจสอบไลเซนส์และ jar integrity
-- \`/basehider help\` — รายการคำสั่งทั้งหมด
+- \`/aegishider status\` — ภาพรวมทุกโมดูล
+- \`/aegishider diag\` — ตัวเลขละเอียดและ watchdog
+- \`/aegishider stats\` — p50/p95/p99
+- \`/aegishider verify\` — เทียบดัชนีกับโลกจริง
+- \`/aegishider rescan\` — ค้นหาของที่ต้องซ่อนใหม่
+- \`/aegishider export\` — สร้าง diagnostics.json
+- \`/aegishider reload\` — โหลดคอนฟิกใหม่
+- \`/aegishider viewer [player]\` — ตรวจว่าทำไมบล็อกหนึ่งถูกซ่อน/เปิดเผย
+- \`/aegishider deep\` — สถิติเชิงลึก
+- \`/aegishider license link|status|refresh|verify\` — เชื่อม/ตรวจสอบไลเซนส์และ jar integrity
+- \`/aegishider help\` — รายการคำสั่งทั้งหมด
 
 ## ค่าเริ่มต้นที่สำคัญ
 
@@ -167,12 +173,12 @@ worlds:
 
 - เป็นรหัส 16 ตัวอักษร สุ่ม 80 บิต ใช้ได้ครั้งเดียว และหมดอายุใน 24 ชั่วโมง
 - ใช้ผูก installation เข้ากับไลเซนส์ของคุณ
-- หากหมดอายุ ให้รัน \`/basehider license link\` ใหม่
+- หากหมดอายุ ให้รัน \`/aegishider license link\` ใหม่
 - กรอกรหัสผิด 5 ครั้งจาก IP เดียวกันจะถูกล็อก 5 นาที ผิด 10 ครั้งล็อก 10 นาที และเพิ่มขึ้นเรื่อย ๆ
 
 ## ความปลอดภัยของกุญแจ
 
-- Private key ของเซิร์ฟเวอร์เก็บอยู่ที่ \`plugins/BaseHider/platform/private.key\` (สิทธิ์ 0600 บน Linux)
+- Private key ของเซิร์ฟเวอร์เก็บอยู่ที่ \`plugins/Aegishider/platform/private.key\` (สิทธิ์ 0600 บน Linux)
 - Private key ของแพลตฟอร์มอยู่ใน Cloudflare Secret เท่านั้น ไม่เคยส่งให้ลูกค้า
 - ห้ามคัดลอกโฟลเดอร์ \`platform/\` ไปยังเซิร์ฟเวอร์อื่น — จะทำให้ fingerprint ซ้ำและถูกตรวจพบ
 `.trim(),
@@ -284,12 +290,12 @@ Base URL: \`https://<โดเมนแพลตฟอร์ม>/api/v1\`
 
 \`\`\`json
 {
-  "product": "basehider",
+  "product": "aegishider",
   "installation_uuid": "3f1c2a90-...",
   "public_key": "<base64 SPKI DER>",
   "fingerprint_sha256": "<hex>",
   "plugin_version": "3.3.0",
-  "minecraft_version": "1.21.4",
+  "minecraft_version": "1.21.11",
   "platform": "Paper",
   "java_version": "21"
 }
@@ -305,10 +311,10 @@ Base URL: \`https://<โดเมนแพลตฟอร์ม>/api/v1\`
 
 Header:
 
-- \`X-BH-Installation\`: installation UUID
-- \`X-BH-Timestamp\`: Unix seconds
-- \`X-BH-Nonce\`: base64url 32 ไบต์ (ใช้ครั้งเดียว)
-- \`X-BH-Signature\`: base64 Ed25519
+- \`X-AG-Installation\`: installation UUID
+- \`X-AG-Timestamp\`: Unix seconds
+- \`X-AG-Nonce\`: base64url 32 ไบต์ (ใช้ครั้งเดียว)
+- \`X-AG-Signature\`: base64 Ed25519
 
 ข้อความที่ลงนาม:
 
@@ -393,7 +399,7 @@ Payload คือ JSON canonical ที่มี \`license_id\`, \`installation_
 
 - เวอร์ชันปลั๊กอิน, เวอร์ชัน Minecraft, แพลตฟอร์ม, เวอร์ชัน Java
 - ข้อความผิดพลาดจากหน้าจอเซิร์ฟเวอร์ (ลบข้อมูลส่วนตัวก่อน)
-- ผลของ \`/basehider status\`, \`/basehider diag\`
+- ผลของ \`/aegishider status\`, \`/aegishider diag\`
 - installation ID (ดูได้จากพอร์ทัล → เซิร์ฟเวอร์)
 
 ห้ามส่ง private key, license key เต็ม, หรือรหัสผ่านใด ๆ

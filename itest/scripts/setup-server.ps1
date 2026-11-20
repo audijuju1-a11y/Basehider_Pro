@@ -2,11 +2,11 @@
 <#
 .SYNOPSIS
     Prepare (or refresh) the dedicated Paper 1.21.4 integration-test server under
-    D:\Basehider\itest\server.
+    D:\Aegishider\itest\server.
 
 .DESCRIPTION
     - Ensures the Paper 1.21.4 jar and the full PacketEvents 2.14.0 plugin jar exist
-      (copies from D:\Basehider\.work\server when available, else from itest\.cache,
+      (copies from D:\Aegishider\.work\server when available, else from itest\.cache,
       else downloads them).
     - (Re)creates server.properties / eula.txt with the fixed test configuration:
       offline mode, port 25599, RCON 25598, flat world, view-distance 24
@@ -16,14 +16,14 @@
     - Wipes ONLY itest\server\world* and itest\server\logs (never the paper cache or
       the vanilla server cache, which make reboots fast).
 
-    This script never touches D:\Basehider\basehider-v3-integrated - plugin jars are
+    This script never touches D:\Aegishider\aegishider-integrated - plugin jars are
     copied, never modified.
 
 .PARAMETER Jar
-    Path of the plugin jar to install as plugins\BaseHider.jar.
+    Path of the plugin jar to install as plugins\Aegishider.jar.
 
 .PARAMETER Baseline
-    Install the snapshot of the legacy jar (itest\.cache\baseline-BaseHider.jar). The
+    Install the snapshot of the legacy jar (itest\.cache\baseline-Aegishider.jar). The
     snapshot is created from the integrated target jar when it is missing.
 
 .PARAMETER KeepWorld
@@ -41,19 +41,19 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$Itest = 'D:\Basehider\itest'
+$Itest = 'D:\Aegishider\itest'
 $ServerDir = Join-Path $Itest 'server'
 $CacheDir = Join-Path $Itest '.cache'
 $PluginsDir = Join-Path $ServerDir 'plugins'
-$WorkServer = 'D:\Basehider\.work\server'
-$IntegratedJar = 'D:\Basehider\basehider-v3-integrated\target\BaseHider.jar'
+$WorkServer = 'D:\Aegishider\.work\server'
+$IntegratedJar = 'D:\Aegishider\aegishider-integrated\target\Aegishider.jar'
 if (-not (Test-Path -LiteralPath $IntegratedJar)) {
-    $candidate = Get-ChildItem -LiteralPath (Split-Path -Parent $IntegratedJar) -Filter 'BaseHider-*.jar' -File -ErrorAction SilentlyContinue |
+    $candidate = Get-ChildItem -LiteralPath (Split-Path -Parent $IntegratedJar) -Filter 'Aegishider-*.jar' -File -ErrorAction SilentlyContinue |
         Where-Object { $_.Name -notlike 'original-*' } |
         Sort-Object LastWriteTime -Descending | Select-Object -First 1
     if ($candidate) { $IntegratedJar = $candidate.FullName }
 }
-$BaselineJar = Join-Path $CacheDir 'baseline-BaseHider.jar'
+$BaselineJar = Join-Path $CacheDir 'baseline-Aegishider.jar'
 $PaperJar = Join-Path $ServerDir 'paper-1.21.4.jar'
 $PacketEventsJar = Join-Path $CacheDir 'PacketEvents-full.jar'
 $PaperCache = Join-Path $CacheDir 'paper-1.21.4.jar'
@@ -97,12 +97,12 @@ function Download-File([string]$Url, [string]$Destination) {
     Move-Item -LiteralPath $tmp -Destination $Destination -Force
 }
 
-Write-Host '=== BaseHider iTest: server setup ==='
+Write-Host '=== Aegishider iTest: server setup ==='
 
-# --- sanity: everything we write stays inside D:\Basehider\itest
+# --- sanity: everything we write stays inside D:\Aegishider\itest
 foreach ($p in @($Itest, $ServerDir, $CacheDir, $PluginsDir)) {
-    if (-not ([System.IO.Path]::GetFullPath($p).StartsWith('D:\Basehider\itest', [System.StringComparison]::OrdinalIgnoreCase))) {
-        throw "refusing to operate outside D:\Basehider\itest: $p"
+    if (-not ([System.IO.Path]::GetFullPath($p).StartsWith('D:\Aegishider\itest', [System.StringComparison]::OrdinalIgnoreCase))) {
+        throw "refusing to operate outside D:\Aegishider\itest: $p"
     }
 }
 New-Item -ItemType Directory -Force -Path $ServerDir, $CacheDir, $PluginsDir, (Join-Path $Itest 'out') | Out-Null
@@ -213,8 +213,20 @@ if (Test-Path -LiteralPath $PluginsDir) {
 }
 New-Item -ItemType Directory -Force -Path $PluginsDir | Out-Null
 Copy-Item -LiteralPath $peSource -Destination (Join-Path $PluginsDir 'PacketEvents.jar') -Force
-Copy-Item -LiteralPath $Jar -Destination (Join-Path $PluginsDir 'BaseHider.jar') -Force
-Write-Host "    plugins/: PacketEvents.jar ($((Get-Item -LiteralPath (Join-Path $PluginsDir 'PacketEvents.jar')).Length) bytes), BaseHider.jar ($((Get-Item -LiteralPath (Join-Path $PluginsDir 'BaseHider.jar')).Length) bytes)"
+Copy-Item -LiteralPath $Jar -Destination (Join-Path $PluginsDir 'Aegishider.jar') -Force
+# The shipped jar enforces licence activation; the packet harness is a local test
+# environment and opts out explicitly so it can exercise protection.
+$platformDir = Join-Path $PluginsDir 'Aegishider\platform'
+New-Item -ItemType Directory -Force -Path $platformDir | Out-Null
+@(
+    'enabled: false',
+    'api-base-url: ""',
+    'product: aegishider',
+    'enforcement: warn',
+    'telemetry:',
+    '  enabled: false'
+) | Set-Content -LiteralPath (Join-Path $platformDir 'platform.yml') -Encoding ascii
+Write-Host "    plugins/: PacketEvents.jar ($((Get-Item -LiteralPath (Join-Path $PluginsDir 'PacketEvents.jar')).Length) bytes), Aegishider.jar ($((Get-Item -LiteralPath (Join-Path $PluginsDir 'Aegishider.jar')).Length) bytes), licence gate disabled for harness"
 
 # --- wipe world (only inside itest\server) ---------------------------------
 if (-not $KeepWorld) {
@@ -243,7 +255,7 @@ $properties = @"
 # Generated by itest/scripts/setup-server.ps1 - do not edit by hand; the harness rewrites it.
 server-port=25599
 server-ip=127.0.0.1
-motd=BaseHider iTest
+motd=Aegishider iTest
 online-mode=false
 enforce-secure-profile=false
 network-compression-threshold=-1
@@ -294,7 +306,7 @@ $info = [ordered]@{
     serverDir     = $ServerDir
     paperJar      = $PaperJar
     packetEvents  = (Join-Path $PluginsDir 'PacketEvents.jar')
-    pluginJar     = (Join-Path $PluginsDir 'BaseHider.jar')
+    pluginJar     = (Join-Path $PluginsDir 'Aegishider.jar')
     pluginSource  = $Jar
     pluginSha256  = $jarHash
     baselineJar   = $BaselineJar

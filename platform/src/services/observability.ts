@@ -213,13 +213,13 @@ export async function postSink(env: Env, records: Array<Record<string, unknown>>
       method: "POST",
       headers: {
         "content-type": "application/json",
-        "user-agent": "basehider-platform/1",
+        "user-agent": "aegishider-platform/1",
         ...(env.OBSERVABILITY_WEBHOOK_TOKEN
           ? { authorization: `Bearer ${env.OBSERVABILITY_WEBHOOK_TOKEN}` }
           : {}),
       },
       body: JSON.stringify({
-        source: "basehider-platform",
+        source: "aegishider-platform",
         environment: env.ENVIRONMENT,
         records,
       }),

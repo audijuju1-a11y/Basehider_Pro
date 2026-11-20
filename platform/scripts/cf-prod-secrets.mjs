@@ -18,7 +18,7 @@ const secrets = {
 
 // Written to the OS temp directory, never inside the repository: this file holds the
 // licence signing private key, and a single `git add .` would publish it.
-const target = path.join(os.tmpdir(), `basehider-prod-secrets-${process.pid}.json`);
+const target = path.join(os.tmpdir(), `aegishider-prod-secrets-${process.pid}.json`);
 fs.writeFileSync(target, JSON.stringify(secrets, null, 2), { mode: 0o600 });
 console.log("wrote", target, "with", Object.keys(secrets).length, "secrets");
 console.log("Upload them to Worker secrets, then delete the file.");

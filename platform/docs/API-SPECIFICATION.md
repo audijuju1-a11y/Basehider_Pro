@@ -27,7 +27,7 @@ Returns published products.
 
 ~~~json
 { ldatal: { lproductsl: [
-  { lslugl: lbasehiderl, lnamel: lBaseHiderl, ltaglinel: l...l, lstatusl: lpublishedl,
+  { lslugl: laegishiderl, lnamel: lAegishiderl, ltaglinel: l...l, lstatusl: lpublishedl,
     lprice_centsl: 0, lcurrencyl: lTHBl, lcompatibilityl: { lminecraftl: [l1.21.4l] },
     llatest_versionl: l3.6.0l }
 ] } }
@@ -61,7 +61,7 @@ Unsigned, first contact only. Rate limited per IP.
 
 ~~~json
 {
-  lproductl: lbasehiderl,
+  lproductl: laegishiderl,
   linstallation_uuidl: l3f1c2a90-0000-4000-8000-000000000000l,
   lpublic_keyl: l<base64 SPKI DER>l,
   lfingerprint_sha256l: l<64 lowercase hex chars>l,
@@ -80,7 +80,7 @@ Response 201:
   lactivation_codel: lW34WDP9Ql,
   lactivation_expires_atl: 1794086400000,
   lportal_urll: lhttps://your-domain.example/app/activationsl,
-  lproductl: lbasehiderl,
+  lproductl: laegishiderl,
   lreusedl: false
 } }
 ~~~
@@ -89,10 +89,10 @@ The server recomputes the fingerprint from public_key and rejects mismatches. Re
 
 ### Signed request headers
 
-- X-BH-Installation: installation UUID
-- X-BH-Timestamp: Unix seconds, allowed skew 300 seconds
-- X-BH-Nonce: base64url, 16-128 characters, single use
-- X-BH-Signature: base64 Ed25519 signature
+- X-AG-Installation: installation UUID
+- X-AG-Timestamp: Unix seconds, allowed skew 300 seconds
+- X-AG-Nonce: base64url, 16-128 characters, single use
+- X-AG-Signature: base64 Ed25519 signature
 
 Signed message, UTF-8, newline separated:
 

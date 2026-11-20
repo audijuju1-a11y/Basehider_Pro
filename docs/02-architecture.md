@@ -1,4 +1,4 @@
-# BaseHider 3.1.0 — Target Architecture and Design Decisions
+# Aegishider 3.1.0 — Target Architecture and Design Decisions
 
 Status: implemented in `src/main/java`. Every statement below describes code that exists
 in this build; nothing is aspirational. Verification level per module is reported in
@@ -46,8 +46,8 @@ Four rules are non-negotiable in the code:
 
 | Package | Class(es) | Responsibility |
 |---|---|---|
-| root | `BaseHiderPlugin` | lifecycle, wiring, per-tick slicing, reload, self-check |
-| `config` | `BaseHiderConfig`, `WorldSettings`, `ConfigLoader` | immutable config snapshot; validation with secure defaults |
+| root | `AegishiderPlugin` | lifecycle, wiring, per-tick slicing, reload, self-check |
+| `config` | `AegishiderConfig`, `WorldSettings`, `ConfigLoader` | immutable config snapshot; validation with secure defaults |
 | `core` | `ViewerSession`, `SessionRegistry`, `BlockVisibility`, `BoundedTaskExecutor`, `RaycastBudget`, `TimeBudget`, `WorldKeys`, `VisibilityState` | shared runtime state, world identity, bounded async (non-security), thread-safe visibility markers |
 | `index` | `HiddenBlockIndex`, `BlockDiscovery` | world-scoped protected-block registry (copy-on-write per chunk) + discovery/reconciliation |
 | `occlusion` | `OcclusionEngine`, `PaperRayTracer`, `RayTracer` | FOV math + Paper native voxel ray trace with transparent-material continuation |
@@ -57,7 +57,7 @@ Four rules are non-negotiable in the code:
 | `listener` | `BlockListener`, `PlayerListener`, `ChunkListener`, `EntityListener`, `WorldListener` | explicit, individually registered Bukkit event adapters |
 | `detection` | `MiningAnalytics`, `RaidAnalytics` | optional, non-enforcing, rate-limited analytics |
 | `metrics` | `Metrics` | lock-free counters, tick/decision timing, gauges |
-| `command` | `BaseHiderCommand` | status/diag/deep/stats/verify/reload, no fake status |
+| `command` | `AegishiderCommand` | status/diag/deep/stats/verify/reload, no fake status |
 | `util` | `BlockPosUtil`, `MaterialSets` | primitive position/chunk encoding, material validation/patterns |
 
 Removed from the old code base (with reasons – see `01-audit.md`):
@@ -91,7 +91,7 @@ layered over.
 |---|---|---|
 | Main | Bukkit world/entity/player access, discovery, reveal engines, item show/hide, index writes | blocking waits |
 | Netty (PacketEvents) | peek bytes, read concurrent snapshots, cancel/rewrite packets | Bukkit API calls, locks held long, world reads |
-| Async pool (bounded, 1–4 threads, queue 512) | only `/basehider deep` diagnostics | any visibility decision, any Bukkit call |
+| Async pool (bounded, 1–4 threads, queue 512) | only `/aegishider deep` diagnostics | any visibility decision, any Bukkit call |
 
 There is intentionally **no security task on the async pool**: the fastest and safest
 place for the occlusion policy is the main thread with a time budget, because every
@@ -111,7 +111,7 @@ No packet handler takes a lock that the main thread holds while doing world work
 
 ### Per-tick slicing
 
-`BaseHiderPlugin.securityTick()` runs every tick:
+`AegishiderPlugin.securityTick()` runs every tick:
 
 ```
 itemShield.tick(budget * 0.45)
@@ -193,7 +193,7 @@ Lifecycle rules:
 A soft dependency (`softdepend: [packetevents]`). When absent:
 - entity/item protection still works (Paper native per-player visibility);
 - block/container protection is **disabled**, logged as SEVERE and reported by
-  `/basehider status` — the plugin does not fake protection.
+  `/aegishider status` — the plugin does not fake protection.
 
 Handlers (all on the Netty thread, all fail-closed on exception):
 
@@ -229,7 +229,7 @@ entity types rejected with warnings, and secure built-in defaults are used when 
 are missing. Legacy `hidden-blocks` under a world section is migrated in memory with a
 warning. `security.fail-closed=false` is rejected (forced true).
 
-`/basehider reload`:
+`/aegishider reload`:
 1. builds a new immutable config snapshot (atomic swap; packet thread reads the volatile
    reference),
 2. re-registers item entities whose protection type changed (unprotected ones are made
@@ -278,7 +278,7 @@ rather than shipped as a half-working feature.
 
 | Situation | Block data | Item/entity data | Reported |
 |---|---|---|---|
-| No packet gateway (PacketEvents missing) | not sent because feature DISABLED (chunks go out real) → status INACTIVE, SEVERE log, `/basehider status` | hidden via native API | yes |
+| No packet gateway (PacketEvents missing) | not sent because feature DISABLED (chunks go out real) → status INACTIVE, SEVERE log, `/aegishider status` | hidden via native API | yes |
 | Gateway exception while filtering | packet cancelled | packet cancelled | `internalErrors` |
 | Unknown viewer world (session missing) | chunk/block packets cancelled | tracked entity packets cancelled for tracked ids | counters |
 | Configuration cannot resolve world | chunk with protected blocks cancelled | n/a (entity policy uses fallback) | counter + warning |

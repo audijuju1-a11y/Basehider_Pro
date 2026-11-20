@@ -106,5 +106,5 @@ export function authenticated(c: Ctx): SessionUser {
 }
 
 export function siteName(env: Env): string {
-  return env.APP_NAME || "BaseHider Control Platform";
+  return env.APP_NAME || "Aegishider Control Platform";
 }

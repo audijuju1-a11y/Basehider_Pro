@@ -1,6 +1,6 @@
 {
     "private":  true,
-    "name":  "basehider-itest-bot",
+    "name":  "aegishider-itest-bot",
     "version":  "1.0.0",
     "type":  "commonjs",
     "dependencies":  {

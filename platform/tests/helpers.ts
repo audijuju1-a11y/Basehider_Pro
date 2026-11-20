@@ -59,7 +59,7 @@ export async function seedProduct(): Promise<void> {
       `INSERT INTO product_releases (id, product_id, version, channel, status, notes,
         supported_minecraft, supported_java, supported_platforms, artifact_url, artifact_sha256, released_at, created_at)
        VALUES ('rel_test', 'prod_test', '1.0.0', 'stable', 'published', 'initial',
-        '["1.21.4"]', '["21"]', '["Paper"]', '/download/BaseHider-3.6.1.jar', NULL, ?, ?)`,
+        '["1.21.4"]', '["21"]', '["Paper"]', '/download/Aegishider-3.6.1.jar', NULL, ?, ?)`,
     ).bind(timestamp, timestamp),
   ]);
 }

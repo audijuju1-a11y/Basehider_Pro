@@ -1,4 +1,4 @@
-# BaseHider Control Platform (BHCP)
+# Aegishider Control Platform (AGCP)
 
 Free multi-product platform for Minecraft plugins: public storefront, owner portal with email+password or email-link login,
 developer admin console, Ed25519 license leases, activation pairing, telemetry, admin graphs/alerts and
@@ -7,7 +7,7 @@ abuse protection — all on Cloudflare Workers + D1 + KV + R2 + Queues.
 **There is no paid system.** Wallet, PromptPay, Stripe, orders, slips and top-ups were removed.
 Every account receives a free licence with a 240-bit random key; the platform stores only an HMAC hash.
 
-> **Status:** live on Cloudflare at **https://basehider-platform.audijuju1.workers.dev** (Worker, D1, KV, R2,
+> **Status:** live on Cloudflare at **https://aegishider-platform.audijuju1.workers.dev** (Worker, D1, KV, R2,
 > Queues, cron). Public pages and API are verified. Customer login still needs a real email provider, and
 > \`/admin\` needs Cloudflare Access; those two provider credentials are the remaining production steps.
 
@@ -22,7 +22,7 @@ Every account receives a free licence with a 240-bit random key; the platform st
 | Database | Cloudflare D1 (SQLite), migrations in `migrations/` |
 | Sessions / cache | Cloudflare KV (`CACHE`) plus D1-backed sessions |
 | Archives | Cloudflare R2 (`ARCHIVE`) for raw telemetry JSON |
-| Async | Cloudflare Queues (`bhcp-telemetry` + DLQ) |
+| Async | Cloudflare Queues (`agcp-telemetry` + DLQ) |
 | Crypto | WebCrypto Ed25519 (SPKI/PKCS#8), HMAC-SHA256, SHA-256 |
 | Admin auth | Cloudflare Access JWT (RS256) in production; dev bootstrap route locally |
 | Customer auth | Email+password (PBKDF2-SHA256) plus optional email link; opaque HttpOnly session cookie, CSRF double-submit |
@@ -41,7 +41,7 @@ src/
   views/               server-rendered UI (layout, marketing, portal, admin, auth)
   content/docs.ts      in-app documentation
 migrations/0001_init.sql
-seed/                  BaseHider product + plan + release, copy refresh script
+seed/                  Aegishider product + plan + release, copy refresh script
 public/                CSS, JS, fonts, favicon, jar download, robots.txt
 tests/                 workerd integration tests + helpers
 scripts/               key generation, e2e licence smoke test, shots/QA helpers
@@ -120,7 +120,7 @@ pnpm test               # 21 tests: crypto, auth, licensing, tenancy, admin, tel
 node scripts/e2e-license.mjs
 
 # plugin client (Java 21 / Maven)
-cd ../basehider-v3-integrated
+cd ../aegishider-integrated
 mvn test                # 102 tests, including 17 platform-client tests
 ```
 
@@ -138,7 +138,7 @@ replay rejection → portal visibility. It expects the dev server on port 8787.
    METHOD\npathname\ninstallation_uuid\ntimestamp\nnonce\nsha256hex(rawBody)
    ```
 
-   Headers: `X-BH-Installation`, `X-BH-Timestamp`, `X-BH-Nonce`, `X-BH-Signature`.
+   Headers: `X-AG-Installation`, `X-AG-Timestamp`, `X-AG-Nonce`, `X-AG-Signature`.
 4. The lease is `payloadB64url.signatureB64url`; the payload is canonical JSON and the signature covers
    the exact payload bytes. Plugins verify with the published SPKI keys.
 5. Leases default to 24 h TTL with 72 h offline grace. Revocation takes effect on the next renewal.
@@ -151,14 +151,14 @@ Cloudflare account required. Create D1/KV/R2/Queues, replace the placeholder IDs
 set secrets, apply migrations remotely, seed the catalogue once, then deploy:
 
 ```bash
-npx wrangler d1 create bhcp-db
+npx wrangler d1 create agcp-db
 npx wrangler kv namespace create CACHE
-npx wrangler r2 bucket create bhcp-archive
-npx wrangler queues create bhcp-telemetry
-npx wrangler queues create bhcp-telemetry-dlq
+npx wrangler r2 bucket create agcp-archive
+npx wrangler queues create agcp-telemetry
+npx wrangler queues create agcp-telemetry-dlq
 
-npx wrangler d1 migrations apply bhcp-db --remote
-npx wrangler d1 execute bhcp-db --remote --file=./seed/seed.sql
+npx wrangler d1 migrations apply agcp-db --remote
+npx wrangler d1 execute agcp-db --remote --file=./seed/seed.sql
 npx wrangler secret put LICENSE_SIGNING_KEY
 # ... other secrets
 npx wrangler deploy
@@ -178,7 +178,7 @@ Then configure Cloudflare Access for `/admin*`, Turnstile keys, and an email pro
 ## Local free-licence test
 
 1. Boot `pnpm dev` (or use the automated tests: `pnpm test`).
-2. Sign in through the dev route, open `/app`, and the account receives a free BaseHider licence.
+2. Sign in through the dev route, open `/app`, and the account receives a free Aegishider licence.
 3. Open `/app/licenses`, copy the long key shown for 7 days, and claim the plugin's 16-character
    activation code at `/app/activations`.
 4. Wrong activation codes from one IP raise the lockout ladder; watch it in `/admin/security`.

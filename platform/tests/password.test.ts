@@ -3,10 +3,10 @@ import { hashPassword, validatePassword, verifyPassword } from "../src/auth/pass
 
 describe("password hashing", () => {
   it("hashes and verifies a password", async () => {
-    const stored = await hashPassword("Basehider2026");
+    const stored = await hashPassword("Aegishider2026");
     expect(stored).toMatch(/^pbkdf2-sha256\$100000\$[A-Za-z0-9_-]+\$[A-Za-z0-9_-]+$/);
-    expect(await verifyPassword("Basehider2026", stored)).toBe(true);
-    expect(await verifyPassword("Basehider2025", stored)).toBe(false);
+    expect(await verifyPassword("Aegishider2026", stored)).toBe(true);
+    expect(await verifyPassword("Aegishider2025", stored)).toBe(false);
   });
 
   it("rejects malformed or weak parameters", async () => {
@@ -19,7 +19,7 @@ describe("password hashing", () => {
     expect(validatePassword("short1")).not.toBeNull();
     expect(validatePassword("onlyletters")).not.toBeNull();
     expect(validatePassword("1234567890")).not.toBeNull();
-    expect(validatePassword("Basehider2026")).toBeNull();
+    expect(validatePassword("Aegishider2026")).toBeNull();
     expect(validatePassword("a".repeat(201) + "1")).not.toBeNull();
   });
 });

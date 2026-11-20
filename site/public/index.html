@@ -3,22 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BaseHider 3.6.1 — ซ่อนหีบและไอเท็มก่อนคนอื่นจะเห็น</title>
-<meta name="description" content="ปลั๊กอินสำหรับเซิร์ฟเวอร์ Paper 1.21.4 ที่ซ่อนหีบ ไอเท็มตก และข้อมูลในกล่อง ก่อนส่งถึงเกมผู้เล่น พร้อมคำอธิบายภาษาไทย 38 ชั้น วิธีติดตั้ง และไฟล์ดาวน์โหลด">
+<title>Aegishider 4.0.0 — ซ่อนหีบและไอเท็มก่อนคนอื่นจะเห็น</title>
+<meta name="description" content="ปลั๊กอินสำหรับเซิร์ฟเวอร์ Paper 1.21.1–26.3 ที่ซ่อนหีบ ไอเท็มตก และข้อมูลในกล่อง ก่อนส่งถึงเกมผู้เล่น พร้อมคำอธิบายภาษาไทย 38 ชั้น วิธีติดตั้ง และไฟล์ดาวน์โหลด">
 <meta name="theme-color" content="#06080b">
 <meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="BaseHider">
-<meta property="og:title" content="BaseHider 3.6.1 — ซ่อนหีบและไอเท็มก่อนคนอื่นจะเห็น">
-<meta property="og:description" content="ปลั๊กอิน Paper 1.21.4 ที่ซ่อนหีบและไอเท็มตั้งแต่ต้นทาง ไม่ส่งข้อมูลให้โปรแกรมโกงเห็น พร้อมคำอธิบายภาษาไทยครบทุกชั้น">
+<meta property="og:site_name" content="Aegishider">
+<meta property="og:title" content="Aegishider 4.0.0 — ซ่อนหีบและไอเท็มก่อนคนอื่นจะเห็น">
+<meta property="og:description" content="ปลั๊กอิน Paper 1.21.1–26.3 ที่ซ่อนหีบและไอเท็มตั้งแต่ต้นทาง ไม่ส่งข้อมูลให้โปรแกรมโกงเห็น พร้อมคำอธิบายภาษาไทยครบทุกชั้น">
 <meta property="og:image" content="assets/img/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="BaseHider 3.6.1 — กลไก 38 ชั้นแบบแยกชิ้นส่วน">
+<meta property="og:image:alt" content="Aegishider 4.0.0 — กลไก 38 ชั้นแบบแยกชิ้นส่วน">
 <meta property="og:locale" content="th_TH">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="BaseHider 3.6.1 — ซ่อนหีบและไอเท็มก่อนคนอื่นจะเห็น">
-<meta name="twitter:description" content="ปลั๊กอิน Paper 1.21.4 ที่ซ่อนหีบและไอเท็มตั้งแต่ต้นทาง พร้อมหลักฐานการทดสอบจริง">
+<meta name="twitter:title" content="Aegishider 4.0.0 — ซ่อนหีบและไอเท็มก่อนคนอื่นจะเห็น">
+<meta name="twitter:description" content="ปลั๊กอิน Paper 1.21.1–26.3 ที่ซ่อนหีบและไอเท็มตั้งแต่ต้นทาง พร้อมหลักฐานการทดสอบจริง">
 <meta name="twitter:image" content="assets/img/og.jpg">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="manifest" href="site.webmanifest">
@@ -63,7 +63,7 @@
 
 <header class="site-head" id="siteHead">
   <div class="shell site-head__inner">
-    <a class="brand" href="#top" aria-label="BaseHider — กลับขึ้นด้านบน">
+    <a class="brand" href="#top" aria-label="Aegishider — กลับขึ้นด้านบน">
       <span class="brand__mark" aria-hidden="true">
         <svg viewBox="0 0 40 40" fill="none">
           <circle cx="20" cy="20" r="17.4" stroke="url(#gBrand)" stroke-width="1.1"/>
@@ -75,8 +75,8 @@
         </svg>
       </span>
       <span class="brand__text">
-        <strong>BaseHider</strong>
-        <span class="brand__ver">3.6.1</span>
+        <strong>Aegishider</strong>
+        <span class="brand__ver">4.0.0</span>
       </span>
     </a>
 
@@ -91,9 +91,9 @@
 
     <div class="site-head__actions">
       <span class="head-status" title="ต้องมี PacketEvents 2.14.0 ขึ้นไปสำหรับการซ่อนบล็อก">
-        <span class="dot" aria-hidden="true"></span>Paper 1.21.4
+        <span class="dot" aria-hidden="true"></span>Paper 1.21.1–26.3
       </span>
-      <a class="btn btn--primary btn--sm" href="download/BaseHider-3.6.1.jar" download>
+      <a class="btn btn--primary btn--sm" href="#download">
         <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
         ดาวน์โหลด
       </a>
@@ -112,16 +112,16 @@
     <div class="hero__bg" aria-hidden="true"></div>
     <div class="shell hero__inner">
       <div class="hero__copy">
-        <p class="eyebrow"><span class="eyebrow__dot" aria-hidden="true"></span>ปลั๊กอิน Paper 1.21.4 · ผู้เล่นไม่ต้องติดตั้งอะไร</p>
+        <p class="eyebrow"><span class="eyebrow__dot" aria-hidden="true"></span>ปลั๊กอิน Paper 1.21.1–26.3 · ผู้เล่นไม่ต้องติดตั้งอะไร</p>
         <h1 class="hero__title">ซ่อนหีบและของตก<br><span class="grad">ก่อนคนอื่นจะเห็น</span></h1>
         <p class="hero__lead">
-          BaseHider ทำงานอยู่บนเซิร์ฟเวอร์ของคุณ คอยเช็กว่าผู้เล่นคนไหน <strong>ควรเห็น</strong> หีบหรือไอเท็มชิ้นไหน
+          Aegishider ทำงานอยู่บนเซิร์ฟเวอร์ของคุณ คอยเช็กว่าผู้เล่นคนไหน <strong>ควรเห็น</strong> หีบหรือไอเท็มชิ้นไหน
           ถ้ายังไม่มั่นใจ มันจะซ่อนไว้ก่อน — ข้อมูลนั้นไม่ถูกส่งไปถึงเกมของผู้เล่นตั้งแต่แรก
         </p>
         <div class="hero__cta">
-          <a class="btn btn--primary" href="download/BaseHider-3.6.1.jar" download>
+          <a class="btn btn--primary" href="#download">
             <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
-            <span>ดาวน์โหลด BaseHider 3.6.1<small>BaseHider-3.6.1.jar · 6.8 MB</small></span>
+            <span>ดาวน์โหลด Aegishider 4.0.0<small>เลือกไบล์สำหรับ Paper 1.21.1 – 26.3 · 6 รุ่น</small></span>
           </a>
           <a class="btn btn--ghost" href="#anatomy">
             ดูว่ามันทำงานยังไง
@@ -130,11 +130,11 @@
         </div>
         <p class="hero__note">
           <svg class="ico ico--sm" aria-hidden="true"><use href="#i-check"></use></svg>
-          ตรวจไฟล์ด้วย SHA-256 ได้ · ใช้คู่กับ PacketEvents 2.14.0 ขึ้นไป
+          ไฟล์ release ผ่าน Sentinel Shield obfuscation + manifest เซ็น Ed25519 · ตรวจ SHA-256 ได้ทุกไฟล์
         </p>
         <dl class="hero__stats">
           <div class="hstat"><dt>ชั้นการทำงาน</dt><dd><b>38</b></dd></div>
-          <div class="hstat"><dt>เทสต์ที่ผ่าน</dt><dd><b>102</b><span>ทั้งหมด</span></dd></div>
+          <div class="hstat"><dt>เทสต์ที่ผ่าน</dt><dd><b>123</b><span>ทั้งหมด</span></dd></div>
           <div class="hstat"><dt>ช้าที่สุดต่อติ๊ก</dt><dd><b>≤3.0</b><span>ms</span></dd></div>
           <div class="hstat"><dt>ข้อมูลหลุดในเทสต์</dt><dd><b>0</b><span>แพ็กเก็ต</span></dd></div>
         </dl>
@@ -158,16 +158,16 @@
       <span>ไม่แน่ใจ = ซ่อนไว้ก่อน</span><i>◆</i>
       <span>ซ่อนก่อนส่ง ไม่ใช่ส่งแล้วตามแก้</span><i>◆</i>
       <span>ผู้เล่นไม่ต้องติดตั้งอะไร</span><i>◆</i>
-      <span>102 เทสต์ผ่านทั้งหมด</span><i>◆</i>
+      <span>123 เทสต์ผ่านทั้งหมด</span><i>◆</i>
       <span>ช้าที่สุด ≤ 3 ms ต่อติ๊ก</span><i>◆</i>
-      <span>Paper 1.21.4</span><i>◆</i>
+      <span>Paper 1.21.1–26.3</span><i>◆</i>
       <span>PacketEvents 2.14.0+</span><i>◆</i>
       <span>ไม่แน่ใจ = ซ่อนไว้ก่อน</span><i>◆</i>
       <span>ซ่อนก่อนส่ง ไม่ใช่ส่งแล้วตามแก้</span><i>◆</i>
       <span>ผู้เล่นไม่ต้องติดตั้งอะไร</span><i>◆</i>
-      <span>102 เทสต์ผ่านทั้งหมด</span><i>◆</i>
+      <span>123 เทสต์ผ่านทั้งหมด</span><i>◆</i>
       <span>ช้าที่สุด ≤ 3 ms ต่อติ๊ก</span><i>◆</i>
-      <span>Paper 1.21.4</span><i>◆</i>
+      <span>Paper 1.21.1–26.3</span><i>◆</i>
       <span>PacketEvents 2.14.0+</span><i>◆</i>
     </div>
   </div>
@@ -178,7 +178,7 @@
       <p class="eyebrow">01 — เบื้องหลัง</p>
       <h2>แยกดูทีละชั้น<br><span class="muted">เหมือนช่างนาฬิกาถอดกลไกออกมาวางบนโต๊ะ</span></h2>
       <p class="section-lead">
-        BaseHider ไม่ใช่กล่องดำ ข้างในมี 38 ชั้นที่ทำงานต่อกัน ตั้งแต่ยามหน้าเซิร์ฟเวอร์ไปจนถึงชุดทดสอบ
+        Aegishider ไม่ใช่กล่องดำ ข้างในมี 38 ชั้นที่ทำงานต่อกัน ตั้งแต่ยามหน้าเซิร์ฟเวอร์ไปจนถึงชุดทดสอบ
         เลื่อนลงเพื่อคลี่ชั้นออก หรือกดที่ชิ้นส่วนที่สนใจเพื่ออ่านว่ามันทำอะไร
       </p>
     </div>
@@ -209,7 +209,7 @@
                 <span class="stage__info-code">4 ชุดกลไก</span>
               </div>
               <p class="stage__info-title">กดที่ชิ้นส่วนหรือรายการด้านขวา<br>เพื่ออ่านว่าชิ้นนั้นทำอะไร</p>
-              <p class="stage__info-desc">ตัวเลขทุกตัวในหน้านี้มาจากการวัดจริงบน Paper 1.21.4 ไม่ใช่ค่าประมาณ</p>
+              <p class="stage__info-desc">ตัวเลขทุกตัวในหน้านี้มาจากการวัดจริงบน Paper 1.21.4 (harness) และ smoke 1.21.1 / 1.21.5 / 1.21.11 / 26.3 ไม่ใช่ค่าประมาณ</p>
             </div>
             <button class="stage__reset" id="stageReset" type="button" hidden>ดูภาพรวม</button>
           </div>
@@ -421,7 +421,7 @@
 
       <p class="fineprint">
         ทั้งสามกรณีคือสิ่งที่ทดสอบบน Paper 1.21.4 ด้วยไคลเอนต์จำลองสองตัว แล้วถอดรหัสข้อมูลที่ส่งมาจริง
-        ไม่ได้ดูแค่ข้อความในคำสั่ง <code>/basehider status</code>
+        ไม่ได้ดูแค่ข้อความในคำสั่ง <code>/aegishider status</code>
       </p>
     </div>
   </section>
@@ -489,7 +489,7 @@
         <h2>“ส่งไปก่อนแล้วค่อยแก้”<br><span class="muted">เอาไม่อยู่</span></h2>
         <p class="section-lead">
           ถ้าข้อมูลจริงถูกส่งไปถึงเกมผู้เล่นแล้ว โปรแกรมโกงสามารถเก็บข้อมูลนั้นไว้ได้ทันที
-          การตามไปแก้ทีหลังจึงไม่ได้ทำให้ข้อมูลที่หลุดไปแล้วหายไป — BaseHider จึงเลือกไม่ส่งตั้งแต่แรก
+          การตามไปแก้ทีหลังจึงไม่ได้ทำให้ข้อมูลที่หลุดไปแล้วหายไป — Aegishider จึงเลือกไม่ส่งตั้งแต่แรก
         </p>
       </div>
 
@@ -515,7 +515,7 @@
 
         <article class="compare__col compare__col--new">
           <header class="compare__head">
-            <span class="tag tag--good"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-check"></use></svg>BaseHider · ซ่อนก่อนส่ง</span>
+            <span class="tag tag--good"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-check"></use></svg>Aegishider · ซ่อนก่อนส่ง</span>
             <h3>ส่งเฉพาะเมื่อพิสูจน์ได้ว่าควรเห็น</h3>
             <p>ข้อมูลที่ยังไม่ผ่านกติกาจะไม่ถูกเขียนลงข้อมูลที่จะส่งตั้งแต่แรก</p>
           </header>
@@ -588,7 +588,7 @@
         <article class="feature">
           <div class="feature__ico"><svg aria-hidden="true"><use href="#i-terminal"></use></svg></div>
           <h3>ตรวจสอบได้ทุกเมื่อ</h3>
-          <p>คำสั่ง <code>/basehider diag</code>, <code>verify</code> และ <code>export</code> แสดงสถานะจริง พร้อมยามที่คอยเตือนถ้าระบบป้องกันเงียบผิดปกติ</p>
+          <p>คำสั่ง <code>/aegishider diag</code>, <code>verify</code> และ <code>export</code> แสดงสถานะจริง พร้อมยามที่คอยเตือนถ้าระบบป้องกันเงียบผิดปกติ</p>
           <p class="feature__foot">รายงานสุขภาพระบบ 38 ค่า · เตือนเมื่อเงียบ 5 นาที</p>
         </article>
       </div>
@@ -720,7 +720,7 @@
       <div class="section-head">
         <p class="eyebrow">07 — ความเร็ว</p>
         <h2>เบาแค่ไหน<br><span class="muted">ในแต่ละติ๊ก</span></h2>
-        <p class="section-lead">ตัวเลขนี้คือเวลาที่ BaseHider ใช้ทำงานของตัวเอง ไม่ใช่เวลาทั้งหมดของเซิร์ฟเวอร์ วัดบน Paper 1.21.4 ที่มีไอเท็มตกอยู่ 0–800 ชิ้น และมีไคลเอนต์เชื่อมต่อหนึ่งตัว</p>
+        <p class="section-lead">ตัวเลขนี้คือเวลาที่ Aegishider ใช้ทำงานของตัวเอง ไม่ใช่เวลาทั้งหมดของเซิร์ฟเวอร์ วัดบน Paper 1.21.4 ที่มีไอเท็มตกอยู่ 0–800 ชิ้น และมีไคลเอนต์เชื่อมต่อหนึ่งตัว</p>
       </div>
 
       <div class="perf__grid">
@@ -812,59 +812,119 @@
   <section class="section evidence-section" id="evidence">
     <div class="shell">
       <div class="section-head">
-        <p class="eyebrow">08 — หลักฐาน</p>
-        <h2>เราพูดแบบนี้<br><span class="muted">เพราะมีผลทดสอบแบบนี้</span></h2>
-        <p class="section-lead">ตัวเลขทั้งหมดมาจากการทดสอบจริงบนเซิร์ฟเวอร์ ไม่ได้มาจากการคาดเดา — และเราแยกให้เห็นชัดว่าอะไรคือ “ทดสอบแล้ว” อะไรคือ “ยังไม่ได้ทดสอบ”</p>
+        <p class="eyebrow">08 — หลักฐานสด</p>
+        <h2>ไม่ต้องเชื่อคำโฆษณา<br><span class="muted">ดูแพ็กเก็ตที่ไคลเอนต์ได้รับจริง</span></h2>
+        <p class="section-lead">ชุดทดสอบ A–F ใช้ไคลเอนต์จำลองสองตัวเชื่อมต่อเซิร์ฟเวอร์ Paper แล้วถอดรหัสข้อมูลแผนที่กับทะเบียน block entity ฝั่งไคลเอนต์ ทุกค่าด้านล่างคัดจาก report JSON และ log ของการรันจริง ไม่ใช่ค่าประมาณ</p>
       </div>
 
-      <div class="evidence-grid">
-        <article class="evidence">
-          <span class="evidence__label">การทดสอบ A</span>
-          <h3>ไอเท็มตกหลังกำแพง 24 บล็อก</h3>
+      <div class="evidence-grid evidence-grid--six">
+        <article class="evidence evidence--pass">
+          <span class="evidence__label">A · ไกล + หลังกำแพง</span>
+          <h3>ไอเท็มตก 24 บล็อก</h3>
           <div class="evidence__compare">
-            <div class="evidence__row evidence__row--bad"><span>โค้ดชุดเก่า</span><b>หลุด 2 แพ็กเก็ต</b></div>
-            <div class="evidence__row evidence__row--good"><span>BaseHider 3.2.0</span><b>0 แพ็กเก็ต</b></div>
+            <div class="evidence__row evidence__row--bad"><span>BaseHider 3.0.0</span><b>LEAK</b></div>
+            <div class="evidence__row evidence__row--good"><span>Aegishider 4.0.0</span><b>0 spawn</b></div>
           </div>
-          <p>ไคลเอนต์จำลองไม่ได้รับข้อมูลไอเท็มเลย ไม่มีแม้แต่แพ็กเก็ตตามหลัง</p>
+          <p>ไม่มี spawn packet และไม่มีแพ็กเก็ตตามหลัง จากไคลเอนต์ทั้งสองตัว</p>
         </article>
 
-        <article class="evidence">
-          <span class="evidence__label">การทดสอบ B</span>
-          <h3>ไอเท็มตกอยู่ใกล้ 3 บล็อก</h3>
+        <article class="evidence evidence--pass">
+          <span class="evidence__label">B · ของใกล้ตัว</span>
+          <h3>ไอเท็มตก 3 บล็อก</h3>
           <div class="evidence__compare">
-            <div class="evidence__row evidence__row--good"><span>ผู้เล่นเห็น</span><b>ปกติ</b></div>
-            <div class="evidence__row"><span>เวลาเห็น</span><b>22–63 ms</b></div>
+            <div class="evidence__row evidence__row--good"><span>ผู้เล่นเห็น</span><b>VISIBLE</b></div>
+            <div class="evidence__row"><span>เวลาเห็น</span><b>12 ms</b></div>
           </div>
-          <p>ผู้เล่นยังเห็นไอเท็มใกล้ตัวตามปกติ โดยใช้เวลาไม่เกิน 1–3 ติ๊ก</p>
+          <p>ยังเห็นของใกล้ตัวตามปกติ — ระบบใช้เวลา 1 ติ๊กในการพิสูจน์ว่าควรเห็น</p>
         </article>
 
-        <article class="evidence">
-          <span class="evidence__label">การทดสอบ C</span>
-          <h3>หีบที่ผู้เล่นวาง แล้วบังคับโหลดแผนที่ใหม่</h3>
+        <article class="evidence evidence--pass">
+          <span class="evidence__label">C · chunk resend</span>
+          <h3>หีบที่ผู้เล่นวาง</h3>
           <div class="evidence__compare">
-            <div class="evidence__row evidence__row--bad"><span>โค้ดชุดเก่า</span><b>พบหีบในข้อมูล</b></div>
-            <div class="evidence__row evidence__row--good"><span>BaseHider 3.2.0</span><b>พบแต่หิน</b></div>
+            <div class="evidence__row evidence__row--bad"><span>BaseHider 3.0.0</span><b>LEAK</b></div>
+            <div class="evidence__row evidence__row--good"><span>Aegishider 4.0.0</span><b>หินเท่านั้น</b></div>
           </div>
-          <p>ข้อมูลแผนที่ถูกถอดรหัสแล้วไม่พบสถานะหีบ และไม่พบข้อมูลภายในหีบ</p>
+          <p>ถอดรหัส chunk แล้วไม่พบสถานะหีบ · marker ปกติยังมา · 0 chest state ใน section</p>
         </article>
+
+        <article class="evidence evidence--pass">
+          <span class="evidence__label">D · ระยะไกล</span>
+          <h3>block entity 160 / 336 บล็อก</h3>
+          <div class="evidence__compare">
+            <div class="evidence__row evidence__row--bad"><span>BaseHider 3.0.0</span><b>LEAK</b></div>
+            <div class="evidence__row evidence__row--good"><span>Aegishider 4.0.0</span><b>ไม่พบหีบ</b></div>
+          </div>
+          <p>ทั้งสองระยะได้รับ chunk จริง แต่ chest_leak=false และ block entity ไม่ถูกส่ง</p>
+        </article>
+
+        <article class="evidence evidence--pass">
+          <span class="evidence__label">E · ทะเบียนฝั่ง clients</span>
+          <h3>pie-ray / block entity registry</h3>
+          <div class="evidence__compare">
+            <div class="evidence__row evidence__row--bad"><span>BaseHider 3.0.0</span><b>DIRTY</b></div>
+            <div class="evidence__row evidence__row--good"><span>Aegishider 4.0.0</span><b>CLEAN</b></div>
+          </div>
+          <p>สแกน 6,060 chunks · hidden container 0 รายการ · ป้ายปกติ 2 รายการเป็น positive control</p>
+        </article>
+
+        <article class="evidence evidence--pass">
+          <span class="evidence__label">F · cache replay</span>
+          <h3>Bobby / Distant Horizons</h3>
+          <div class="evidence__compare">
+            <div class="evidence__row evidence__row--bad"><span>BaseHider 3.0.0</span><b>CACHE LEAK</b></div>
+            <div class="evidence__row evidence__row--good"><span>Aegishider 4.0.0</span><b>RE-HIDE</b></div>
+          </div>
+          <p>near = เห็นหีบ · leave = ส่งหินทับสถานะสุดท้าย · rehide_updates=1 · final=stone</p>
+        </article>
+      </div>
+
+      <div class="duel">
+        <div class="duel__head">
+          <p class="eyebrow">BASEHIDER 3.0.0 → AEGISHIDER 4.0.0</p>
+          <h3>ช่องโหว่ชุดเดิม ถูกปิดครบทุกช่อง</h3>
+        </div>
+        <table class="duel__table">
+          <thead><tr><th>สถานการณ์</th><th>BaseHider 3.0.0</th><th>Aegishider 4.0.0</th></tr></thead>
+          <tbody>
+            <tr><th>A · ไอเท็มไกลหลังกำแพง</th><td class="bad">LEAK</td><td class="good">HIDDEN · 0 แพ็กเก็ต</td></tr>
+            <tr><th>B · ไอเท็มใกล้ 3 บล็อก</th><td class="good">VISIBLE</td><td class="good">VISIBLE · 12 ms</td></tr>
+            <tr><th>C · หีบใน chunk ที่ resend</th><td class="bad">LEAK · พบหีบ</td><td class="good">HIDDEN · หินเท่านั้น</td></tr>
+            <tr><th>D · block entity 160/336 บล็อก</th><td class="bad">LEAK</td><td class="good">HIDDEN</td></tr>
+            <tr><th>E · ทะเบียน block entity ฝั่งไคลเอนต์</th><td class="bad">DIRTY · 6,060 chunks</td><td class="good">CLEAN · 0 hidden</td></tr>
+            <tr><th>F · cache replay (Bobby / DH)</th><td class="bad">CACHE LEAK</td><td class="good">REVEAL → RE-HIDE</td></tr>
+          </tbody>
+        </table>
+        <p class="fineprint">รันด้วย harness เดียวกันบน Paper 1.21.4 build 232 · PacketEvents 2.14.0 · ไคลเอนต์จำลองสองตัว · baseline คือ BaseHider 3.0.0 ไจาร์เดิม · ผลดิบ <code>itest/out/report-*.json</code></p>
+      </div>
+
+      <div class="matrix">
+        <h3>เทสต์บนเซิร์ฟเวอร์จริง 4 รุ่น</h3>
+        <div class="matrix__grid">
+          <div class="matrix__item"><b>Paper 1.21.1</b><span>gateway ACTIVE · block/item ACTIVE</span></div>
+          <div class="matrix__item"><b>Paper 1.21.5</b><span>gateway ACTIVE · block/item ACTIVE</span></div>
+          <div class="matrix__item"><b>Paper 1.21.11</b><span>gateway ACTIVE · block/item ACTIVE</span></div>
+          <div class="matrix__item"><b>Paper 26.3</b><span>gateway ACTIVE บน V_26_3 · Java 25</span></div>
+        </div>
+        <p class="fineprint">ติดตั้งร่วมกับ PacketEvents 2.14.0 · spark · bStats · ไคลเอนต์ ViaVersion 26.x ตรวจในชุด hotfix แล้ว (<code>docs/07-viaversion-hotfix.md</code>) · Aegishider 4.0.0 ผ่าน harness A–F บน 1.21.4</p>
       </div>
 
       <div class="evidence-summary">
         <div class="evidence-summary__item">
-          <b>102</b>
+          <b>123</b>
           <span>เทสต์อัตโนมัติ ผ่านทั้งหมด · 0 ล้มเหลว</span>
         </div>
         <div class="evidence-summary__item">
-          <b>3/3</b>
-          <span>สถานการณ์ทดสอบด้วยเกมจริงผ่านทั้งหมด</span>
+          <b>6/6</b>
+          <span>สถานการณ์ A–F ผ่านทั้งหมดบนไจาร์จริง</span>
+        </div>
+        <div class="evidence-summary__item">
+          <b>4</b>
+          <span>เซิร์ฟเวอร์ที่ทดสอบโหลดไจาร์จริง</span>
         </div>
         <div class="evidence-summary__item">
           <b>0</b>
-          <span>ครั้งที่พบข้อมูลหลุดในเทสต์ของ 3.2.0</span>
-        </div>
-        <div class="evidence-summary__item">
-          <b>p99 ≤3.0<small>ms</small></b>
-          <span>เวลางานสูงสุดต่อติ๊กจาก 0–800 ไอเท็ม</span>
+          <span>แพ็กเก็ตข้อมูลหีบ/ไอเท็มที่หลุดในเทสต์</span>
         </div>
       </div>
     </div>
@@ -876,26 +936,26 @@
       <div class="section-head">
         <p class="eyebrow">09 — ติดตั้ง</p>
         <h2>ติดตั้งในไม่กี่นาที<br><span class="muted">ไม่ต้องแก้โค้ดเซิร์ฟเวอร์</span></h2>
-        <p class="section-lead">BaseHider เป็นปลั๊กอินฝั่งเซิร์ฟเวอร์ ติดตั้งเหมือนปลั๊กอิน Paper ทั่วไป และไม่ต้องให้ผู้เล่นติดตั้งมอดใด ๆ</p>
+        <p class="section-lead">Aegishider เป็นปลั๊กอินฝั่งเซิร์ฟเวอร์ ติดตั้งเหมือนปลั๊กอิน Paper ทั่วไป และไม่ต้องให้ผู้เล่นติดตั้งมอดใด ๆ</p>
       </div>
 
       <ol class="steps steps--five">
         <li class="step">
           <span class="step__n">01</span>
           <h3>ดาวน์โหลดไฟล์</h3>
-          <p>ดาวน์โหลด <code>BaseHider-3.6.1.jar</code> แล้วตรวจค่า SHA-256 ให้ตรงกับที่หน้าเว็บก่อนทุกครั้ง</p>
-          <div class="step__file"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-download"></use></svg>BaseHider-3.6.1.jar</div>
+          <p>เลือกไบล์ที่ตรงกับเซิร์ฟเวอร์จาก <a href="#download">หัวข้อดาวน์โหลด</a> แล้วตรวจค่า SHA-256 ให้ตรงกับที่หน้าเว็บก่อนทุกครั้ง</p>
+          <div class="step__file"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-download"></use></svg>Aegishider-4.0.0-mc&lt;รุ่น&gt;.jar</div>
         </li>
         <li class="step">
           <span class="step__n">02</span>
           <h3>วางในโฟลเดอร์ปลั๊กอิน</h3>
           <p>คัดลอกไฟล์ไปไว้ในโฟลเดอร์ <code>plugins/</code> ของเซิร์ฟเวอร์</p>
-          <div class="step__file"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-chip"></use></svg>plugins/BaseHider-3.6.1.jar</div>
+          <div class="step__file"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-chip"></use></svg>plugins/Aegishider-4.0.0-mc&lt;รุ่น&gt;.jar</div>
         </li>
         <li class="step">
           <span class="step__n">03</span>
           <h3>ติดตั้ง PacketEvents</h3>
-          <p>การซ่อนบล็อกต้องใช้ PacketEvents <strong>2.14.0 ขึ้นไป</strong> ซึ่งเป็นปลั๊กอินแยก ไม่ได้รวมมาในไฟล์ BaseHider</p>
+          <p>การซ่อนบล็อกต้องใช้ PacketEvents <strong>2.14.0 ขึ้นไป</strong> ซึ่งเป็นปลั๊กอินแยก ไม่ได้รวมมาในไฟล์ Aegishider</p>
           <div class="step__file"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-packet"></use></svg>plugins/PacketEvents.jar</div>
         </li>
         <li class="step">
@@ -908,7 +968,7 @@
           <span class="step__n">05</span>
           <h3>ตรวจสถานะ</h3>
           <p>รันคำสั่งด้านล่าง แล้วตรวจว่าการป้องกันบล็อกขึ้นสถานะ <strong>ACTIVE</strong> ก่อนเปิดให้ผู้เล่นเข้า</p>
-          <div class="step__file step__file--cmd"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-terminal"></use></svg>/basehider status</div>
+          <div class="step__file step__file--cmd"><svg class="ico ico--sm" aria-hidden="true"><use href="#i-terminal"></use></svg>/aegishider status</div>
         </li>
       </ol>
 
@@ -916,7 +976,7 @@
         <div class="panel panel--table">
           <div class="panel__head"><span class="mono">คำสั่งที่ใช้บ่อย</span></div>
           <table class="cmds">
-            <caption class="sr-only">คำสั่งของ BaseHider</caption>
+            <caption class="sr-only">คำสั่งของ Aegishider</caption>
             <tbody>
               <tr><th scope="row"><code>status</code></th><td>ดูสถานะรวมว่าอะไรทำงานอยู่ อะไรยังไม่ทำงาน</td></tr>
               <tr><th scope="row"><code>diag</code></th><td>ดูตัวเลขละเอียด เช่น จำนวนงานที่เลื่อนออกไป</td></tr>
@@ -929,7 +989,7 @@
           </table>
           <div class="perm">
             <span class="mono">สิทธิ์</span>
-            <p><code>basehider.admin</code> — ใช้คำสั่งทั้งหมด · <code>basehider.bypass</code> — เห็นทุกอย่างตามปกติสำหรับผู้ดูแล</p>
+            <p><code>aegishider.admin</code> — ใช้คำสั่งทั้งหมด · <code>aegishider.bypass</code> — เห็นทุกอย่างตามปกติสำหรับผู้ดูแล</p>
           </div>
         </div>
 
@@ -938,7 +998,7 @@
           <table class="req">
             <thead><tr><th scope="col">รายการ</th><th scope="col">ต้องมี</th><th scope="col">หมายเหตุ</th></tr></thead>
             <tbody>
-              <tr><th scope="row">เซิร์ฟเวอร์</th><td>Paper 1.21.4</td><td><code>api-version: 1.21</code> · ทดสอบบน build 232</td></tr>
+              <tr><th scope="row">เซิร์ฟเวอร์</th><td>Paper 1.21.1–26.3</td><td><code>api-version: 1.21</code> · ไบล์แยกตามรุ่น · harness บน 1.21.4</td></tr>
               <tr><th scope="row">Java</th><td>21</td><td>ใช้รันไทม์เดียวกับเซิร์ฟเวอร์</td></tr>
               <tr><th scope="row">PacketEvents</th><td>2.14.0 ขึ้นไป</td><td>จำเป็นสำหรับซ่อนบล็อก — ไอเท็มยังทำงานได้ถ้าไม่มี</td></tr>
               <tr><th scope="row">Folia</th><td class="no">ไม่รองรับ</td><td>ตามการออกแบบ</td></tr>
@@ -954,10 +1014,10 @@
           <thead><tr><th scope="col">อาการ</th><th scope="col">สาเหตุที่พบบ่อย</th><th scope="col">วิธีแก้</th></tr></thead>
           <tbody>
             <tr><th scope="row">สถานะขึ้น INACTIVE</th><td>ยังไม่ได้ติดตั้ง PacketEvents หรือเวอร์ชันเก่าเกินไป</td><td>ติดตั้ง PacketEvents 2.14.0 ขึ้นไป แล้วรีสตาร์ท</td></tr>
-            <tr><th scope="row">ผู้เล่นเห็นหีบไกลผิดปกติ</th><td>บัญชีนั้นมีสิทธิ์ <code>basehider.bypass</code></td><td>ตรวจสิทธิ์ของกลุ่มผู้เล่นนั้น</td></tr>
+            <tr><th scope="row">ผู้เล่นเห็นหีบไกลผิดปกติ</th><td>บัญชีนั้นมีสิทธิ์ <code>aegishider.bypass</code></td><td>ตรวจสิทธิ์ของกลุ่มผู้เล่นนั้น</td></tr>
             <tr><th scope="row">กระตุกตอนมีคนเข้า</th><td>งบเวลาสูงเกินไป หรือมีคลังของหนาแน่น</td><td>ลด <code>main-thread-budget-ms</code> และจำนวนเส้นสายตา</td></tr>
             <tr><th scope="row">ของใกล้ตัวกลับมองไม่เห็น</th><td>ระยะหรือมุมมองแคบเกินไป</td><td>เพิ่ม <code>max-distance</code> และ <code>fov-degrees</code></td></tr>
-            <tr><th scope="row">ปลั๊กอินไม่เริ่มทำงาน</th><td>Java ต่ำกว่า 21 หรือใช้เซิร์ฟเวอร์คนละค่าย</td><td>ตรวจว่าใช้ Paper 1.21.4 และ Java 21</td></tr>
+            <tr><th scope="row">ปลั๊กอินไม่เริ่มทำงาน</th><td>Java ต่ำกว่า 21 หรือใช้เซิร์ฟเวอร์คนละค่าย</td><td>ตรวจว่าใช้ Paper 1.21.1–26.3 และ Java 21+ (26.x ใช้ Java 25) และเลือกไบล์ให้ตรงรุ่น</td></tr>
           </tbody>
         </table>
       </div>
@@ -969,7 +1029,7 @@
     <div class="shell">
       <div class="section-head">
         <p class="eyebrow">10 — ข้อจำกัด</p>
-        <h2>สิ่งที่ BaseHider<br><span class="muted">ไม่ได้ทำ และบอกไว้ก่อน</span></h2>
+        <h2>สิ่งที่ Aegishider<br><span class="muted">ไม่ได้ทำ และบอกไว้ก่อน</span></h2>
         <p class="section-lead">ความน่าเชื่อถือของเครื่องมือวัดกันที่ความตรงไปตรงมา ข้อจำกัดด้านล่างคือสิ่งที่เราตั้งใจไม่ทำ หรือยังไม่รองรับในเวอร์ชันนี้</p>
       </div>
 
@@ -987,7 +1047,7 @@
         <article class="limit">
           <div class="limit__ico"><svg aria-hidden="true"><use href="#i-x"></use></svg></div>
           <h3>ยังไม่รองรับ Minecraft 1.21.5 ขึ้นไป</h3>
-          <p>ตัวจัดการข้อมูลแผนที่ผูกกับรูปแบบของ 1.21.4 ที่ผ่านการทดสอบ หากอัปเกรดเซิร์ฟเวอร์ควรตรวจสอบก่อน</p>
+          <p>ตัวจัดการข้อมูลแผนที่ผูกกับรูปแบบที่ทดสอบ: harness เต็มชุดบน 1.21.4 และ smoke บน 1.21.1 / 1.21.5 / 1.21.11 / 26.3 — ใช้ไบล์ให้ตรงรุ่นเซิร์ฟเวอร์</p>
         </article>
         <article class="limit">
           <div class="limit__ico"><svg aria-hidden="true"><use href="#i-warning"></use></svg></div>
@@ -1014,7 +1074,7 @@
       <div class="section-head">
         <p class="eyebrow">11 — ศัพท์ที่ควรรู้</p>
         <h2>คำที่เจอบ่อย<br><span class="muted">ในหน้าเว็บนี้</span></h2>
-        <p class="section-lead">อ่านแล้วไม่ต้องจำก็ได้ แต่ถ้าเข้าใจศัพท์เหล่านี้ จะเห็นภาพว่า BaseHider ทำงานตรงไหนของเกม</p>
+        <p class="section-lead">อ่านแล้วไม่ต้องจำก็ได้ แต่ถ้าเข้าใจศัพท์เหล่านี้ จะเห็นภาพว่า Aegishider ทำงานตรงไหนของเกม</p>
       </div>
 
       <dl class="glossary__grid">
@@ -1052,7 +1112,7 @@
         </div>
         <div class="glossary__item">
           <dt>PacketEvents</dt>
-          <dd>ปลั๊กอินที่ช่วยให้อ่านและแก้ข้อมูลที่วิ่งระหว่างเซิร์ฟเวอร์กับเกมได้ BaseHider ใช้ตัวนี้ในการซ่อนข้อมูลหีบ</dd>
+          <dd>ปลั๊กอินที่ช่วยให้อ่านและแก้ข้อมูลที่วิ่งระหว่างเซิร์ฟเวอร์กับเกมได้ Aegishider ใช้ตัวนี้ในการซ่อนข้อมูลหีบ</dd>
         </div>
         <div class="glossary__item">
           <dt>งบเวลาต่อติ๊ก (budget)</dt>
@@ -1078,7 +1138,7 @@
       <div class="faq__list">
         <details class="qa" open>
           <summary><span>ต่างจาก anti-xray (ระบบซ่อนแร่) ของ Paper อย่างไร?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
-          <div class="qa__body"><p>anti-xray ของ Paper เน้นซ่อนแร่โดยแทนที่บล็อกในข้อมูลแผนที่ ส่วน BaseHider เน้นหีบ กล่องเก็บของ และไอเท็มที่ตกอยู่ พร้อมกติกาการมองเห็นที่คิดระยะ มุมมอง และการบังด้วยเส้นสายตาจริง ทั้งสองอย่างทำงานคนละชั้นและเปิดใช้ร่วมกันได้</p></div>
+          <div class="qa__body"><p>anti-xray ของ Paper เน้นซ่อนแร่โดยแทนที่บล็อกในข้อมูลแผนที่ ส่วน Aegishider เน้นหีบ กล่องเก็บของ และไอเท็มที่ตกอยู่ พร้อมกติกาการมองเห็นที่คิดระยะ มุมมอง และการบังด้วยเส้นสายตาจริง ทั้งสองอย่างทำงานคนละชั้นและเปิดใช้ร่วมกันได้</p></div>
         </details>
         <details class="qa">
           <summary><span>จำเป็นต้องมี PacketEvents ไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
@@ -1090,15 +1150,15 @@
         </details>
         <details class="qa">
           <summary><span>จะทำให้เซิร์ฟเวอร์กระตุกไหม (TPS ตก)?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
-          <div class="qa__body"><p>งานของ BaseHider ถูกจำกัดที่ 1.5 ms ต่อติ๊ก และงานที่ค้างจะถูกเลื่อนไปติ๊กถัดไป ในเครื่องทดสอบ p99 อยู่ที่ ≤3.0 ms และ MSPT เพิ่มขึ้นราว 0.5–1.4 ms เมื่อมีไคลเอนต์เดียว ตัวเลขจริงขึ้นกับจำนวนไอเท็มและขนาดฐาน — ปรับ <code>main-thread-budget-ms</code> และ <code>raycast-budget-per-tick</code> ได้</p></div>
+          <div class="qa__body"><p>งานของ Aegishider ถูกจำกัดที่ 1.5 ms ต่อติ๊ก และงานที่ค้างจะถูกเลื่อนไปติ๊กถัดไป ในเครื่องทดสอบ p99 อยู่ที่ ≤3.0 ms และ MSPT เพิ่มขึ้นราว 0.5–1.4 ms เมื่อมีไคลเอนต์เดียว ตัวเลขจริงขึ้นกับจำนวนไอเท็มและขนาดฐาน — ปรับ <code>main-thread-budget-ms</code> และ <code>raycast-budget-per-tick</code> ได้</p></div>
         </details>
         <details class="qa">
           <summary><span>เจ้าของหีบจะเห็นหีบของตัวเองไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
-          <div class="qa__body"><p>เห็นได้เมื่ออยู่ในระยะและมุมมองที่กำหนด (ค่าเริ่มต้น 12 บล็อก / 120°) และไม่มีกำแพงบัง ผู้เล่นที่ถือสิทธิ์ <code>basehider.bypass</code> จะเห็นทุกอย่างตามปกติ</p></div>
+          <div class="qa__body"><p>เห็นได้เมื่ออยู่ในระยะและมุมมองที่กำหนด (ค่าเริ่มต้น 12 บล็อก / 120°) และไม่มีกำแพงบัง ผู้เล่นที่ถือสิทธิ์ <code>aegishider.bypass</code> จะเห็นทุกอย่างตามปกติ</p></div>
         </details>
         <details class="qa">
           <summary><span>ใช้กับ Minecraft 1.20 หรือ Folia ได้ไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
-          <div class="qa__body"><p>บิลด์นี้ทดสอบบน Paper 1.21.4 และประกาศ <code>api-version: 1.21</code> ไม่รองรับ Folia ตามการออกแบบ เพราะระบบอาศัยการทำงานเป็นรอบบนเธรดหลักของ Bukkit</p></div>
+          <div class="qa__body"><p>บิลด์นี้ทดสอบบน Paper 1.21.1, 1.21.4, 1.21.5, 1.21.11 และ 26.3 (ไบล์แยกตามรุ่น) และประกาศ <code>api-version: 1.21</code> ไม่รองรับ Folia ตามการออกแบบ เพราะระบบอาศัยการทำงานเป็นรอบบนเธรดหลักของ Bukkit</p></div>
         </details>
         <details class="qa">
           <summary><span>ถ้าตั้งค่าผิดจะเป็นอะไรไหม?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
@@ -1106,7 +1166,7 @@
         </details>
         <details class="qa">
           <summary><span>ข้อมูลรายงานสุขภาพระบบถูกส่งไปที่ไหน?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
-          <div class="qa__body"><p>อยู่บนเซิร์ฟเวอร์ของคุณเท่านั้น — เขียนเป็นไฟล์ <code>plugins/BaseHider/diagnostics.json</code> เมื่อคุณสั่ง ไม่มีการเชื่อมต่อออกภายนอกเพื่อส่งข้อมูล</p></div>
+          <div class="qa__body"><p>อยู่บนเซิร์ฟเวอร์ของคุณเท่านั้น — เขียนเป็นไฟล์ <code>plugins/Aegishider/diagnostics.json</code> เมื่อคุณสั่ง ไม่มีการเชื่อมต่อออกภายนอกเพื่อส่งข้อมูล</p></div>
         </details>
         <details class="qa">
           <summary><span>ทำไมไม่ซ่อนผู้เล่นด้วยกัน?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
@@ -1122,7 +1182,7 @@
         </details>
         <details class="qa">
           <summary><span>จะตรวจสอบได้อย่างไรว่าระบบทำงานจริง?</span><svg class="ico qa__ico" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
-          <div class="qa__body"><p>เริ่มที่ <code>/basehider status</code> ว่าด่านตรวจทำงาน, <code>/basehider verify</code> ให้เทียบข้อมูลที่จำไว้กับโลกจริง และ <code>/basehider diag</code> ดูตัวเลขละเอียด หากมีผู้เล่นออนไลน์แต่ระบบไม่ได้รับข้อมูลเลยห้านาที ระบบจะเตือนผู้ดูแลเอง</p></div>
+          <div class="qa__body"><p>เริ่มที่ <code>/aegishider status</code> ว่าด่านตรวจทำงาน, <code>/aegishider verify</code> ให้เทียบข้อมูลที่จำไว้กับโลกจริง และ <code>/aegishider diag</code> ดูตัวเลขละเอียด หากมีผู้เล่นออนไลน์แต่ระบบไม่ได้รับข้อมูลเลยห้านาที ระบบจะเตือนผู้ดูแลเอง</p></div>
         </details>
       </div>
     </div>
@@ -1132,42 +1192,50 @@
   <section class="section changelog" id="changelog">
     <div class="shell">
       <div class="section-head">
-        <p class="eyebrow">13 — เปลี่ยนอะไรใน 3.6.x</p>
-        <h2>เวอร์ชันนี้<br><span class="muted">แก้เรื่องอะไรมาบ้าง</span></h2>
-        <p class="section-lead">3.6.x ต่อยอดจาก 3.2.0 โดยไม่แตะแกนหลักของการซ่อนข้อมูล — เพิ่มการซ่อนรูที่ผู้เล่นขุด ไคลเอนต์ไลเซนส์ที่ตรวจสอบได้ และงานทดสอบที่หนักขึ้น</p>
+        <p class="eyebrow">13 — เปลี่ยนอะไรใน 4.0.0</p>
+        <h2>รุ่นนี้เปลี่ยนทั้งชื่อ<br><span class="muted">และวิธีส่งไบล์ให้ผู้ใช้</span></h2>
+        <p class="section-lead">4.0.0 คือรุ่น rebrand เต็มรูปแบบ — แยกไบล์ 6 รุ่นตั้งแต่ Paper 1.21.1 ถึง 26.3, ผ่าน Sentinel Shield obfuscation และปิด defect สถาปัตยกรรมที่ค้างอยู่</p>
       </div>
 
       <ol class="timeline">
         <li class="timeline__item">
           <span class="timeline__dot" aria-hidden="true"></span>
           <div class="timeline__body">
-            <h3>ซ่อนรูที่ผู้เล่นขุด</h3>
-            <p>Tunnel Shield จำวัสดุเดิมของบล็อกที่ถูกขุด แล้วส่งกลับให้คนที่อยู่ไกลเกิน 28 บล็อกเห็นเป็นดิน/หินทึบ ทั้งตอนโหลด chunk และตอนขุดสด ๆ เดินเข้ามาใกล้จะเห็นรูจริง ถอยออกไปจะถูกปิดกลับ</p>
-            <span class="timeline__meta">TUNNEL SHIELD · 28 BLOCKS · MEMORY</span>
+            <h3>แยกไบล์ 6 รุ่น ตั้งแต่ 1.21.1 ถึง 26.3</h3>
+            <p>คอมไพล์กับ paper-api ของแต่ละรุ่น: 1.21.1, 1.21.4, 1.21.5, 1.21.11, 26.1 และ 26.3 พร้อม smoke test บน Paper 1.21.1 / 1.21.5 / 1.21.11 / 26.3 และปิด A-08 (world-id ไม่ throw ใน hot path อีกต่อไป)</p>
+            <span class="timeline__meta">PAPER 1.21.1 → 26.3 · 6 BUILDS · A-08 FIXED</span>
           </div>
         </li>
         <li class="timeline__item">
           <span class="timeline__dot" aria-hidden="true"></span>
           <div class="timeline__body">
-            <h3>ไคลเอนต์ไลเซนส์ตรวจสอบได้</h3>
-            <p>3.6.1 เพิ่มการลงทะเบียนเซิร์ฟเวอร์ด้วย Ed25519 ขอ lease ที่เซ็นชื่อไว้ และตรวจลายเซ็นได้แม้แพลตฟอร์มออฟไลน์ พร้อม heartbeat แบบสรุป ไม่มีชื่อผู้เล่นหรือพิกัดหลุดออกไป</p>
-            <span class="timeline__meta">LICENSE CLIENT · ED25519 · OFFLINE</span>
+            <h3>Sentinel Shield obfuscation + manifest เซ็นชื่อ</h3>
+            <p>ต่อยอด sentinel-shield ให้ obfuscate JAR ผ่าน ProGuard 7.10 — rename/shrink/ตัด source info, สแกน secret ก่อนปล่อย และเซ็น manifest รายไฟล์ด้วย Ed25519 ทุกไบล์มี SHA-256 ให้ตรวจ</p>
+            <span class="timeline__meta">PROGUARD 7.10 · ED25519 · 0 SECRETS</span>
           </div>
         </li>
         <li class="timeline__item">
           <span class="timeline__dot" aria-hidden="true"></span>
           <div class="timeline__body">
-            <h3>สั่งงานและอ่านค่าจากคอนโซลได้จริง</h3>
-            <p>เพิ่ม <code>/basehider license status|link|refresh</code> และแก้ให้ข้อความตอบกลับแสดงบน RCON/คอนโซลครบทุกบรรทัด ไม่หายไปเพราะถูกเลื่อนไป tick ถัดไป</p>
-            <span class="timeline__meta">OPERATIONS · RCON · CONSOLE</span>
+            <h3>Control Platform ฟรีบน Cloudflare</h3>
+            <p>หน้าแพลตฟอร์ม rebrand เป็น Aegishider, ไบล์ทั้ง 6 อยู่บน R2 และออกไลเซนส์ฟรีด้วย Ed25519 — ไม่มีกระเป๋าเงิน ไม่มีคำสั่งซื้อ ไม่มีระบบชำระเงิน</p>
+            <span class="timeline__meta">CLOUDFLARE WORKERS · R2 · D1 · FREE</span>
           </div>
         </li>
         <li class="timeline__item">
           <span class="timeline__dot" aria-hidden="true"></span>
           <div class="timeline__body">
-            <h3>ทดสอบหนักขึ้นและรันจริงแล้ว</h3>
-            <p>ชุดทดสอบเพิ่มเป็น 102 ตัว ผ่านทั้งหมด และ 3.6.1 ผ่านการรันบน Paper 1.21.4 staging จริง: gateway ACTIVE, license ACTIVE, lease ตรวจผ่าน, heartbeat ส่งถึงแพลตฟอร์ม</p>
-            <span class="timeline__meta">QUALITY · 102 TESTS · PAPER STAGING</span>
+            <h3>Tunnel Shield และไลเซนส์ยังอยู่ครบ</h3>
+            <p>Tunnel Shield จำวัสดุเดิมของบล็อกที่ถูกขุดและปิดรูให้คนที่อยู่ไกลเกิน 28 บล็อก · คำสั่ง <code>/aegishider license status|link|refresh</code> ทำงานบน RCON/คอนโซลครบ</p>
+            <span class="timeline__meta">TUNNEL SHIELD · LICENSE CLIENT · RCON</span>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <div class="timeline__body">
+            <h3>ผลทดสอบรอบสุดท้าย</h3>
+            <p>124 unit tests ผ่านทั้งหมด · harness A–F PASS บนไจาร์ที่ obfuscate แล้ว · smoke บน Paper 1.21.1, 1.21.5, 1.21.11 และ 26.3 (gateway ACTIVE ทุกตัว) · baseline BaseHider 3.0.0 leak ครบตามคาด</p>
+            <span class="timeline__meta">QUALITY · 124 TESTS · A–F PASS · 4 SERVERS</span>
           </div>
         </li>
       </ol>
@@ -1177,46 +1245,98 @@
   <!-- ===================================================== DOWNLOAD -->
   <section class="section download" id="download">
     <div class="shell">
-      <div class="dl-card">
+      <div class="section-head">
+        <p class="eyebrow">14 — ดาวน์โหลด</p>
+        <h2>เลือกไบล์ให้ตรงเซิร์ฟเวอร์<br><span class="muted">Paper 1.21.1 ถึง 26.3</span></h2>
+        <p class="section-lead">ไจาร์ทุกไฟล์ผ่าน Sentinel Shield obfuscation และมี manifest เซ็น Ed25519 — ดาวน์โหลดได้จากหน้านี้โดยตรง หรือจาก Aegishider Control Platform ฟรี ไม่ต้องสมัครสมาชิก</p>
+      </div>
+
+      <div class="dl-versions">
+        <article class="dl-version dl-version--rec">
+          <span class="dl-version__range">PAPER 1.21.9 – 1.21.11 · แนะนำ</span>
+          <span class="dl-version__badge">RECOMMENDED</span>
+          <h3>mc1.21.11</h3>
+          <dl><div><dt>ไฟล์</dt><dd>Aegishider-4.0.0-mc1.21.11.jar</dd></div><div><dt>ขนาด</dt><dd>5.0 MB · Java 21</dd></div></dl>
+          <a class="btn btn--primary btn--sm" href="download/Aegishider-4.0.0-mc1.21.11.jar" download>ดาวน์โหลด .jar</a>
+          <div class="dl-version__links"><a href="https://aegishider-platform.audijuju1.workers.dev/release/rel_ag_400_mc12111/download">สำรอง · แพลตฟอร์ม</a><a href="#verify">SHA-256</a></div>
+          <code class="hash hash--sm">79ee516cd1c720e74d5be2b06506f86ccde0262c7d4572672167e44ed077d353</code>
+        </article>
+
+        <article class="dl-version">
+          <span class="dl-version__range">PAPER 1.21.5 – 1.21.8</span>
+          <h3>mc1.21.5</h3>
+          <dl><div><dt>ไฟล์</dt><dd>Aegishider-4.0.0-mc1.21.5.jar</dd></div><div><dt>ขนาด</dt><dd>5.0 MB · Java 21</dd></div></dl>
+          <a class="btn btn--primary btn--sm" href="download/Aegishider-4.0.0-mc1.21.5.jar" download>ดาวน์โหลด .jar</a>
+          <div class="dl-version__links"><a href="https://aegishider-platform.audijuju1.workers.dev/release/rel_ag_400_mc1215/download">สำรอง · แพลตฟอร์ม</a></div>
+          <code class="hash hash--sm">12ef549a595f9017cacf47dfe0caa44ff428ff6876c9440c3e76e9ce7d5d4853</code>
+        </article>
+
+        <article class="dl-version">
+          <span class="dl-version__range">PAPER 1.21.1 – 1.21.4</span>
+          <h3>mc1.21.1</h3>
+          <dl><div><dt>ไฟล์</dt><dd>Aegishider-4.0.0-mc1.21.1.jar</dd></div><div><dt>ขนาด</dt><dd>5.0 MB · Java 21</dd></div></dl>
+          <a class="btn btn--primary btn--sm" href="download/Aegishider-4.0.0-mc1.21.1.jar" download>ดาวน์โหลด .jar</a>
+          <div class="dl-version__links"><a href="https://aegishider-platform.audijuju1.workers.dev/release/rel_ag_400_mc1211/download">สำรอง · แพลตฟอร์ม</a></div>
+          <code class="hash hash--sm">57573bcf3adcb01bc604114ac6c0439b09eb4860c5d1cc873e2bd2e406d4f5f1</code>
+        </article>
+
+        <article class="dl-version">
+          <span class="dl-version__range">PAPER 1.21.4 · PINNED</span>
+          <h3>mc1.21.4</h3>
+          <dl><div><dt>ไฟล์</dt><dd>Aegishider-4.0.0-mc1.21.4.jar</dd></div><div><dt>ขนาด</dt><dd>5.0 MB · Java 21</dd></div></dl>
+          <a class="btn btn--primary btn--sm" href="download/Aegishider-4.0.0-mc1.21.4.jar" download>ดาวน์โหลด .jar</a>
+          <div class="dl-version__links"><a href="https://aegishider-platform.audijuju1.workers.dev/release/rel_ag_400_mc1214/download">สำรอง · แพลตฟอร์ม</a></div>
+          <code class="hash hash--sm">95a8e68fece822671f52e6385e270ae9cdeb636df337eacbc7df00ba63e522d5</code>
+        </article>
+
+        <article class="dl-version">
+          <span class="dl-version__range">PAPER 26.1.x</span>
+          <h3>mc26.1</h3>
+          <dl><div><dt>ไฟล์</dt><dd>Aegishider-4.0.0-mc26.1.jar</dd></div><div><dt>ขนาด</dt><dd>5.0 MB · Java 25 runtime</dd></div></dl>
+          <a class="btn btn--primary btn--sm" href="download/Aegishider-4.0.0-mc26.1.jar" download>ดาวน์โหลด .jar</a>
+          <div class="dl-version__links"><a href="https://aegishider-platform.audijuju1.workers.dev/release/rel_ag_400_mc261/download">สำรอง · แพลตฟอร์ม</a></div>
+          <code class="hash hash--sm">587284100011c4cf42458618112880223b079af7f8da15f345f958cf31567615</code>
+        </article>
+
+        <article class="dl-version">
+          <span class="dl-version__range">PAPER 26.2 – 26.3</span>
+          <h3>mc26.3</h3>
+          <dl><div><dt>ไฟล์</dt><dd>Aegishider-4.0.0-mc26.3.jar</dd></div><div><dt>ขนาด</dt><dd>5.0 MB · Java 25 runtime</dd></div></dl>
+          <a class="btn btn--primary btn--sm" href="download/Aegishider-4.0.0-mc26.3.jar" download>ดาวน์โหลด .jar</a>
+          <div class="dl-version__links"><a href="https://aegishider-platform.audijuju1.workers.dev/release/rel_ag_400_mc263/download">สำรอง · แพลตฟอร์ม</a></div>
+          <code class="hash hash--sm">827fea81d8d8dcf1e8825486562bf03c47bb5b0bf85220b02666a5ef469a3e57</code>
+        </article>
+      </div>
+
+      <div class="dl-card" style="margin-top:18px" id="verify">
         <div class="dl-card__glow" aria-hidden="true"></div>
         <div class="dl-card__main">
-          <p class="eyebrow">14 — ดาวน์โหลด</p>
-          <h2>BaseHider <span class="grad">3.6.1</span></h2>
-          <p class="dl-card__lead">ไฟล์เดียวสำหรับตัวปลั๊กอิน ผ่านการทดสอบ 102 ตัว และทดสอบกับเกมจริงบน Paper 1.21.4 แล้ว — ดาวน์โหลดได้เลย ไม่ต้องสมัครสมาชิก</p>
-
+          <p class="eyebrow">ตรวจไฟล์ก่อนติดตั้ง</p>
+          <h2 style="font-size:clamp(1.5rem,3vw,2.1rem)">SHA-256 · <span class="grad">mc1.21.11</span></h2>
+          <p class="dl-card__lead">ไบล์แนะนำสำหรับ 1.21.9–1.21.11 · ผ่าน A–F harness, A-08 world-id fix และ Sentinel Shield obfuscation · manifest เซ็นด้วย Ed25519 key <code>6a6e44a1c42f6769</code></p>
           <div class="dl-card__cta">
-            <a class="btn btn--primary btn--lg" href="download/BaseHider-3.6.1.jar" download>
-              <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
-              <span>ดาวน์โหลด BaseHider-3.6.1.jar<small>6.8 MB · Java 21 · Paper 1.21.4</small></span>
-            </a>
-            <a class="btn btn--ghost btn--lg" href="#install">ดูวิธีติดตั้ง</a>
+            <a class="btn btn--ghost" href="download/SHA256SUMS">SHA256SUMS ทุกไฟล์</a>
+            <a class="btn btn--ghost" href="https://aegishider-platform.audijuju1.workers.dev/plugins/aegishider">หน้าผลิตภัณฑ์บนแพลตฟอร์ม</a>
+            <a class="btn btn--ghost" href="#install">วิธีติดตั้ง</a>
           </div>
-
-          <dl class="dl-meta">
-            <div><dt>เวอร์ชัน</dt><dd>3.6.1</dd></div>
-            <div><dt>ขนาดไฟล์</dt><dd>6,877,057 ไบต์</dd></div>
-            <div><dt>รูปแบบ</dt><dd>.jar (รวมไลบรารีที่จำเป็นแล้ว)</dd></div>
-            <div><dt>ต้องมี</dt><dd>PacketEvents 2.14.0 ขึ้นไป</dd></div>
-          </dl>
         </div>
-
         <div class="dl-card__verify">
           <div class="verify__head">
-            <span class="mono">SHA-256</span>
+            <span class="mono">SHA-256 · mc1.21.11</span>
             <button class="copy-btn" type="button" data-copy-target="shaValue" aria-label="คัดลอกค่า SHA-256">
               <svg class="ico ico--sm" aria-hidden="true"><use href="#i-copy"></use></svg><span>คัดลอก</span>
             </button>
           </div>
-          <code class="hash" id="shaValue">fba61fd3c446c5d708cf146ddf8ed485dbb47fb874292268c6b82b5cea7fcc5d</code>
+          <code class="hash" id="shaValue">79ee516cd1c720e74d5be2b06506f86ccde0262c7d4572672167e44ed077d353</code>
           <p class="verify__hint">ตรวจไฟล์ก่อนติดตั้งทุกครั้ง โดยเฉพาะเมื่อดาวน์โหลดผ่าน proxy หรือเว็บอื่น</p>
           <div class="verify__cmds">
             <div class="verify__cmd">
               <span class="mono">Windows</span>
-              <code>certutil -hashfile BaseHider-3.6.1.jar SHA256</code>
+              <code>certutil -hashfile Aegishider-4.0.0-mc1.21.11.jar SHA256</code>
             </div>
             <div class="verify__cmd">
               <span class="mono">Linux / macOS</span>
-              <code>sha256sum BaseHider-3.6.1.jar</code>
+              <code>sha256sum Aegishider-4.0.0-mc1.21.11.jar</code>
             </div>
           </div>
           <p class="verify__foot">ค่าที่ได้ต้องตรงกับค่า SHA-256 ด้านบนทุกตัวอักษร</p>
@@ -1230,7 +1350,7 @@
   <div class="shell">
     <div class="site-foot__top">
       <div class="site-foot__brand">
-        <a class="brand brand--foot" href="#top" aria-label="BaseHider">
+        <a class="brand brand--foot" href="#top" aria-label="Aegishider">
           <span class="brand__mark" aria-hidden="true">
             <svg viewBox="0 0 40 40" fill="none">
               <circle cx="20" cy="20" r="17.4" stroke="#e8c879" stroke-width="1.1"/>
@@ -1240,7 +1360,7 @@
               <circle cx="20" cy="20" r="2.1" fill="#e8c879"/>
             </svg>
           </span>
-          <span class="brand__text"><strong>BaseHider</strong><span class="brand__ver">3.6.1</span></span>
+          <span class="brand__text"><strong>Aegishider</strong><span class="brand__ver">4.0.0</span></span>
         </a>
         <p>ปลั๊กอินซ่อนหีบและไอเท็มสำหรับ Paper<br>ซ่อนก่อนส่ง ไม่ใช่ส่งไปก่อนแล้วค่อยแก้</p>
       </div>
@@ -1262,7 +1382,7 @@
         </div>
         <div>
           <span class="mono">ไฟล์</span>
-          <a href="download/BaseHider-3.6.1.jar" download>BaseHider-3.6.1.jar</a>
+          <a href="https://aegishider-platform.audijuju1.workers.dev/plugins/aegishider">Aegishider บนแพลตฟอร์ม</a><a href="download/SHA256SUMS">SHA256SUMS</a>
           <a href="#download">SHA-256</a>
           <a href="#performance">ผลการวัด</a>
           <a href="#evidence">หลักฐานการทดสอบ</a>
@@ -1272,11 +1392,11 @@
 
     <div class="site-foot__notes">
       <p><strong>Third-party notices:</strong> FastUtil (Apache-2.0) ถูก bundle และเปลี่ยนชื่อแพ็กเกจภายในไจาร์ · PacketEvents (GPL-3.0) เป็นปลั๊กอินภายนอก ไม่ได้ถูกรวมมา · ฟอนต์ Anuphan และ IBM Plex Mono อยู่ภายใต้ SIL Open Font License 1.1</p>
-      <p>BaseHider ไม่ได้สังกัด Mojang Studios หรือ Microsoft · Minecraft คือเครื่องหมายการค้าของ Mojang Studios</p>
+      <p>Aegishider ไม่ได้สังกัด Mojang Studios หรือ Microsoft · Minecraft คือเครื่องหมายการค้าของ Mojang Studios</p>
     </div>
 
     <div class="site-foot__bar">
-      <span>© 2026 BaseHider · สร้างโดย AudiSMP</span>
+      <span>© 2026 Aegishider · สร้างโดย AudiSMP</span>
       <span class="site-foot__status"><span class="dot" aria-hidden="true"></span>Static site · พร้อม deploy บน Cloudflare Pages</span>
     </div>
   </div>

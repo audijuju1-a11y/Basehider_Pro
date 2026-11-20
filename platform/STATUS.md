@@ -1,4 +1,4 @@
-# BaseHider Control Platform — status
+# Aegishider Control Platform — status
 
 Updated: 2026-11-19
 
@@ -12,7 +12,7 @@ Updated: 2026-11-19
 |---|---|---|
 | D1 schema (identity, catalogue, licensing, telemetry, support, audit, activation guard) | Implemented | Migrations 0001–0005 applied by the vitest harness and local Wrangler |
 | Free account + licence provisioning | Implemented | Automated test: register server name → 16-char code → claim → free licence created |
-| Long random licence keys | Implemented | 240-bit key (`BH-` + 8×6 Crockford groups); only HMAC-SHA256 hash stored; raw key shown once via KV for 7 days |
+| Long random licence keys | Implemented | 240-bit key (`AG-` + 8×6 Crockford groups); only HMAC-SHA256 hash stored; raw key shown once via KV for 7 days |
 | Activation brute-force ladder | Implemented | Automated test: 5 failures → 5 min lock, 10 failures → 10 min lock; 20/40/80 escalate further; IP hash + plugin slug + server names recorded |
 | Admin graphs and detection analytics | Implemented | 14-day server-rendered SVG charts (activations, telemetry, security, new users), detection breakdown, top servers, live lockout table |
 | Free UI (no checkout) | Implemented | Marketing/portal/admin routes compile without wallet/order/payment UI; paid modules and tests deleted |
@@ -33,7 +33,7 @@ Updated: 2026-11-19
 | Java test suite | 123 tests passing on Windows and Linux | Windows `mvn -o test`; WSL Arch Linux JDK 21 `mvn -o test`; re-run on Linux with Temurin 21.0.13 + Maven 3.9.9 after the 2026-11-19 fixes (123/123, 0 failures) |
 | Three-gap packet benchmark | Verified | A–F PASS on Paper 1.21.4; baseline jar leaks all three gaps (`docs/09-three-gap-benchmark.md` in the plugin repo) |
 | Local dev | Working | `wrangler dev`; pages, auth, admin and API exercised |
-| Production deployment | Live | https://basehider-platform.audijuju1.workers.dev — free pages 200, logo/favicon deployed, admin 503 until Access is configured |
+| Production deployment | Live | https://aegishider-platform.audijuju1.workers.dev — free pages 200, logo/favicon deployed, admin 503 until Access is configured |
 | Production plugin download | Verified | `/release/rel_bh_361/download` returns the uploaded jar; SHA-256 matches `e8f8594c…` |
 | Production registration | Verified | disposable installation registered (16-char code, server_name stored), then removed |
 | Production Resend OTP | Verified | browser login submitted: OTP page rendered, Turnstile passed, `email_log` shows provider `resend`, status `sent` for audijuju1@gmail.com |
@@ -67,9 +67,9 @@ pnpm install
 pnpm typecheck
 pnpm test                 # 24 platform tests passing
 node scripts/e2e-license.mjs   # requires pnpm dev on :8787
-cd ../basehider-v3-integrated && mvn test   # 123 plugin tests (Windows and Linux/WSL)
-npx wrangler d1 migrations apply bhcp-db --local
-npx wrangler d1 execute bhcp-db --local --file=./seed/seed.sql
+cd ../aegishider-integrated && mvn test   # 123 plugin tests (Windows and Linux/WSL)
+npx wrangler d1 migrations apply agcp-db --local
+npx wrangler d1 execute agcp-db --local --file=./seed/seed.sql
 ~~~
 
 ## Open defects

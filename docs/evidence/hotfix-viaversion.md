@@ -6,7 +6,7 @@ every claim below is backed by a log/capture in `docs/evidence/`.
 
 ## 1. Reported symptoms (real server)
 
-- Chest/base storage ESP still worked on a real cheat client even though BaseHider reported
+- Chest/base storage ESP still worked on a real cheat client even though Aegishider reported
   `chunkSanitized > 0`.
 - **Ghost blocks / disappearing blocks** appeared instead of a clean filler block.
 - Monster/entity ESP still worked at distance.

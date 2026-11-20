@@ -1,9 +1,9 @@
 {
-  "name": "basehider-platform",
+  "name": "aegishider-platform",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "BaseHider Control Platform — multi-product plugin commerce, licensing, telemetry and operations on Cloudflare",
+  "description": "Aegishider Control Platform — multi-product plugin commerce, licensing, telemetry and operations on Cloudflare",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",

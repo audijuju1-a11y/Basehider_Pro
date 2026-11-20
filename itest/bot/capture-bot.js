@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict'
 /**
- * Headless Minecraft Java 1.21.4 capture bot for the BaseHider end-to-end harness.
+ * Headless Minecraft Java 1.21.4 capture bot for the Aegishider end-to-end harness.
  *
  * Connects to a local offline-mode Paper server with minecraft-protocol, records
  * EVERY received packet as an NDJSON line:

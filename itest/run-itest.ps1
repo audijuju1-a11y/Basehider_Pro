@@ -1,7 +1,7 @@
 #requires -Version 5.1
 <#
 .SYNOPSIS
-    One-command end-to-end integration test for the BaseHider Paper 1.21.4 plugin.
+    One-command end-to-end integration test for the Aegishider Paper 1.21.4 plugin.
 
 .DESCRIPTION
     Reproducible harness, safe to re-run:
@@ -21,8 +21,8 @@
       7. always tears the server down and verifies the ports are free
 
 .PARAMETER Jar
-    Plugin jar to test. Defaults to the newest BaseHider-*.jar in
-    D:\Basehider\basehider-v3-integrated\target (falling back to BaseHider.jar
+    Plugin jar to test. Defaults to the newest Aegishider-*.jar in
+    D:\Aegishider\aegishider-integrated\target (falling back to Aegishider.jar
     or the cached baseline snapshot).
 
 .PARAMETER Baseline
@@ -45,8 +45,8 @@
     both runs would share the fixed test ports.
 
 .EXAMPLE
-    pwsh -File D:\Basehider\itest\run-itest.ps1 -Baseline
-    pwsh -File D:\Basehider\itest\run-itest.ps1 -Jar D:\Basehider\basehider-v3-integrated\target\BaseHider.jar
+    pwsh -File D:\Aegishider\itest\run-itest.ps1 -Baseline
+    pwsh -File D:\Aegishider\itest\run-itest.ps1 -Jar D:\Aegishider\aegishider-integrated\target\Aegishider.jar
 #>
 [CmdletBinding()]
 param(
@@ -60,19 +60,19 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$Itest = 'D:\Basehider\itest'
+$Itest = 'D:\Aegishider\itest'
 $ServerDir = Join-Path $Itest 'server'
 $BotDir = Join-Path $Itest 'bot'
 $OutDir = Join-Path $Itest 'out'
 $CacheDir = Join-Path $Itest '.cache'
-$IntegratedJar = 'D:\Basehider\basehider-v3-integrated\target\BaseHider.jar'
+$IntegratedJar = 'D:\Aegishider\aegishider-integrated\target\Aegishider.jar'
 if (-not (Test-Path -LiteralPath $IntegratedJar)) {
-    $candidate = Get-ChildItem -LiteralPath (Split-Path -Parent $IntegratedJar) -Filter 'BaseHider-*.jar' -File -ErrorAction SilentlyContinue |
+    $candidate = Get-ChildItem -LiteralPath (Split-Path -Parent $IntegratedJar) -Filter 'Aegishider-*.jar' -File -ErrorAction SilentlyContinue |
         Where-Object { $_.Name -notlike 'original-*' } |
         Sort-Object LastWriteTime -Descending | Select-Object -First 1
     if ($candidate) { $IntegratedJar = $candidate.FullName }
 }
-$BaselineJar = Join-Path $CacheDir 'baseline-BaseHider.jar'
+$BaselineJar = Join-Path $CacheDir 'baseline-Aegishider.jar'
 $Driver = Join-Path $BotDir 'scenario-driver.js'
 $ServerPort = 25599
 $RconPort = 25598
@@ -127,8 +127,8 @@ function Test-IsHarnessProcess([string]$CommandLine, [int]$ProcessId = 0) {
     if ($ProcessId -gt 0 -and $pidFromFile -and $ProcessId -eq $pidFromFile) { return $true }
     if (-not $CommandLine) { return $false }
     $cl = $CommandLine.ToLowerInvariant()
-    return ($cl.Contains('d:\basehider\itest\server') -or $cl.Contains('itest\server\paper-1.21.4.jar') -or
-            $cl.Contains('d:\basehider\itest\bot') -or $cl.Contains('itest\bot\capture-bot.js') -or
+    return ($cl.Contains('d:\aegishider\itest\server') -or $cl.Contains('itest\server\paper-1.21.4.jar') -or
+            $cl.Contains('d:\aegishider\itest\bot') -or $cl.Contains('itest\bot\capture-bot.js') -or
             $cl.Contains('scenario-driver.js'))
 }
 
@@ -315,7 +315,7 @@ $started = Get-Date
 $lockAcquired = $false
 Write-Host ''
 Write-Host '################################################################'
-Write-Host '#  BaseHider Paper 1.21.4 end-to-end integration test harness  #'
+Write-Host '#  Aegishider Paper 1.21.4 end-to-end integration test harness  #'
 Write-Host '################################################################'
 Write-Host "  jar arg      : $(if ($Jar) { $Jar } else { '(default)' })"
 Write-Host "  baseline mode: $([bool]$Baseline)"

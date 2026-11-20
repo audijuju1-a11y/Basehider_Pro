@@ -170,7 +170,7 @@ export async function issueLicense(env: Env, input: IssueLicenseInput): Promise<
 
   const uniqueActive = input.onlyIfNoActive === true;
   for (let attempt = 0; attempt < 4; attempt++) {
-    rawKey = newLicenseKey("BH");
+    rawKey = newLicenseKey("AG");
     keyHash = await hashLicenseKey(env, rawKey);
     try {
       const columns = `(
@@ -571,11 +571,11 @@ export interface ClaimResult {
 }
 
 const FREE_ENTITLEMENTS: Record<string, string[]> = {
-  basehider: [
-    "basehider:block-protection",
-    "basehider:item-shield",
-    "basehider:diagnostics",
-    "basehider:telemetry",
+  aegishider: [
+    "aegishider:block-protection",
+    "aegishider:item-shield",
+    "aegishider:diagnostics",
+    "aegishider:telemetry",
   ],
 };
 
@@ -625,7 +625,7 @@ async function createFreeLicense(
 export async function ensureFreeLicenseForUser(
   env: Env,
   user: SessionUser,
-  productSlug = "basehider",
+  productSlug = "aegishider",
 ): Promise<{ license: LicenseRow | null; created: boolean }> {
   const product = await first<{ id: string; slug: string }>(
     env.DB,

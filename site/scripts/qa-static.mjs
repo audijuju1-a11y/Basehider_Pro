@@ -53,16 +53,29 @@ for (const token of bad) {
   if (html.includes(token)) fail(`suspicious string in HTML: ${token}`);
 }
 
-/* ---------- jar integrity ---------- */
-const jarPath = path.join(root, "download/BaseHider-3.6.1.jar");
-const jar = fs.readFileSync(jarPath);
-const hash = crypto.createHash("sha256").update(jar).digest("hex");
-if (jar.length !== 6_877_057) fail(`jar size ${jar.length} != 6797418`);
-if (hash !== "fba61fd3c446c5d708cf146ddf8ed485dbb47fb874292268c6b82b5cea7fcc5d") {
-  fail(`jar sha256 mismatch: ${hash}`);
+/* ---------- release checksums (jars are served by the platform/R2) ---------- */
+const sumsPath = path.join(root, "download/SHA256SUMS");
+if (!fs.existsSync(sumsPath)) {
+  fail("missing download/SHA256SUMS");
+} else {
+  const lines = fs.readFileSync(sumsPath, "utf8").trim().split(/\r?\n/).filter(Boolean);
+  if (lines.length !== 6) fail(`SHA256SUMS should list 6 builds, found ${lines.length}`);
+  const entries = new Map();
+  for (const line of lines) {
+    const match = line.match(/^([0-9a-f]{64}) \*?(Aegishider-4\.0\.0-mc[0-9.]+\.jar)$/);
+    if (!match) {
+      fail(`malformed SHA256SUMS line: ${line}`);
+      continue;
+    }
+    entries.set(match[2], match[1]);
+    if (!html.includes(match[1])) fail(`checksum for ${match[2]} is not shown on the page`);
+  }
+  const recommended = entries.get("Aegishider-4.0.0-mc1.21.11.jar");
+  const shown = html.match(/id="shaValue">([0-9a-f]{64})</)?.[1];
+  if (!recommended) fail("recommended 1.21.11 build missing from SHA256SUMS");
+  else if (shown !== recommended) fail("recommended SHA-256 on the page does not match SHA256SUMS");
+  console.log(`release checksums: ${entries.size} builds, recommended hash verified`);
 }
-if (!html.includes(hash)) fail("jar hash not shown in HTML");
-console.log(`jar: ${jar.length} bytes, sha256 ok`);
 
 /* ---------- og image ---------- */
 const og = path.join(root, "assets/img/og.jpg");

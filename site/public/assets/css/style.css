@@ -1,5 +1,5 @@
 /* =============================================================================
-   BaseHider 3.2.0 — landing page
+   Aegishider 3.2.0 — landing page
    Design: exploded watch movement. Brass / steel / ruby on near-black.
    ========================================================================== */
 
@@ -1174,3 +1174,49 @@ html.is-static .assembly--hero{animation:none}
   .dl-card__cta .btn{width:100%}
   .config__code .code{max-height:280px}
 }
+
+/* ---------- release evidence ---------- */
+.duel{margin-top:2.2rem;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,.006));overflow:hidden}
+.duel__head{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid var(--line)}
+.duel__head h3{margin-top:.35rem;font-size:clamp(1.1rem,2vw,1.4rem)}
+.duel__table{width:100%;border-collapse:collapse;font-size:.82rem}
+.duel__table th,.duel__table td{padding:.8rem 1rem;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.duel__table thead th{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);font-weight:500}
+.duel__table tbody th{font-weight:500;color:var(--ink-2)}
+.duel__table td.bad{color:var(--ruby);font-family:var(--mono);font-size:.74rem}
+.duel__table td.good{color:var(--brass-hi);font-family:var(--mono);font-size:.74rem}
+.duel .fineprint{padding:1rem 1.5rem 1.3rem;margin:0}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:2rem}
+.shot{margin:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#07090d}
+.shot img{display:block;width:100%;height:auto}
+.shot figcaption{padding:.8rem 1rem;font-size:.72rem;color:var(--muted);border-top:1px solid var(--line)}
+.shot figcaption b{color:var(--ink-2);font-weight:600}
+.shot--bad{border-color:rgba(226,105,95,.28)}
+.shot--wide{grid-column:1/-1}
+.matrix{margin-top:2rem;border:1px solid var(--line);border-radius:18px;padding:1.3rem 1.4rem;background:rgba(255,255,255,.018)}
+.matrix h3{font-size:1rem;margin-bottom:.9rem}
+.matrix__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.matrix__item{border:1px solid var(--line);border-radius:12px;padding:.8rem .9rem;background:rgba(0,0,0,.16)}
+.matrix__item b{display:block;font-family:var(--mono);font-size:.78rem;color:var(--brass-hi)}
+.matrix__item span{display:block;margin-top:.25rem;font-size:.66rem;line-height:1.5;color:var(--muted)}
+.matrix .fineprint{margin-top:.9rem;margin-bottom:0}
+
+/* ---------- version downloads ---------- */
+.dl-versions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.dl-version{position:relative;display:flex;flex-direction:column;gap:.75rem;border:1px solid var(--line);border-radius:18px;padding:1.2rem 1.25rem;background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,.005))}
+.dl-version--rec{border-color:rgba(226,189,109,.34);background:linear-gradient(180deg,rgba(226,189,109,.07),rgba(255,255,255,.008))}
+.dl-version__range{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2)}
+.dl-version h3{font-size:1.05rem;font-weight:600}
+.dl-version__badge{align-self:flex-start;font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:#0b0c0f;background:var(--brass);border-radius:999px;padding:.24rem .55rem}
+.dl-version dl{display:grid;grid-template-columns:auto 1fr;gap:.3rem .6rem;font-size:.68rem;color:var(--muted);margin:0}
+.dl-version dt{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2)}
+.dl-version dd{margin:0;color:var(--ink-2)}
+.dl-version .btn{margin-top:auto;width:100%;justify-content:center}
+.dl-version__links{display:flex;flex-wrap:wrap;gap:.65rem;font-size:.65rem;font-family:var(--mono)}
+.dl-version__links a{color:var(--brass);text-decoration:none;border-bottom:1px solid rgba(226,189,109,.3)}
+.dl-version__links a:hover{color:var(--brass-hi)}
+.hash--sm{display:block;font-family:var(--mono);font-size:.56rem;line-height:1.6;words-break:break-all;color:var(--muted);overflow-wrap:anywhere}
+@media (max-width:1000px){.dl-versions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.dl-versions{grid-template-columns:1fr}}
+@media (max-width:900px){.shots{grid-template-columns:1fr}.matrix__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.matrix__grid{grid-template-columns:1fr}.duel__table{font-size:.72rem}.duel__table th,.duel__table td{padding:.65rem .7rem}}

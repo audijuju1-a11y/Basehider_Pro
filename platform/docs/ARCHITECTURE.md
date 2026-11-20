@@ -31,7 +31,7 @@
                         installs,       new-key handoff
                         events, audit
                            |
-                       Queues (bhcp-telemetry) --> consumer --> rollups + R2
+                       Queues (agcp-telemetry) --> consumer --> rollups + R2
                                               +--> DLQ after retries
 ~~~
 

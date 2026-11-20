@@ -19,6 +19,10 @@ export const heartbeatSchema = z
     minecraft_version: shortText,
     platform: shortText,
     java_version: shortText,
+    // Self-reported release identity. The server compares this against the published
+    // release records; an unlisted SHA is recorded as an integrity event.
+    jar_sha256: z.string().trim().max(64).regex(/^[0-9a-f]{0,64}$/i).optional(),
+    build_target: z.string().trim().max(32).optional(),
     enabled_modules: z.array(z.string().trim().max(40)).max(20).default([]),
     metrics: z
       .object({
@@ -120,6 +124,37 @@ export async function recordHeartbeat(
        VALUES (?, ?, 'heartbeat', 'info', ?, ?, ?, ?)`,
     ).bind(eventId, installation.id, occurredAt, receivedAt, payload.schema_version, JSON.stringify(stored)),
   ]);
+
+  // Server-side release verification: the plugin reports the hash of the running jar
+  // on every heartbeat. A jar that is not one of the published builds is never trusted
+  // just because the client says so.
+  const jarSha = (payload.jar_sha256 ?? "").toLowerCase();
+  if (/^[0-9a-f]{64}$/.test(jarSha)) {
+    const release = await first<{ id: string }>(
+      env.DB,
+      `SELECT id FROM product_releases
+        WHERE product_id = ? AND artifact_sha256 = ? AND status = 'published'
+        LIMIT 1`,
+      installation.product_id,
+      jarSha,
+    );
+    if (!release) {
+      await recordSecurityEventOnce(env, `integrity-${installation.id}-${jarSha.slice(0, 16)}`, {
+        installationId: installation.id,
+        eventType: "integrity.unlisted_build",
+        severity: "warning",
+        details: {
+          jar_sha256: jarSha,
+          build_target: payload.build_target ?? "",
+          reported_plugin_version: payload.plugin_version,
+        },
+      });
+      log("warn", "integrity.unlisted_build", {
+        installationId: installation.id,
+        jarSha: jarSha.slice(0, 16),
+      });
+    }
+  }
 
   await env.TELEMETRY_QUEUE.send({
     kind: "heartbeat",

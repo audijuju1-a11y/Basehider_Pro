@@ -1,4 +1,4 @@
-# BaseHider 3.1.0 — Test Plan and Verification Levels
+# Aegishider 3.1.0 — Test Plan and Verification Levels
 
 Verification vocabulary used in this document and in the final report:
 
@@ -42,11 +42,11 @@ harness instead of being faked with mocks.
 The old build registered only an event container class; this was the first thing the
 audit confirmed. Verification in 3.1.0:
 
-1. `BaseHiderPlugin.registerListener()` registers `BlockListener`, `PlayerListener`,
+1. `AegishiderPlugin.registerListener()` registers `BlockListener`, `PlayerListener`,
    `ChunkListener`, `EntityListener`, `WorldListener` individually.
-2. `/basehider verify` cross-checks `HandlerList.getRegisteredListeners(plugin)` and fails
+2. `/aegishider verify` cross-checks `HandlerList.getRegisteredListeners(plugin)` and fails
    with "listener not registered: X" if any is missing. The integration run called
-   `/basehider verify` → **PASS**.
+   `/aegishider verify` → **PASS**.
 3. Real behaviour evidence from the integration run:
    - player drops/chest placement (`BlockPlaceEvent`) was indexed: item/chest placed by a
      bot becomes hidden and its chunk packet is rewritten (scenario C);
@@ -62,7 +62,7 @@ audit confirmed. Verification in 3.1.0:
 
 ---
 
-## 3. Packet-level integration harness (`D:\Basehider\itest`)
+## 3. Packet-level integration harness (`D:\Aegishider\itest`)
 
 A separate, reproducible harness (not shipped, outside the Maven module):
 
@@ -104,10 +104,10 @@ Two levels:
 1. **Micro benchmarks** (`PerformanceBenchmarkTest`, run on the build machine): block
    position encode/decode, index lookup, `ChunkView` binary search, FOV math, ray tracer
    policy call, synthetic chunk sanitization (20 protected blocks), bounded executor
-   dispatch. These isolate BaseHider's own code cost from server noise.
+   dispatch. These isolate Aegishider's own code cost from server noise.
 2. **Real server measurement**: Paper 1.21.4 flat world, one headless client, idle vs.
    plugin-enabled vs. plugin-enabled with a dense dropped-item field; metrics from
-   `/basehider diag` (BaseHider's own per-tick work) and spark `/spark tps` / health for
+   `/aegishider diag` (Aegishider's own per-tick work) and spark `/spark tps` / health for
    overall server tick time. Results are recorded in `docs/05-final-report.md` with the
    exact commands and run context.
 
@@ -138,12 +138,12 @@ unit tests:
 - `mvn -B clean verify`: **BUILD SUCCESS**, 75 tests, 0 failures, 0 errors, 0 skipped.
 - Integration harness, legacy v3 jar (baseline mode): **PASS** — A LEAK (2 leaked spawns),
   B VISIBLE, C LEAK (chest state in chunk data). The detector sees real leaks.
-- Integration harness, BaseHider 3.1.0: **PASS** —
+- Integration harness, Aegishider 3.1.0: **PASS** —
   A HIDDEN (0 spawn, 0 follow-ups on both clients),
   B VISIBLE (1 spawn per client, reveal latency 22 ms in the latest run),
   C HIDDEN (`chest_in_chunk=false`, `chest_states_in_section=0`, decoder positive controls
   and chunk-resend evidence present).
-- Real-server MSPT (`/mspt`) and BaseHider tick histogram, including a 300/800-item dense
+- Real-server MSPT (`/mspt`) and Aegishider tick histogram, including a 300/800-item dense
   field and the startup pre-warm re-test: raw JSON in `docs/evidence/mspt-*.json`,
   summary in `docs/05-final-report.md` §7.
 - The delivered jar's classes are byte-identical to the harness-tested build (verified by
@@ -153,7 +153,7 @@ unit tests:
 `bench/load-bench.js` + `bench/load-bot.js` (isolated server dir/ports 25601/25600,
 datapack item bursts, capture-free bots). Measured tiers (delivered build):
 
-| Tier | bots | items | TPS | server MSPT 5 s avg med | BaseHider p99 med |
+| Tier | bots | items | TPS | server MSPT 5 s avg med | Aegishider p99 med |
 |---|---|---|---|---|---|
 | smoke | 10 | 200 | 20.0 | 4.6 ms | 3.2 ms |
 | mid | 50 | 1000 | 19.1 | 11.3 ms | 2.1 ms |
