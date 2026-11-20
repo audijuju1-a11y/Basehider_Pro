@@ -23,6 +23,11 @@
 /assets/js/*
   Cache-Control: public, max-age=300, must-revalidate
 
+/download/*.jar
+  Content-Disposition: attachment
+  Cache-Control: public, max-age=86400
+  X-Robots-Tag: noindex
+
 /download/SHA256SUMS
   Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=300
